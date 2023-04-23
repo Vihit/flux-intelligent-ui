@@ -1,0 +1,148 @@
+.login-flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--main);
+  height: 92vh;
+}
+
+.scrum-svg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 65%;
+  /* margin: 80px; */
+  height: 80%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url("./../fi.png");
+  /* margin-bottom: 100px; */
+}
+
+.scrum-svg img {
+  flex-shrink: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.login-screen {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  margin-bottom: 80px;
+}
+
+.scrum-svg > img {
+  object-fit: cover;
+  max-width: 80%;
+}
+
+.login-screen > div {
+  /* padding: 20px; */
+  margin: 20px;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.control {
+  margin-bottom: 20px;
+  width: 60%;
+  align-self: center;
+}
+
+.login-header {
+  font-family: "Poppins";
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.control > input {
+  height: 30px;
+  width: 100%;
+  border-radius: 25px;
+  border-color: var(--white);
+  /* text-align: center; */
+}
+
+::placeholder {
+  font-family: "Poppins";
+  font-size: 13px;
+  font-weight: bolder;
+  color: #cccccc;
+  letter-spacing: 1px;
+}
+
+input {
+  height: 40px;
+  border-radius: 12px;
+  font-family: "Poppins";
+  font-size: 15px;
+  border-style: hidden;
+  /* font-weight: bolder; */
+  text-align: center;
+}
+
+select {
+  height: 40px;
+  border-radius: 12px;
+  font-family: "Poppins";
+  font-size: 15px;
+  border-style: hidden;
+  /* font-weight: bolder; */
+  text-align: center;
+  /* color: var(--dark); */
+}
+
+textarea {
+  border-radius: 12px;
+  font-family: "Poppins";
+  font-size: 15px;
+  border-style: hidden;
+  /* font-weight: bolder; */
+}
+
+textarea::placeholder {
+  padding-top: 25px;
+}
+
+.submit {
+  border-radius: 20px;
+  background-color: var(--accent);
+  padding: 5px 20px 5px 20px;
+  text-align: center;
+  align-self: center;
+  color: var(--white);
+  font-weight: bold;
+  font-size: 20px;
+  font-family: "Poppins";
+  cursor: pointer;
+  box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+#Light {
+  animation: animateLeft 5s infinite alternate;
+  /*   transform-origin : center; */
+  transform-box: fill-box;
+}
+
+@keyframes animateLeft {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(75deg);
+  }
+}

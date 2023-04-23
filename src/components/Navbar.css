@@ -1,0 +1,165 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  background-color: var(--dark);
+  box-shadow: 0.5px 0.5px 7px;
+  height: 8vh;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 50px;
+  margin-top: 0px;
+}
+
+.appname {
+  font-family: "Reem Kufi";
+  color: var(--white);
+  font-weight: bold;
+  font-size: 40px;
+}
+
+.delogo {
+  padding: 5px 5px 5px 5px;
+  /* content: url("./../../public/Group\ 1.svg"); */
+  object-fit: fill;
+  height: 45px;
+  margin-right: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.applogo {
+  padding: 5px 5px 5px 5px;
+  content: url("./../../public/fi.png");
+  object-fit: fill;
+  height: 60px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.options {
+  flex: 1.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+  vertical-align: middle;
+  font-family: "Poppins";
+}
+
+.options > div {
+  margin-right: 100px;
+  color: var(--white);
+  font-size: 16px;
+}
+
+.options > div > a {
+  margin-right: 100px;
+  color: var(--white);
+}
+
+.icon-account {
+  font-size: 43.0703px;
+  color: var(--white);
+}
+
+.account {
+  width: 47px;
+  height: 47px;
+  border-radius: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30px;
+  border-color: var(--white);
+  border-style: solid;
+  transition: filter 300ms;
+}
+
+.account:hover {
+  filter: brightness(1.2);
+}
+
+.account > div {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+}
+
+.dropdown {
+  background-color: var(--white);
+  position: absolute;
+  top: 5%;
+  right: 1%;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  display: none;
+  list-style: none;
+  text-decoration: none;
+  padding: 10px 0px 10px 0px;
+  z-index: 1000;
+  width: 150px;
+}
+
+li {
+  text-align: center;
+}
+
+.dropdown-item {
+  padding: 5px;
+  text-decoration: none;
+  color: black;
+  font-family: "Poppins";
+  font-size: 13px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.dropdown:hover .dropdown .account:hover {
+  display: block;
+}
+
+.account:hover + .dropdown {
+  display: block;
+}
+
+.dropdown:hover {
+  display: block;
+}
+
+.dropdown-item:hover .dropdown {
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #cccccc;
+}
+
+.hidden {
+  display: none;
+}
+
+.pi-dd {
+  margin-left: 50px;
+}
+
+.user {
+  background-color: var(--main);
+  color: #ffffff;
+}
+
+.delogo {
+  padding: 5px 5px 5px 5px;
+  content: url("./../../public/delogo1.png");
+  object-fit: fill;
+  height: 45px;
+  margin-right: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}

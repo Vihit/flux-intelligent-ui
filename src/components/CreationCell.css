@@ -1,0 +1,90 @@
+.creation-cell {
+  /* height: 100%; */
+  /* border: 1px solid red; */
+  margin: 2px;
+  background-color: #bcc1c56f;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 100px;
+  cursor: pointer;
+  position: relative;
+  height: 50px;
+}
+
+.item-drop {
+  opacity: 0.5;
+}
+
+.cell-name {
+  font-size: 16px;
+  width: 30%;
+  display: flex;
+  justify-content: center;
+}
+
+.clicked-cell {
+  background-color: rgba(255, 149, 111, 0.439);
+}
+
+.cell-img {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 40px;
+  width: 40px;
+}
+
+.cell-control {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.cell-control > input {
+  width: 98%;
+  font-weight: normal;
+}
+
+.r-r > input[type="radio"] {
+  margin: auto 5px;
+  width: 100%;
+}
+
+.r-r {
+  display: flex;
+  width: 20%;
+}
+
+.r-label {
+  display: flex;
+  /* width: 90%; */
+}
+.cell-control > input:disabled {
+  background-color: var(--white);
+}
+
+.cell-control > select {
+  width: 98%;
+  font-weight: normal;
+}
+
+.cell-control > textarea {
+  width: 98%;
+  background-color: var(--white);
+  font-weight: normal;
+}
+
+.cell-control > textarea::placeholder {
+  text-align: center;
+  line-height: 0px;
+  font-weight: normal;
+}
+
+.r-group {
+  display: flex;
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+}

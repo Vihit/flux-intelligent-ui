@@ -1,0 +1,383 @@
+.cell-configure-window {
+  position: fixed;
+  width: 30%;
+  top: 8%;
+  left: 61%;
+  bottom: 00%;
+  background-color: var(--main);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 100;
+  overflow-y: auto;
+  display: flex;
+}
+
+.slide-in-move {
+  animation: slide-in 1s 1 forwards;
+  pointer-events: none;
+  /* box-shadow: none !important; */
+}
+
+.slide-out-move {
+  animation: slide-out 1s 1 forwards;
+  /* pointer-events: none; */
+  /* box-shadow: none !important; */
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(30%);
+  }
+  100% {
+    transform: translateX(130%);
+    /* opacity: 0; */
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(130%);
+  }
+  100% {
+    transform: translateX(30%);
+    /* opacity: 0; */
+  }
+}
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.data-cols {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  margin-top: 5px;
+}
+
+.group-sel-cols {
+  display: flex;
+  background-color: var(--grey);
+  font-size: 14px;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.app-icon {
+  cursor: pointer;
+}
+
+.label-n-text {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 97%;
+  gap: 5px;
+}
+
+.label {
+  font-size: 14px;
+  /* width: 50%; */
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.text > input {
+  height: 20px;
+  border-radius: 0px;
+  width: 98%;
+  font-size: 14px;
+  text-align: left;
+  background-color: var(--grey);
+}
+
+.text > select {
+  height: 20px;
+  border-radius: 0px;
+  width: 99%;
+  font-size: 14px;
+  outline-style: none;
+  background-color: var(--grey);
+}
+
+.text > textarea {
+  /* border-radius: 0px; */
+  width: 99%;
+  font-size: 14px;
+  outline-style: none;
+  height: 100%;
+  box-sizing: border-box;
+  font-style: italic;
+  font-weight: normal;
+  color: #0552cc;
+  border-radius: 0px;
+  background-color: var(--grey);
+}
+
+.dtl {
+  display: flex;
+  width: 97%;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white);
+  justify-content: center;
+}
+
+.dtl-head {
+  display: flex;
+  width: 97%;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.dtls-col {
+  display: flex;
+  width: 100%;
+  margin-bottom: 5px;
+  justify-content: center;
+  margin-top: 5px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.viz-conf-header {
+  display: flex;
+  color: var(--white);
+  justify-content: space-between;
+  width: 90%;
+  align-items: center;
+}
+
+.measure-col {
+  display: flex;
+  margin-right: 10px;
+  font-size: 10px;
+  color: var(--main);
+  margin: 2px;
+  font-style: italic;
+  width: 100%;
+  gap: 2px;
+}
+
+.measure-sel-cols {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--grey);
+  font-size: 14px;
+  padding: 5px;
+  margin-top: 5px;
+  width: 97%;
+}
+
+.measure-col-icon {
+  font-size: 14px;
+  padding-right: 3px;
+  padding-left: 3px;
+  /* width: 100%; */
+  color: var(--main);
+}
+
+.measure-col-name {
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 0px 5px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+.measure-options {
+  flex-grow: 1;
+}
+
+.measure-options > select {
+  height: 100%;
+  font-size: 14px;
+  padding: 0;
+  outline: none;
+  width: 100%;
+  color: var(--main);
+  font-weight: normal;
+  border: none;
+}
+
+.filter-options {
+  flex-grow: 1;
+  /* width: 100%; */
+}
+
+.filter-ops > select {
+  height: 100%;
+  font-size: 14px;
+  padding: 0 3px;
+  outline: none;
+  color: var(--main);
+  font-weight: normal;
+  border: none;
+}
+
+.filter-options > input {
+  height: 100%;
+  font-size: 14px;
+  padding: 0 0 0 3px;
+  outline: none;
+  width: 97%;
+  color: var(--main);
+  font-weight: normal;
+  border: none;
+  text-align: left;
+  font-style: italic;
+}
+
+.filter-col-name {
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 0px 5px;
+  /* width: 50%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-col-name > select {
+  height: 100%;
+  font-size: 14px;
+  padding: 0 3px;
+  outline: none;
+  color: var(--main);
+  font-weight: normal;
+  border: none;
+  font-style: italic;
+  -moz-appearance: none; /* Firefox */
+  -webkit-appearance: none; /* Safari and Chrome */
+  appearance: none;
+}
+
+.filter-options > input::placeholder {
+  font-family: "Poppins";
+  font-size: 13px;
+  color: var(--dark-grey);
+  font-weight: normal;
+  text-align: center;
+}
+
+.add-filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 2px;
+  font-size: 13px;
+}
+
+.logic-op > select {
+  height: 100%;
+  font-size: 13px;
+  width: 100%;
+  padding: 0px 5px;
+  outline: none;
+  color: var(--main);
+  font-weight: normal;
+  border: none;
+  font-style: italic;
+  -moz-appearance: none; /* Firefox */
+  -webkit-appearance: none; /* Safari and Chrome */
+  appearance: none;
+}
+
+.logic-op {
+  width: 12%;
+}
+
+.color {
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.color > input {
+  height: 25px;
+  border: none;
+  border-radius: 0px;
+  width: 98%;
+  /* font-size: 14px; */
+  text-align: left;
+  background-color: var(--grey);
+}
+
+.selected-accesses {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 5px 0px;
+}
+
+.selected-access {
+  padding: 5px 10px;
+  background-color: var(--main);
+  color: white;
+  cursor: pointer;
+}
+
+.dtl-col-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  font-size: 14px;
+}
+
+.dtl-col-row-head {
+  display: flex;
+  width: 98%;
+  justify-content: space-evenly;
+  font-size: 14px;
+  background-color: var(--main);
+  color: white;
+}
+
+.dtl-col-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 33%;
+}
+
+.dtl-col-col > input[type="checkbox"] {
+  height: 100%;
+}
+
+.conf-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.conf-icons > .fa-trash {
+  color: var(--red);
+  cursor: pointer;
+}
+
+.conf-icons > .fa-floppy-disk {
+  color: var(--green);
+  cursor: pointer;
+}

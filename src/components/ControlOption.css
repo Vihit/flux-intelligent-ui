@@ -1,0 +1,78 @@
+.viz-option {
+  /* width: 50%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 20px; */
+  cursor: pointer;
+  margin-top: 10px;
+  color: var(--black);
+}
+
+.viz-option > i {
+  text-shadow: 2px 2px #bcc1c56f;
+}
+
+.viz-option-dragging {
+  background-color: rgba(0, 0, 0, 0.211);
+  opacity: 0.5;
+}
+
+.viz-img {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 30px;
+  width: 30px;
+}
+
+.text-png {
+  background-image: url("../../public/text.png");
+}
+
+.select-png {
+  background-image: url("../../public/select.png");
+}
+
+.textarea-png {
+  background-image: url("../../public/textarea.png");
+}
+
+.radio-png {
+  background-image: url("../../public/radio.png");
+}
+
+.checkbox-png {
+  background-image: url("../../public/checkbox.png");
+}
+
+.control-name {
+  font-size: 14px;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  /* padding: 5px 10px; */
+  position: absolute;
+  z-index: 1;
+  font-size: 12px;
+  /* top: -100%; */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptext {
+  visibility: visible;
+}

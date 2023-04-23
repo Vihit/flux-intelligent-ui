@@ -1,38 +1,129 @@
+:root {
+  --main: #0f2938;
+  --maintrans: #0f2938;
+  --white: #fffefd;
+  --light: #5886a1;
+  --dark: #012236;
+  --darktrans: #102c3c;
+  --black: #372b47;
+  --grey: #e0dfdf;
+  --dark-grey: #9a9898;
+  --accent: #48c6c5;
+  --green: #00cc83;
+  --red: #c25556;
+  --lightaccent: #a5eded;
+}
+
 .App {
   text-align: center;
+  height: 100vh;
+  background-color: var(--white);
+  font-family: "Poppins";
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a {
+  text-decoration: none;
+  color: var(--white);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+a:visited {
+  color: var(--white);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.notification {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  position: fixed;
+  top: 10%;
+  left: 40%;
+  width: 30%;
+  height: 40px;
+  /* background-image: linear-gradient(to right, #00cc83, #00cc83, #00cc83); */
+  /* border-radius: 10px; */
+  /* border: 4px solid #15b07a; */
+  z-index: 100;
+  color: var(--white);
+  font-family: "Poppins";
+  padding: 0px 10px;
+  font-weight: bold;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.466);
+  /* animation: notif-animate 2s forwards 0s 1; */
+}
+
+.notification-hidden {
+  display: none;
+}
+
+.notif-icon {
+  width: 10%;
+  font-size: 25px;
+}
+
+.not-msg {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: 80%;
 }
 
-.App-link {
-  color: #61dafb;
+@keyframes notif-animate {
+  0% {
+    background-image: linear-gradient(to right, white 0%, white 100%);
+  }
+  33% {
+    background-image: linear-gradient(
+      to right,
+      #00cc83 0%,
+      #00cc83 33%,
+      white 45%,
+      white 100%
+    );
+  }
+  66% {
+    background-image: linear-gradient(
+      to right,
+      #00cc83 0%,
+      #00cc83 66%,
+      white 78%,
+      white 100%
+    );
+  }
+  100% {
+    background-image: linear-gradient(to right, #00cc83 0%, #00cc83 100%);
+  }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: var(--main);
+  border-radius: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 3px var(--dark);
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 20px;
+}
+
+select {
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: black;
+  padding-left: 10px;
+  color: black;
+}
+
+select:focus {
+  outline-style: solid;
+  outline-width: 1px;
+  color: black;
+  outline-color: black;
 }

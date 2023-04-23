@@ -1,0 +1,20 @@
+.r-e-text-area > textarea {
+  font-weight: normal;
+  font-size: 13px;
+  text-align: center;
+  margin: auto;
+}
+
+.role-preview {
+  position: fixed;
+  top: 35%;
+  bottom: 35%;
+  left: 15%;
+  right: 15%;
+  background-color: white;
+  border: 3px solid black;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
+  z-index: 100;
+}

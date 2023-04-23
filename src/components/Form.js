@@ -1,0 +1,167 @@
+import { useEffect, useState } from "react";
+import CreatedCell from "./CreatedCell";
+import "./Form.css";
+import { config } from "./config";
+
+function Form(props) {
+  console.log(props);
+  const layout = JSON.parse(props.form.template).layout;
+  const conf = JSON.parse(props.form.template).controls;
+  const currState =
+    props.entry.id == -1
+      ? props.form.workflow.states.filter((st) => st.firstState)[0].label
+      : props.entry.state;
+  const toStates = props.form.workflow.transitions
+    .filter(
+      (t) =>
+        t.fromState.id ==
+        props.form.workflow.states.filter((st) => st.label === currState)[0].id
+    )
+    .map((t) => t.toState.label);
+
+  const stateConfig = props.form.workflow.states.filter(
+    (st) => st.label === currState
+  )[0];
+  const disabledColumns = stateConfig.disabledColumns.split(",");
+  const viewableColumns = stateConfig.visibleColumns.split(",");
+  const [data, setData] = useState(props.entry.id == -1 ? {} : props.entry);
+
+  function submitEntry(to) {
+    var finalData = {};
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        if (checkConditionalVibility(ctrl)) {
+          finalData[ctrl.key] = data[ctrl.key];
+        }
+      });
+    sendEntry(finalData, to);
+  }
+
+  function sendEntry(finalData, to) {
+    let logEntry = {
+      id: props.entry.id == -1 ? null : props.entry.id,
+      state: to,
+      endState: props.form.workflow.states.filter((st) => st.label === to)[0]
+        .endState,
+      data: finalData,
+    };
+    console.log(logEntry);
+    fetch(config.apiUrl + "entry/" + props.form.id, {
+      method: props.entry.id == -1 ? "POST" : "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+      body: JSON.stringify(logEntry),
+    }).then((response) => {
+      if (response.ok) {
+        console.log("Response ok");
+
+        props.closeInit(props.form);
+        props.raiseAlert("green", "Entry submitted!");
+      }
+    });
+  }
+  function dataChanged(what, value) {
+    setData((prev) => {
+      let currData = { ...prev };
+      var obj = currData;
+      let splitWhat = what.split(".");
+      for (var i = 0; i < splitWhat.length - 1; i++) {
+        let prop = splitWhat[i];
+        obj = obj[prop];
+      }
+      let finalProp = splitWhat[i];
+      obj[finalProp] = value;
+
+      return currData;
+    });
+  }
+  function checkConditionalVibility(controlConf) {
+    var check = false;
+    if (controlConf.conditionalVisibility) {
+      let dep = controlConf.conditionalControl
+        .toLowerCase()
+        .replaceAll(" ", "_");
+      let op = controlConf.conditionalCondition;
+      let value = controlConf.conditionalValue;
+      if (op === "==") return data[dep] === value;
+      else if (op === "!=") return data[dep] !== value;
+      else if (op === ">") return data[dep] > value;
+      else if (op === ">=") return data[dep] >= value;
+      else if (op === "<") return data[dep] < value;
+      else if (op === "<=") return data[dep] <= value;
+    } else {
+      return true;
+    }
+  }
+  return (
+    <div className="analytics-preview">
+      <div className="viz-preview-details">
+        <div className="viz-name">{props.form.name}</div>
+        <div className="grow"></div>
+        <div className="close-icon">
+          <i
+            className="fa-solid fa-close"
+            onClick={() => props.closeInit(false)}
+          ></i>
+        </div>
+      </div>
+      <div className="created-container">
+        {layout.map((rows, idx) => {
+          return (
+            <div
+              className="created-row"
+              // style={{ height: "calc(100%/" + layout.length + ")" }}
+            >
+              {rows.map((row, inx) => {
+                return (
+                  <CreatedCell
+                    rowId={idx}
+                    colId={inx}
+                    totalCells={rows.length}
+                    conf={
+                      viewableColumns.includes(conf[idx][inx].key) &&
+                      checkConditionalVibility(conf[idx][inx])
+                        ? conf[idx][inx]
+                        : {}
+                    }
+                    key={"1" + idx + "" + inx}
+                    disabled={disabledColumns.includes(conf[idx][inx].key)}
+                    dataChanged={dataChanged}
+                    type={"form"}
+                    values={data[conf[idx][inx].key]}
+                    value={
+                      props.entry.id == -1
+                        ? null
+                        : props.entry[conf[idx][inx].key]
+                    }
+                  ></CreatedCell>
+                );
+              })}
+            </div>
+          );
+        })}
+        <div className="btn-controls">
+          {toStates.map((ts, ind) => (
+            <div
+              key={ind}
+              onClick={() => submitEntry(ts)}
+              className="create-btn"
+            >
+              {ts}
+            </div>
+          ))}
+          <div className="cancel-btn" onClick={() => props.cancel(false)}>
+            Cancel
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Form;
