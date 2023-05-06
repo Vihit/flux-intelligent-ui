@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./CreatedCell.css";
+import { config } from "./config";
 
 function CreatedCell(props) {
   const [vals, setVals] = useState([]);
   var values = "";
+  const [refData, setRefData] = useState([]);
 
   function changed(what, value) {
     if (props.type === "form") {
@@ -20,6 +22,73 @@ function CreatedCell(props) {
       } else props.dataChanged(what, value);
     }
   }
+
+  useEffect(() => {
+    if (props.conf.referData) {
+      let conds = props.conf.referenceFilterQuery;
+      if (props.conf.referenceFilterQuery.length > 0) {
+        var regex = /\${(\w+)}/g;
+        var matches = props.conf.referenceFilterQuery.match(regex);
+
+        matches.forEach((variable) => {
+          conds = conds.replace(
+            variable,
+            props.formData[variable.split(/{|}/)[1]]
+          );
+        });
+      }
+      fetchReferenceData(
+        props.conf.referenceMaster,
+        props.conf.referenceColumn,
+        conds
+      );
+    }
+  }, [props.formData]);
+
+  function fetchReferenceData(refForm, refColumn, refCondition) {
+    console.log(refCondition);
+    fetch(
+      config.apiUrl +
+        "master/entry/reference/" +
+        refForm +
+        "/" +
+        refColumn +
+        "?where=" +
+        refCondition,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setRefData((prev) => {
+          return actualData
+            .map((data) => data.data[refColumn])
+            .filter((val, index, arr) => arr.indexOf(val) === index);
+        });
+        let inputType = props.conf.type;
+        if (inputType === "text" || inputType === "textarea") {
+          changed(
+            props.conf.key,
+            actualData
+              .map((data) => data.data[refColumn])
+              .filter((val, index, arr) => arr.indexOf(val) === index)
+              .join(",")
+          );
+        }
+      });
+  }
+
   return (
     <div
       className={
@@ -50,13 +119,21 @@ function CreatedCell(props) {
             onChange={(e) => changed(props.conf.key, e.target.value)}
           >
             <option value="">Select</option>
-            {props.conf.selectValues.split(",").map((value, indx) => {
-              return (
-                <option key={indx} value={value}>
-                  {value}
-                </option>
-              );
-            })}
+            {props.conf.referData
+              ? refData.map((value, indx) => {
+                  return (
+                    <option key={indx} value={value}>
+                      {value}
+                    </option>
+                  );
+                })
+              : props.conf.selectValues.split(",").map((value, indx) => {
+                  return (
+                    <option key={indx} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
           </select>
         )}
         {props.conf.type === "textarea" && (

@@ -157,6 +157,7 @@ function Form(props) {
                         ? null
                         : props.entry[conf[idx][inx].key]
                     }
+                    formData={data}
                   ></CreatedCell>
                 );
               })}

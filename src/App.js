@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard";
 import FormStudio from "./components/FormStudio";
 import AppDashboard from "./components/AppDashboard";
 import PlatformSetup from "./components/platform/PlatformSetup";
+import jwt from "jwt-decode";
 
 function App() {
   const [alert, setAlert] = useState(false);
@@ -18,12 +19,15 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("access") != "undefined" &&
       localStorage.getItem("access") != null
-      ? true
+      ? jwt(JSON.parse(localStorage.getItem("access"))["access_token"]).exp *
+          1000 >
+        Date.now()
+        ? true
+        : false
       : false
   );
 
   let history = useHistory();
-
   useEffect(() => {
     setInterval(() => {
       renewToken();
@@ -41,29 +45,33 @@ function App() {
   }
 
   function renewToken() {
-    console.log("Refreshing Token");
     let token = JSON.parse(localStorage.getItem("access"));
     if (token != null) {
-      console.log(token.refresh_token);
-      fetch(config.apiUrl + "token/refresh", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization:
-            "Bearer " +
-            JSON.parse(localStorage.getItem("access")).refresh_token,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
+      if (
+        jwt(JSON.parse(localStorage.getItem("access"))["access_token"]).exp -
+          5000 <
+        Date.now()
+      ) {
+        fetch(config.apiUrl + "token/refresh", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization:
+              "Bearer " +
+              JSON.parse(localStorage.getItem("access")).refresh_token,
+          },
         })
-        .then((actualData) => {
-          console.log(actualData);
-          localStorage.setItem("access", JSON.stringify(actualData));
-        });
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+          })
+          .then((actualData) => {
+            console.log(actualData);
+            localStorage.setItem("access", JSON.stringify(actualData));
+          });
+      }
     }
   }
 

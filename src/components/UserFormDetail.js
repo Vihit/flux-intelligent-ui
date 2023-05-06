@@ -13,11 +13,16 @@ function UserFormDetail(props) {
   const [allEntries, setAllEntries] = useState([]);
   const [initiatedAudit, setInitiatedAudit] = useState(false);
   const hiddenFileInput = useRef(null);
+  const [type, setType] = useState(props.type);
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
   const [file, setFile] = useState();
 
+  console.log(props);
+  useEffect(() => {
+    setType(props.type);
+  }, [props.type]);
   function handleFileChange(e) {
     if (e.target.files) {
       console.log("Calling post api");
@@ -122,10 +127,10 @@ function UserFormDetail(props) {
           data={props.tableData.rows}
           enableStickyHeader
           enableStickyFooter
-          enableRowActions={props.type === "pending" || props.type === "view"}
+          enableRowActions={type === "pending" || type === "view"}
           renderRowActions={({ row }) => (
             <Box className="c-actions">
-              {props.type === "pending" ? (
+              {type === "pending" ? (
                 <IconButton onClick={() => openFormView(row)}>
                   <Fullscreen />
                 </IconButton>

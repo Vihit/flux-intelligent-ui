@@ -280,9 +280,9 @@ function ControlConfig(props) {
                       })}
                     </select>
                     <select
-                      value={conf.conditionalCondition}
+                      value={conf.referenceColumn}
                       onChange={(e) =>
-                        confChanged("conditionalCondition", e.target.value)
+                        confChanged("referenceColumn", e.target.value)
                       }
                     >
                       <option value="">Select Master Column</option>
