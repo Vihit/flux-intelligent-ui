@@ -59,3 +59,18 @@
 table {
   margin-bottom: 10px;
 }
+
+.c-actions {
+  text-align: center;
+}
+
+.a-icon > path {
+  stroke: var(--accent);
+  fill: var(--accent);
+  stroke-width: 1px;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+}

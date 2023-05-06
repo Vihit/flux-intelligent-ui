@@ -6,6 +6,8 @@ import ColSelectionWindow from "./ColSelectionWindow.js";
 function ControlConfig(props) {
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
+  const [toggleReferenceDataDetails, setToggleReferenceDataDetails] =
+    useState(false);
   const [conf, setConf] = useState(props.conf);
   const [form, setForm] = useState();
 
@@ -16,6 +18,8 @@ function ControlConfig(props) {
   function toggle(what) {
     if (what === "basic-details") setToggleBasicDetails(!toggleBasicDetails);
     else if (what === "data-details") setToggleDataDetails(!toggleDataDetails);
+    else if (what === "reference-data-details")
+      setToggleReferenceDataDetails(!toggleReferenceDataDetails);
   }
 
   function confChanged(what, value) {
@@ -215,6 +219,87 @@ function ControlConfig(props) {
                       value={conf.conditionalValue}
                       onChange={(e) =>
                         confChanged("conditionalValue", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="dtl">
+          <div
+            className="dtl-head"
+            onClick={() => toggle("reference-data-details")}
+          >
+            <div>Reference Data Details</div>
+            {toggleReferenceDataDetails && (
+              <div>
+                <i className="fa-solid fa-minus"></i>
+              </div>
+            )}
+            {!toggleReferenceDataDetails && (
+              <div>
+                <i className="fa-solid fa-plus"></i>
+              </div>
+            )}
+          </div>
+          {toggleReferenceDataDetails && (
+            <div className="dtls">
+              <div className="label-n-text">
+                <div className="label">Reference Data</div>
+                <div className="text">
+                  <select
+                    value={conf.referData}
+                    onChange={(e) =>
+                      confChanged("referData", JSON.parse(e.target.value))
+                    }
+                  >
+                    <option value={false}>No</option>
+                    <option value={true}>Yes</option>
+                  </select>
+                </div>
+              </div>
+              {conf.referData && (
+                <div className="label-n-text">
+                  <div className="label">Master</div>
+                  <div className="text">
+                    <select
+                      value={conf.referenceMaster}
+                      onChange={(e) =>
+                        confChanged("referenceMaster", e.target.value)
+                      }
+                    >
+                      <option value="">Select Master</option>
+                      {props.masters.map((mstr, inx) => {
+                        return (
+                          <option key={inx} value={mstr.name}>
+                            {mstr.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <select
+                      value={conf.conditionalCondition}
+                      onChange={(e) =>
+                        confChanged("conditionalCondition", e.target.value)
+                      }
+                    >
+                      <option value="">Select Master Column</option>
+                      {conf.referenceMaster !== "" &&
+                        props.masters
+                          .filter((f) => f.name === conf.referenceMaster)[0]
+                          .columns.split(",")
+                          .map((col, inx) => {
+                            return <option value={col}>{col}</option>;
+                          })}
+                    </select>
+                    <input
+                      type="text"
+                      value={conf.referenceFilterQuery}
+                      placeholder="API Filter Query"
+                      onChange={(e) =>
+                        confChanged("referenceFilterQuery", e.target.value)
                       }
                     ></input>
                   </div>

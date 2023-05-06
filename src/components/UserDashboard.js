@@ -20,6 +20,7 @@ function UserDashboard(props) {
   const [pendingEntries, setPendingEntries] = useState([]);
   const [allForms, setAllForms] = useState([]);
   const [accessibleForms, setAccessibleForms] = useState([]);
+  const [selectionUpdate, setSelectionUpdate] = useState(110);
 
   useEffect(() => {
     getAllForms();
@@ -65,14 +66,6 @@ function UserDashboard(props) {
       })
       .then((actualData) => {
         setForms(actualData);
-        console.log(
-          actualData
-            .map((f) => f.app)
-            .reduce((op, a) => {
-              if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-              return op;
-            }, [])
-        );
         let apps = actualData
           .map((f) => f.app)
           .reduce((op, a) => {
@@ -111,7 +104,6 @@ function UserDashboard(props) {
   }
 
   function getPendingEntries(fs) {
-    console.log(fs);
     fetch(config.apiUrl + "entry/all-pending", {
       method: "GET",
       headers: {
@@ -135,7 +127,6 @@ function UserDashboard(props) {
             return op;
           }, []);
         setPendingEntries(actualData);
-        console.log(apps);
         setPApps(apps);
       });
   }
@@ -158,12 +149,14 @@ function UserDashboard(props) {
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Entries");
         var fCols =
+          "id," +
           f.columns +
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
           .map((c) => c.label)
           .concat([
+            "ID",
             "State",
             "Created By",
             "Log Create Dt",
@@ -193,9 +186,9 @@ function UserDashboard(props) {
           });
           rows.push(obj);
         });
-        console.log(rows);
         setTableData({ rows: rows, header: matCols });
         setSelectedForm(f);
+        setSelectionUpdate((prev) => prev + 1);
       });
   }
 
@@ -231,7 +224,6 @@ function UserDashboard(props) {
             "Updated By",
             "Log Update Dt",
           ]);
-        console.log(fLabels);
         setLogEntries(actualData);
         var matCols = [];
         var rows = [];
@@ -312,6 +304,7 @@ function UserDashboard(props) {
                   .map((f, idx) => {
                     return (
                       <div
+                        key={idx}
                         className="u-menu-i"
                         onClick={() => {
                           handleFormClick("pending", f);
@@ -326,7 +319,7 @@ function UserDashboard(props) {
           })}
         </div>
         <div className="u-menu-head" onClick={() => setAClicked(!aClicked)}>
-          My Actions {pApps.length > 0 && <div className="p-not"></div>}
+          My Actions
         </div>
         <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
           {aApps.map((a, inx) => {
@@ -338,6 +331,7 @@ function UserDashboard(props) {
                   .map((f, idx) => {
                     return (
                       <div
+                        key={idx}
                         className="u-menu-i"
                         onClick={() => {
                           handleFormClick("view", f);
@@ -357,7 +351,7 @@ function UserDashboard(props) {
           type={selectedType}
           form={selectedForm}
           raiseAlert={props.raiseAlert}
-          key={selectedForm}
+          key={selectionUpdate}
           tableData={tableData}
           updateData={handleFormClick}
         ></UserFormDetail>

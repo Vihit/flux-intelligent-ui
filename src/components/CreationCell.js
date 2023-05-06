@@ -37,7 +37,10 @@ function CreationCell(props) {
       {/* {viz !== "" && <i className={"fa-solid " + viz}></i>} */}
       {/* {viz !== "" && <div className={"cell-img " + viz + "-png"}></div>} */}
       <div className="cell-name">
-        <div>{props.conf.label}</div>
+        <div>
+          {props.conf.label}
+          {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
+        </div>
       </div>
       <div className="cell-control">
         {props.conf.type === "text" && (

@@ -39,6 +39,10 @@ function FormStudio(props) {
     conditionalVisibility: false,
     conditionalCondition: "",
     conditionalValue: "",
+    referData: false,
+    referenceMaster: "",
+    referenceFilterQuery: "",
+    referenceColumn: "",
   };
   const [showPreview, setShowPreview] = useState(false);
   const [vizName, setVizName] = useState("");
@@ -105,7 +109,28 @@ function FormStudio(props) {
     getApps();
     getRoles();
     getDepartments();
+    getForms();
   }, []);
+
+  function getForms() {
+    fetch(config.apiUrl + "forms/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setForms(actualData);
+      });
+  }
 
   function getRoles() {
     fetch(config.apiUrl + "roles/", {
@@ -319,6 +344,10 @@ function FormStudio(props) {
         .filter((c) => c.label !== "")
         .map((c) => c.label.toLowerCase().replaceAll(" ", "_"))
         .reduce((a, b) => a + "," + b),
+      type:
+        apps.filter((a) => a.id == app)[0].name === "Master Data Management"
+          ? "master"
+          : "form",
     };
     fetch(config.apiUrl + "forms/", {
       method: form.id == null ? "POST" : "PUT",
@@ -648,15 +677,7 @@ function FormStudio(props) {
             otherControls={conf.flatMap((f) => f).map((f) => f.label)}
             saveConf={saveConfFor}
             app={apps.filter((a) => a.id == app)[0]}
-            forms={forms
-              .filter((f) => true)
-              .map((f) => {
-                return {
-                  id: f.data.tbl,
-                  name: f.data.tbl,
-                  columns: f.data.columns,
-                };
-              })}
+            masters={forms.filter((f) => f.type === "master")}
           ></ControlConfig>
         )}
       {selectedFWOption === "workflow" && stateConfVisible && app !== "" && (

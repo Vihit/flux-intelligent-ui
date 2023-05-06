@@ -8,7 +8,10 @@ function Form(props) {
   const layout = JSON.parse(props.form.template).layout;
   const conf = JSON.parse(props.form.template).controls;
   const currState =
-    props.entry.id == -1
+    props.entry.id == -1 ||
+    (props.entry.state ===
+      props.form.workflow.states.filter((st) => st.endState)[0].label &&
+      props.form.app.name === "Master Data Management")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].label
       : props.entry.state;
   const toStates = props.form.workflow.transitions
@@ -28,6 +31,20 @@ function Form(props) {
 
   function submitEntry(to) {
     var finalData = {};
+    var check = false;
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        if (
+          JSON.parse(ctrl.isRequired) &&
+          (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+          check == false
+        ) {
+          console.log(ctrl);
+          props.raiseAlert("red", "Please fill up " + ctrl.label);
+          check = true;
+        }
+      });
     conf
       .flatMap((f) => f)
       .forEach((ctrl) => {
@@ -35,7 +52,7 @@ function Form(props) {
           finalData[ctrl.key] = data[ctrl.key];
         }
       });
-    sendEntry(finalData, to);
+    if (!check) sendEntry(finalData, to);
   }
 
   function sendEntry(finalData, to) {
@@ -66,6 +83,7 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
+    console.log("Data changed for " + what + " to " + value);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;

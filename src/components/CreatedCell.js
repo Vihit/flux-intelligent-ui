@@ -27,14 +27,17 @@ function CreatedCell(props) {
       }
     >
       <div className="cell-name">
-        <div>{props.conf.label}</div>
+        <div>
+          {props.conf.label}
+          {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
+        </div>
       </div>
       <div className="cell-control">
         {props.conf.type === "text" && (
           <input
             type="text"
             placeholder={props.conf.placeholder}
-            value={props.value}
+            value={props.values}
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
@@ -42,19 +45,24 @@ function CreatedCell(props) {
         {props.conf.type === "select" && (
           <select
             placeholder={props.conf.placeholder}
-            value={props.value}
+            value={props.values}
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           >
+            <option value="">Select</option>
             {props.conf.selectValues.split(",").map((value, indx) => {
-              return <option value={value}>{value}</option>;
+              return (
+                <option key={indx} value={value}>
+                  {value}
+                </option>
+              );
             })}
           </select>
         )}
         {props.conf.type === "textarea" && (
           <textarea
             placeholder={props.conf.placeholder}
-            value={props.value}
+            value={props.values}
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></textarea>
@@ -77,6 +85,9 @@ function CreatedCell(props) {
                     name={props.conf.key}
                     disabled={props.disabled}
                     onChange={(e) => changed(props.conf.key, e.target.value)}
+                    checked={
+                      props.values != undefined ? props.values === sV : false
+                    }
                   ></input>
                 </div>
               </div>
@@ -98,6 +109,11 @@ function CreatedCell(props) {
                     value={sV}
                     disabled={props.disabled}
                     onChange={(e) => changed(props.conf.key, e.target)}
+                    checked={
+                      props.values != undefined
+                        ? props.values.split(",").includes(sV)
+                        : false
+                    }
                   ></input>
                 </div>
               </div>
