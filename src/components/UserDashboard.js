@@ -264,10 +264,28 @@ function UserDashboard(props) {
     }
   }
 
+  function handleTypeClicked(type) {
+    if (type === "initiate") {
+      setIClicked(!iClicked);
+      setPClicked(false);
+      setAClicked(false);
+    } else if (type === "pending") {
+      setIClicked(false);
+      setPClicked(!pClicked);
+      setAClicked(false);
+    } else if (type === "my") {
+      setIClicked(false);
+      setPClicked(false);
+      setAClicked(!aClicked);
+    }
+  }
   return (
     <div className="u-d-container">
       <div className="u-menu">
-        <div className="u-menu-head" onClick={() => setIClicked(!iClicked)}>
+        <div
+          className="u-menu-head"
+          onClick={() => handleTypeClicked("initiate")}
+        >
           Initiate Actions
         </div>
         <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
@@ -292,7 +310,10 @@ function UserDashboard(props) {
             );
           })}
         </div>
-        <div className="u-menu-head" onClick={() => setPClicked(!pClicked)}>
+        <div
+          className="u-menu-head"
+          onClick={() => handleTypeClicked("pending")}
+        >
           Pending Actions {pApps.length > 0 && <div className="p-not"></div>}
         </div>
         <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
@@ -319,7 +340,7 @@ function UserDashboard(props) {
             );
           })}
         </div>
-        <div className="u-menu-head" onClick={() => setAClicked(!aClicked)}>
+        <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
           My Actions
         </div>
         <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
