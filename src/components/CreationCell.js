@@ -103,6 +103,14 @@ function CreationCell(props) {
               </div>
             );
           })}
+        {props.conf.type === "barcode" && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={null}
+            disabled
+          ></input>
+        )}
       </div>
     </div>
   );

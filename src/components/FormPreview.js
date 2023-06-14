@@ -84,6 +84,7 @@ function FormPreview(props) {
                     }
                     key={"1" + idx + "" + inx}
                     type="form"
+                    formData={{}}
                   ></CreatedCell>
                 );
               })}

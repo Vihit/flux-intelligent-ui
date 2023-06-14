@@ -579,6 +579,9 @@ function FormStudio(props) {
                   <ControlOption type="radio"></ControlOption>
                   <ControlOption type="checkbox"></ControlOption>
                 </div>
+                <div className="viz-option-container">
+                  <ControlOption type="barcode"></ControlOption>
+                </div>
               </div>
             )}
           </div>

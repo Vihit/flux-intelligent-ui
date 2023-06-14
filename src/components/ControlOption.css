@@ -45,6 +45,10 @@
   background-image: url("../../public/checkbox.png");
 }
 
+.barcode-png {
+  background-image: url("../../public/barcode.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;

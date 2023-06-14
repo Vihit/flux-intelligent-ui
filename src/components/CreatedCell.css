@@ -32,3 +32,25 @@
   height: 50px;
   overflow-x: auto;
 }
+
+.scanner {
+  top: 25%;
+  height: 193px;
+  width: 250px;
+  background-color: var(--grey);
+  font-size: 14px;
+}
+
+.actual-scanner {
+  border: none !important;
+  /* color: var(--grey); */
+}
+
+#html5-qrcode-button-camera-start {
+  /* display: none !important; */
+}
+
+#html5-qrcode-anchor-scan-type-change {
+  pointer-events: none !important;
+  display: none !important;
+}

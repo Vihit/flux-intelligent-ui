@@ -36,6 +36,7 @@ function Form(props) {
       .flatMap((f) => f)
       .forEach((ctrl) => {
         if (
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
           JSON.parse(ctrl.isRequired) &&
           (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
           check == false
@@ -48,7 +49,11 @@ function Form(props) {
     conf
       .flatMap((f) => f)
       .forEach((ctrl) => {
-        if (checkConditionalVibility(ctrl)) {
+        if (
+          checkConditionalVibility(ctrl) &&
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          data[ctrl.key] != null
+        ) {
           finalData[ctrl.key] = data[ctrl.key];
         }
       });
@@ -100,7 +105,7 @@ function Form(props) {
   }
   function checkConditionalVibility(controlConf) {
     var check = false;
-    if (controlConf.conditionalVisibility) {
+    if (JSON.parse(controlConf.conditionalVisibility)) {
       let dep = controlConf.conditionalControl
         .toLowerCase()
         .replaceAll(" ", "_");
@@ -165,15 +170,16 @@ function Form(props) {
           );
         })}
         <div className="btn-controls">
-          {toStates.map((ts, ind) => (
-            <div
-              key={ind}
-              onClick={() => submitEntry(ts)}
-              className="create-btn"
-            >
-              {ts}
-            </div>
-          ))}
+          {props.type !== "view" &&
+            toStates.map((ts, ind) => (
+              <div
+                key={ind}
+                onClick={() => submitEntry(ts)}
+                className="create-btn"
+              >
+                {ts}
+              </div>
+            ))}
           <div className="cancel-btn" onClick={() => props.cancel(false)}>
             Cancel
           </div>

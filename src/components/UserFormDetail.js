@@ -19,13 +19,11 @@ function UserFormDetail(props) {
   };
   const [file, setFile] = useState();
 
-  console.log(props);
   useEffect(() => {
     setType(props.type);
   }, [props.type]);
   function handleFileChange(e) {
     if (e.target.files) {
-      console.log("Calling post api");
       const f = new FormData();
       f.append("file", e.target.files[0]);
       fetch(config.apiUrl + "master/entry/bulk/upload/" + props.form.id, {
@@ -38,6 +36,7 @@ function UserFormDetail(props) {
       }).then((response) => {
         if (response.ok) {
           props.raiseAlert("green", "Data Uploaded");
+          props.updateData(props.type, props.form);
         }
       });
     }
@@ -192,6 +191,7 @@ function UserFormDetail(props) {
           entry={entry}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
+          type={props.type}
         ></Form>
       )}
       {initiatedAudit && (

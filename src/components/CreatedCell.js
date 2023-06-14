@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import "./CreatedCell.css";
 import { config } from "./config";
+import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 
 function CreatedCell(props) {
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
+  const [externalInputActivated, setExternalInputActivated] = useState(false);
 
   function changed(what, value) {
+    setExternalInputActivated(false);
     if (props.type === "form") {
       if (props.conf.type === "checkbox") {
         if (value.checked) {
@@ -87,6 +90,16 @@ function CreatedCell(props) {
           );
         }
       });
+  }
+
+  function activateBarcode(e) {
+    console.log(e);
+    setExternalInputActivated(true);
+  }
+
+  function onNewScanResult(decodedText, decodedResult) {
+    console.log(decodedText + "-" + decodedResult);
+    changed(props.conf.key, decodedText);
   }
 
   return (
@@ -196,6 +209,25 @@ function CreatedCell(props) {
               </div>
             );
           })}
+        {props.conf.type === "barcode" && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled={props.disabled}
+            onFocus={(e) => activateBarcode(e)}
+          ></input>
+        )}
+        {props.conf.type === "barcode" && externalInputActivated && (
+          <div className="scanner">
+            <Html5QrcodePlugin
+              fps={10}
+              qrbox={250}
+              disableFlip={false}
+              qrCodeSuccessCallback={onNewScanResult}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,7 +11,9 @@ function AppDashboard(props) {
   const [prevForm, setPrevForm] = useState({});
 
   let params = useParams();
+  let location = useLocation();
   let history = useHistory();
+  const [appName, setAppName] = useState(location.state);
   useEffect(() => {
     getForms();
   }, []);
@@ -55,6 +57,7 @@ function AppDashboard(props) {
 
   return (
     <div className="dashboard-app-container">
+      <div className="app-name-dac">{appName}</div>
       <div className="app-viz-container">
         <div className={"viz-lvl"}>
           {forms.map((form, idx) => {

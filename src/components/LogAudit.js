@@ -9,6 +9,9 @@ function LogAudit(props) {
     ["controls"].flatMap((ctrl) => ctrl)
     .map((c) => c.label);
 
+  const sortedEntries = props.entries.sort(function (a, b) {
+    return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
+  });
   function downloadAudit() {
     const input = document.getElementById("audit-window");
 
@@ -87,18 +90,18 @@ function LogAudit(props) {
               <div className="a-row-head">
                 Sent to
                 <div className="a-row-head-state">
-                  {props.entries[i].data.state}
+                  {sortedEntries[i].data.state}
                 </div>
                 <div className="a-row-head-actor">
                   by
                   <div className="a-actor">
-                    {props.entries[i].data.created_by}
+                    {sortedEntries[i].data.created_by}
                   </div>
                 </div>
                 <div className="a-row-head-actor">
                   at{" "}
                   <div className="a-at">
-                    {props.entries[i].data.log_create_dt}
+                    {sortedEntries[i].data.log_create_dt}
                   </div>
                 </div>
               </div>
@@ -118,7 +121,7 @@ function LogAudit(props) {
                     <div className="a-e-cell">--</div>
                     <div className="a-e-cell">
                       {
-                        props.entries[i].data[
+                        sortedEntries[i].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
                       }
@@ -131,14 +134,14 @@ function LogAudit(props) {
                     <div className="a-e-cell">{fLabels[j]}</div>
                     <div className="a-e-cell">
                       {
-                        props.entries[i - 1].data[
+                        sortedEntries[i - 1].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
                       }
                     </div>
                     <div className="a-e-cell">
                       {
-                        props.entries[i].data[
+                        sortedEntries[i].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
                       }

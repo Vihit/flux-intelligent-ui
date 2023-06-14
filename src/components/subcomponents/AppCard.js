@@ -61,7 +61,7 @@ function AppCard(props) {
   };
 
   function openApp(id) {
-    history.push("/app/" + id);
+    history.push("/app/" + id, props.app.name);
   }
 
   return (
