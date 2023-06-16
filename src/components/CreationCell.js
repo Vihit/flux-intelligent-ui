@@ -111,6 +111,14 @@ function CreationCell(props) {
             disabled
           ></input>
         )}
+        {props.conf.type === "datetime" && (
+          <input
+            type="datetime-local"
+            placeholder={props.conf.placeholder}
+            value={null}
+            disabled
+          ></input>
+        )}
       </div>
     </div>
   );

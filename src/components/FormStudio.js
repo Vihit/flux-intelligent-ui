@@ -581,6 +581,7 @@ function FormStudio(props) {
                 </div>
                 <div className="viz-option-container">
                   <ControlOption type="barcode"></ControlOption>
+                  <ControlOption type="datetime"></ControlOption>
                 </div>
               </div>
             )}

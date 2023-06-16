@@ -1,12 +1,11 @@
 .viz-option {
-  /* width: 50%; */
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding: 20px; */
   cursor: pointer;
   margin-top: 10px;
   color: var(--black);
+  width: 20%;
 }
 
 .viz-option > i {
@@ -47,6 +46,10 @@
 
 .barcode-png {
   background-image: url("../../public/barcode.png");
+}
+
+.datetime-png {
+  background-image: url("../../public/datetime.png");
 }
 
 .control-name {

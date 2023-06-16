@@ -105,7 +105,7 @@ function CreatedCell(props) {
   return (
     <div
       className={
-        props.conf.label !== "" ? "created-cell " : "empty-created-cell"
+        props.conf.label !== undefined ? "created-cell " : "empty-created-cell"
       }
     >
       <div className="cell-name">
@@ -227,6 +227,15 @@ function CreatedCell(props) {
               qrCodeSuccessCallback={onNewScanResult}
             />
           </div>
+        )}
+        {props.conf.type === "datetime" && (
+          <input
+            type="datetime-local"
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled={props.disabled}
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
         )}
       </div>
     </div>

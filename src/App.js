@@ -41,7 +41,7 @@ function App() {
     const timeId = setTimeout(() => {
       setAlert(false);
       setAlertContent("");
-    }, 2000);
+    }, 500);
   }
 
   function renewToken() {

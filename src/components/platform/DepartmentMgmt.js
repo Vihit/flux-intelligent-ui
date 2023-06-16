@@ -32,7 +32,7 @@ function DepartmentMgmt(props) {
         }
       })
       .then((actualData) => {
-        props.raiseAlert("green", "Fetched Roles!");
+        // props.raiseAlert("green", "Fetched Roles!");
         setDepartments(actualData);
         setDeptNodes((prev) => {
           return actualData
@@ -115,6 +115,7 @@ function DepartmentMgmt(props) {
             height="100%"
             shape="rect"
             fitBoundaries
+            options={{ rankdir: "BT", ranksep: 100, ranker: "longest-path" }}
             zoomable
             onNodeClick={(e) => handleRowClick(e)}
             config={{ rankdir: "BT", ranksep: 100, ranker: "longest-path" }}
