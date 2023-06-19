@@ -15,6 +15,7 @@ function LogAudit(props) {
   function downloadAudit() {
     const input = document.getElementById("audit-window");
 
+    input.classList.remove("height-limit");
     const downloads = document.getElementsByClassName("download-btn");
     for (let download of downloads) {
       download.classList.add("close-flex");
@@ -60,9 +61,10 @@ function LogAudit(props) {
     }
 
     input.classList.add("a-w-shadow");
+    input.classList.add("height-limit");
   }
   return (
-    <div className="audit-window a-w-shadow" id="audit-window">
+    <div className="audit-window a-w-shadow height-limit" id="audit-window">
       <div className="viz-preview-details dark-bg">
         <div className="de-logo">
           <img src={delogo}></img>

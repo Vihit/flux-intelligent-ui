@@ -1,7 +1,7 @@
 .audit-window {
   position: fixed;
   top: 5%;
-  bottom: 5%;
+  /* bottom: 5%; */
   left: 5%;
   right: 5%;
   background-color: white;
@@ -10,6 +10,10 @@
   flex-direction: column;
   z-index: 100;
   width: 90%;
+}
+
+.height-limit {
+  height: 90vh;
 }
 
 .a-w-shadow {
