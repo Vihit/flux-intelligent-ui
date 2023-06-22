@@ -8,6 +8,7 @@ function Form(props) {
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const layout = JSON.parse(props.form.template).layout;
   const conf = JSON.parse(props.form.template).controls;
+  const [to, setTo] = useState("");
   const currState =
     props.entry.id == -1 ||
     (props.entry.state ===
@@ -67,6 +68,34 @@ function Form(props) {
         setShowESign(false);
         setESignPwd("");
         props.raiseAlert("green", "E-signed Successfully!");
+        var finalData = {};
+        var check = false;
+        conf
+          .flatMap((f) => f)
+          .forEach((ctrl) => {
+            if (
+              stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+              JSON.parse(ctrl.isRequired) &&
+              (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+              check == false
+            ) {
+              console.log(ctrl);
+              props.raiseAlert("red", "Please fill up " + ctrl.label);
+              check = true;
+            }
+          });
+        conf
+          .flatMap((f) => f)
+          .forEach((ctrl) => {
+            if (
+              checkConditionalVibility(ctrl) &&
+              stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+              data[ctrl.key] != null
+            ) {
+              finalData[ctrl.key] = data[ctrl.key];
+            }
+          });
+        if (!check) sendEntry(finalData, to);
         return true;
       } else {
         props.raiseAlert("red", "Error while authenticating!");
@@ -76,39 +105,8 @@ function Form(props) {
   }
 
   function submitEntry(to) {
-    if (esigned) {
-      var finalData = {};
-      var check = false;
-      conf
-        .flatMap((f) => f)
-        .forEach((ctrl) => {
-          if (
-            stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
-            JSON.parse(ctrl.isRequired) &&
-            (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
-            check == false
-          ) {
-            console.log(ctrl);
-            props.raiseAlert("red", "Please fill up " + ctrl.label);
-            check = true;
-          }
-        });
-      conf
-        .flatMap((f) => f)
-        .forEach((ctrl) => {
-          if (
-            checkConditionalVibility(ctrl) &&
-            stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
-            data[ctrl.key] != null
-          ) {
-            finalData[ctrl.key] = data[ctrl.key];
-          }
-        });
-      if (!check) sendEntry(finalData, to);
-      setESigned(false);
-    } else {
-      setShowESign(true);
-    }
+    setShowESign(true);
+    setTo(to);
   }
 
   function sendEntry(finalData, to) {
