@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CreatedCell from "./CreatedCell";
 import "./FormPreview.css";
+import CreatedGrid from "./CreatedGrid";
 
 function FormPreview(props) {
   const layout = props.layout;
@@ -70,7 +71,7 @@ function FormPreview(props) {
               // style={{ height: "calc(100%/" + layout.length + ")" }}
             >
               {rows.map((row, inx) => {
-                return (
+                return row == 0 ? (
                   <CreatedCell
                     dataChanged={dataChanged}
                     rowId={idx}
@@ -86,6 +87,22 @@ function FormPreview(props) {
                     type="form"
                     formData={{}}
                   ></CreatedCell>
+                ) : (
+                  <CreatedGrid
+                    dataChanged={dataChanged}
+                    rowId={idx}
+                    colId={inx}
+                    totalCells={rows.length}
+                    values={data[conf[idx][inx].key]}
+                    conf={
+                      checkConditionalVibility(conf[idx][inx])
+                        ? conf[idx][inx]
+                        : {}
+                    }
+                    key={"1" + idx + "" + inx}
+                    type="form"
+                    formData={{}}
+                  ></CreatedGrid>
                 );
               })}
             </div>

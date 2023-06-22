@@ -1,0 +1,54 @@
+.created-grid-cell {
+  /* height: 100%; */
+  /* border: 1px solid red; */
+  margin: 1px;
+  background-color: #ebebeb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  /* cursor: pointer; */
+  position: relative;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 10px;
+  /* overflow-x: auto; */
+  overflow-y: auto;
+  min-height: 140px;
+  max-height: 400px;
+}
+
+.add-new-gr {
+  font-size: 16px;
+  display: flex;
+  width: 98%;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 2px 0px;
+}
+
+.gr-default-control {
+  width: 5%;
+  height: 100%;
+}
+
+.delete-gr {
+  font-size: 20px;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #bcc1c56f;
+  margin-left: 2px;
+}
+
+.filler {
+  display: flex;
+  /* flex-grow: 1; */
+  height: 50%;
+}

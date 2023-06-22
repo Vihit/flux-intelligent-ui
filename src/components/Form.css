@@ -1,0 +1,111 @@
+.new-esign-input {
+  width: 100%;
+  margin: 10px 10px 0px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark);
+}
+
+.new-esign-label {
+  width: 50%;
+  font-family: "Poppins";
+  font-size: 16px;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.create-job-header {
+  width: 100%;
+}
+
+.flex-row-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 20px 0px 20px;
+}
+
+.close-flex {
+  display: none !important;
+}
+
+.margin-btm {
+  margin-bottom: 30px;
+}
+
+.new-job-icon {
+  font-size: 28px;
+  color: var(--dark);
+  margin-right: 10px;
+}
+.new-job-head {
+  text-align: center;
+  font-size: 16px;
+  color: var(--dark);
+  font-family: "Poppins";
+  font-weight: bold;
+}
+
+.new-job-input {
+  width: 100%;
+  margin: 30px 20px 10px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark);
+}
+
+.new-job-label {
+  width: 50%;
+  font-family: "Poppins";
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 20px;
+  text-align: right;
+  margin-right: 20px;
+}
+
+.new-job-ta {
+  width: 100%;
+  text-align: left;
+}
+.btn-save {
+  background-color: #00cc83;
+  padding: 5px 15px 5px 15px;
+  font-family: "Poppins";
+  border-radius: 10px;
+  margin: 20px 10px 20px 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #ff5f5f;
+  padding: 5px 15px 5px 15px;
+  font-family: "Poppins";
+  border-radius: 10px;
+  margin: 20px 10px 20px 10px;
+  cursor: pointer;
+  color: white;
+}
+.esign-modal {
+  position: fixed;
+  top: 30%;
+  left: 40%;
+  /* width: 20%; */
+  background-color: var(--white);
+  border-style: solid;
+  border-color: var(--main);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 20px;
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  padding: 20px;
+}

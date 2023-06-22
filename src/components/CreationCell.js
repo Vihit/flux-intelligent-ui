@@ -3,6 +3,7 @@ import { useDrop } from "react-dnd";
 import "./CreationCell.css";
 
 function CreationCell(props) {
+  const [isGrid, setIsGrid] = useState(props.gridControl);
   const [viz, setViz] = useState(props.conf.type);
 
   const [{ isOver }, drop] = useDrop({
@@ -16,23 +17,29 @@ function CreationCell(props) {
   });
 
   function vizDropped(item) {
+    console.log("viz dropped");
     setViz(item.name);
     props.vizChosen(item.name, props.rowId, props.colId);
   }
 
-  function cellClicked() {
-    if (viz !== "") props.showConf(props.rowId, props.colId);
+  function cellClicked(e) {
+    console.log("cell clicked");
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+    if (viz !== "") {
+      if (props.conf.type !== "grid") props.showConf(props.rowId, props.colId);
+    }
   }
   return (
     <div
       ref={drop}
       className={
-        "creation-cell " +
+        (props.gridControl ? "grid-creation-cell " : "creation-cell ") +
         (isOver ? "item-drop" : "") +
         (props.clicked ? " clicked-cell" : "")
       }
       style={{ width: "calc(100%/" + props.totalCells + ")" }}
-      onClick={cellClicked}
+      onClick={(e) => cellClicked(e)}
     >
       {/* {viz !== "" && <i className={"fa-solid " + viz}></i>} */}
       {/* {viz !== "" && <div className={"cell-img " + viz + "-png"}></div>} */}

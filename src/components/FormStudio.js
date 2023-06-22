@@ -3,6 +3,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import ControlConfig from "./ControlConfig";
 import ControlOption from "./ControlOption";
 import CreationCell from "./CreationCell";
+import CreationGrid from "./CreationGrid";
 import FormPreview from "./FormPreview";
 import "./FormStudio.css";
 import { config } from "./config";
@@ -15,6 +16,7 @@ import StateConfig from "./StateConfig";
 function FormStudio(props) {
   const [layout, setLayout] = useState([]);
   const [confVisible, setConfVisible] = useState(false);
+  const [gridClicked, setGridClicked] = useState(false);
   const [stateConfVisible, setStateConfVisible] = useState(false);
   const [currStateId, setCurrStateId] = useState(0);
   const [conf, setConf] = useState([]);
@@ -44,6 +46,27 @@ function FormStudio(props) {
     referenceFilterQuery: "",
     referenceColumn: "",
   };
+  let emptyGridConf = {
+    label: "",
+    type: "grid",
+    numCols: 1,
+    controls: [
+      {
+        label: "",
+        type: "",
+        isRequired: false,
+        key: "",
+        selectValues: "",
+        conditionalVisibility: false,
+        conditionalCondition: "",
+        conditionalValue: "",
+        referData: false,
+        referenceMaster: "",
+        referenceFilterQuery: "",
+        referenceColumn: "",
+      },
+    ],
+  };
   const [showPreview, setShowPreview] = useState(false);
   const [vizName, setVizName] = useState("");
   const [apps, setApps] = useState([]);
@@ -54,6 +77,8 @@ function FormStudio(props) {
   const [states, setStates] = useState([]);
   const [transitions, setTransitions] = useState([]);
 
+  console.log(currCell);
+  console.log(conf);
   useEffect(() => {
     if (location.state != null) {
       console.log(location.state);
@@ -191,7 +216,12 @@ function FormStudio(props) {
       });
   }
 
-  function showConf(row, col) {
+  function showConf(row, col, type) {
+    if (type === "grid") {
+      setGridClicked(true);
+    } else {
+      setGridClicked(false);
+    }
     if ((currCell.row !== row || currCell.col !== col) && !confVisible) {
       setCurrCell({ row: row, col: col });
       setConfVisible(!confVisible);
@@ -243,6 +273,27 @@ function FormStudio(props) {
     });
   }
 
+  function convertToGrid(row, col) {
+    if (layout[row].length <= 1) {
+      setLayout((prev) => {
+        let currLayout = [...prev];
+        let rowToBeUpdated = prev[row];
+        rowToBeUpdated.splice(0, 1, "1");
+        currLayout.splice(row, 1, rowToBeUpdated);
+        return currLayout;
+      });
+      setConf((prev) => {
+        let currConf = [...conf];
+        let confToBeUpdated = prev[row];
+        confToBeUpdated.pop();
+        confToBeUpdated.push(emptyGridConf);
+        currConf.splice(row, confToBeUpdated);
+        console.log(currConf);
+        return currConf;
+      });
+    }
+  }
+
   function addRow() {
     setLayout((prev) => {
       let currLayout = [...prev];
@@ -265,6 +316,7 @@ function FormStudio(props) {
   }
 
   function saveConfFor(cell, updatedConf) {
+    console.log(updatedConf);
     setConf((prev) => {
       let currConf = [...prev];
       let confToBeUpdated = prev[cell.row];
@@ -292,16 +344,31 @@ function FormStudio(props) {
     setConf((prev) => {
       let currConf = [...prev];
       let confToBeUpdated = prev[row];
-      let updatedConf = confToBeUpdated[col];
-      if (updatedConf["type"] !== viz) {
-        updatedConf = emptyConf;
+      if (confToBeUpdated[0]["type"] !== "grid") {
+        let updatedConf = confToBeUpdated[col];
+        if (updatedConf["type"] !== viz) {
+          updatedConf = emptyConf;
+        }
+        updatedConf["type"] = viz;
+        if (viz === "fa-font") {
+          updatedConf["statColor"] = "#ffffff";
+          updatedConf["statBgColor"] = "#000000";
+        }
+        confToBeUpdated.splice(parseInt(col), 1, updatedConf);
+      } else {
+        let updatedConf = confToBeUpdated[0];
+        let updatedControlConf = updatedConf.controls[col];
+        if (updatedControlConf["type"] !== viz) {
+          updatedControlConf = emptyConf;
+        }
+        updatedControlConf["type"] = viz;
+        if (viz === "fa-font") {
+          updatedControlConf["statColor"] = "#ffffff";
+          updatedControlConf["statBgColor"] = "#000000";
+        }
+        updatedConf.controls.splice(parseInt(col), 1, updatedControlConf);
+        confToBeUpdated.splice(0, 1, updatedConf);
       }
-      updatedConf["type"] = viz;
-      if (viz === "fa-font") {
-        updatedConf["statColor"] = "#ffffff";
-        updatedConf["statBgColor"] = "#000000";
-      }
-      confToBeUpdated.splice(parseInt(col), 1, updatedConf);
       return currConf;
     });
   }
@@ -538,7 +605,12 @@ function FormStudio(props) {
                         return (
                           <i
                             key={inx}
-                            className="fa-solid fa-square layout-cell"
+                            className={
+                              r == 0
+                                ? "fa-solid fa-square layout-cell"
+                                : "fa-solid fa-grip layout-cell"
+                            }
+                            onClick={() => convertToGrid(idx, inx)}
                           ></i>
                         );
                       })}
@@ -628,7 +700,7 @@ function FormStudio(props) {
                   // style={{ height: "calc(100%/" + layout.length + ")" }}
                 >
                   {rows.map((row, inx) => {
-                    return (
+                    return row == 0 ? (
                       <CreationCell
                         rowId={idx}
                         colId={inx}
@@ -639,6 +711,17 @@ function FormStudio(props) {
                         clicked={idx === currCell.row && inx === currCell.col}
                         vizChosen={vizChosen}
                       ></CreationCell>
+                    ) : (
+                      <CreationGrid
+                        rowId={idx}
+                        colId={inx}
+                        totalCells={rows.length}
+                        showConf={showConf}
+                        conf={conf[idx][inx]}
+                        key={"1" + idx + "" + inx}
+                        clicked={idx === currCell.row && inx === currCell.col}
+                        vizChosen={vizChosen}
+                      ></CreationGrid>
                     );
                   })}
                 </div>
@@ -676,12 +759,18 @@ function FormStudio(props) {
           <ControlConfig
             confVisible={confVisible}
             currCell={currCell}
-            conf={conf[currCell.row][currCell.col]}
+            conf={
+              !gridClicked && conf[currCell.row][0].type === "grid"
+                ? conf[currCell.row][0].controls[currCell.col]
+                : conf[currCell.row][currCell.col]
+            }
             key={currCell.row + "" + currCell.col}
             otherControls={conf.flatMap((f) => f).map((f) => f.label)}
             saveConf={saveConfFor}
             app={apps.filter((a) => a.id == app)[0]}
             masters={forms.filter((f) => f.type === "master")}
+            gridConf={!gridClicked && conf[currCell.row][0].type === "grid"}
+            fullConf={conf}
           ></ControlConfig>
         )}
       {selectedFWOption === "workflow" && stateConfVisible && app !== "" && (

@@ -105,7 +105,11 @@ function CreatedCell(props) {
   return (
     <div
       className={
-        props.conf.label !== undefined ? "created-cell " : "empty-created-cell"
+        props.conf.label !== undefined
+          ? props.gridControl
+            ? "grid-creation-cell "
+            : "created-cell "
+          : "empty-created-cell"
       }
     >
       <div className="cell-name">

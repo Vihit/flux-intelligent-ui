@@ -10,6 +10,20 @@ function ControlConfig(props) {
     useState(false);
   const [conf, setConf] = useState(props.conf);
   const [form, setForm] = useState();
+  let emptyControlConf = {
+    label: "",
+    type: "",
+    isRequired: false,
+    key: "",
+    selectValues: "",
+    conditionalVisibility: false,
+    conditionalCondition: "",
+    conditionalValue: "",
+    referData: false,
+    referenceMaster: "",
+    referenceFilterQuery: "",
+    referenceColumn: "",
+  };
 
   useEffect(() => {
     console.log(props);
@@ -24,9 +38,31 @@ function ControlConfig(props) {
 
   function confChanged(what, value) {
     let currConf = { ...conf };
+    console.log(currConf);
+    console.log(props);
     setConf((prev) => {
+      console.log(what);
       if (what === "final") {
-        props.saveConf(props.currCell, currConf);
+        console.log(props);
+        if (
+          currConf.type === "grid" &&
+          parseInt(currConf.numCols) != currConf.controls.length
+        ) {
+          let delta = parseInt(currConf.numCols) - currConf.controls.length;
+          [...Array(delta).keys()].map((x, inx) =>
+            currConf.controls.push(emptyControlConf)
+          );
+        }
+        console.log(props);
+        if (JSON.parse(props.gridConf)) {
+          let gridConf = [...props.fullConf[props.currCell.row][0].controls];
+          gridConf.splice(props.currCell.col, 1, currConf);
+          console.log(gridConf);
+          props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
+        } else {
+          console.log(props);
+          props.saveConf(props.currCell, currConf);
+        }
       } else {
         let currConf = { ...conf };
         var obj = currConf;
@@ -43,7 +79,26 @@ function ControlConfig(props) {
       return currConf;
     });
     if (what === "final") {
-      props.saveConf(props.currCell, currConf);
+      if (
+        currConf.type === "grid" &&
+        parseInt(currConf.numCols) != currConf.controls.length
+      ) {
+        let delta = parseInt(currConf.numCols) - currConf.controls.length;
+        [...Array(delta).keys()].map((x, inx) =>
+          currConf.controls.push(emptyControlConf)
+        );
+      }
+      console.log(props);
+      if (props.gridConf) {
+        let gridConf = { ...props.fullConf[props.currCell.row][0] };
+        let gridControls = gridConf.controls;
+        gridControls.splice(props.currCell.col, 1, currConf);
+        console.log(gridConf);
+        props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
+      } else {
+        console.log(props);
+        props.saveConf(props.currCell, currConf);
+      }
     } else {
       var obj = currConf;
       let splitWhat = what.split(".");
@@ -103,211 +158,229 @@ function ControlConfig(props) {
                   ></input>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-        <div className="dtl">
-          <div className="dtl-head" onClick={() => toggle("data-details")}>
-            <div>Control Details</div>
-            {toggleDataDetails && (
-              <div>
-                <i className="fa-solid fa-minus"></i>
-              </div>
-            )}
-            {!toggleDataDetails && (
-              <div>
-                <i className="fa-solid fa-plus"></i>
-              </div>
-            )}
-          </div>
-          {toggleDataDetails && (
-            <div className="dtls">
-              <div className="label-n-text">
-                <div className="label">Required</div>
-                <div className="text">
-                  <select
-                    value={conf.isRequired}
-                    onChange={(e) =>
-                      confChanged("isRequired", JSON.parse(e.target.value))
-                    }
-                  >
-                    <option value={false}>No</option>
-                    <option value={true}>Yes</option>
-                  </select>
-                </div>
-              </div>
-              <div className="label-n-text">
-                <div className="label">Placeholder</div>
-                <div className="text">
-                  <input
-                    type="text"
-                    value={conf.placeholder}
-                    onChange={(e) => confChanged("placeholder", e.target.value)}
-                  ></input>
-                </div>
-              </div>
-              {(props.conf.type === "select" ||
-                props.conf.type === "radio" ||
-                props.conf.type === "checkbox") && (
+              {props.conf.type === "grid" && (
                 <div className="label-n-text">
-                  <div className="label">Values</div>
+                  <div className="label">Columns</div>
                   <div className="text">
                     <input
                       type="text"
-                      value={conf.selectValues}
-                      onChange={(e) =>
-                        confChanged("selectValues", e.target.value)
-                      }
+                      value={conf.numCols}
+                      onChange={(e) => confChanged("numCols", e.target.value)}
                     ></input>
                   </div>
                 </div>
               )}
-              <div className="label-n-text">
-                <div className="label">Conditional Visibility</div>
-                <div className="text">
-                  <select
-                    value={conf.conditionalVisibility}
-                    onChange={(e) =>
-                      confChanged(
-                        "conditionalVisibility",
-                        JSON.parse(e.target.value)
-                      )
-                    }
-                  >
-                    <option value={false}>No</option>
-                    <option value={true}>Yes</option>
-                  </select>
+            </div>
+          )}
+        </div>
+        {conf.type !== "grid" && (
+          <div className="dtl">
+            <div className="dtl-head" onClick={() => toggle("data-details")}>
+              <div>Control Details</div>
+              {toggleDataDetails && (
+                <div>
+                  <i className="fa-solid fa-minus"></i>
                 </div>
-              </div>
-              {conf.conditionalVisibility && (
+              )}
+              {!toggleDataDetails && (
+                <div>
+                  <i className="fa-solid fa-plus"></i>
+                </div>
+              )}
+            </div>
+            {toggleDataDetails && (
+              <div className="dtls">
                 <div className="label-n-text">
-                  <div className="label">Control</div>
+                  <div className="label">Required</div>
                   <div className="text">
                     <select
-                      value={conf.conditionalControl}
+                      value={conf.isRequired}
                       onChange={(e) =>
-                        confChanged("conditionalControl", e.target.value)
+                        confChanged("isRequired", JSON.parse(e.target.value))
                       }
                     >
-                      <option value="">Select Control</option>
-                      {props.otherControls
-                        .filter((f) => f !== conf.label)
-                        .map((col, inx) => {
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="label-n-text">
+                  <div className="label">Placeholder</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={conf.placeholder}
+                      onChange={(e) =>
+                        confChanged("placeholder", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
+                {(props.conf.type === "select" ||
+                  props.conf.type === "radio" ||
+                  props.conf.type === "checkbox") && (
+                  <div className="label-n-text">
+                    <div className="label">Values</div>
+                    <div className="text">
+                      <input
+                        type="text"
+                        value={conf.selectValues}
+                        onChange={(e) =>
+                          confChanged("selectValues", e.target.value)
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                )}
+                <div className="label-n-text">
+                  <div className="label">Conditional Visibility</div>
+                  <div className="text">
+                    <select
+                      value={conf.conditionalVisibility}
+                      onChange={(e) =>
+                        confChanged(
+                          "conditionalVisibility",
+                          JSON.parse(e.target.value)
+                        )
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+                {conf.conditionalVisibility && (
+                  <div className="label-n-text">
+                    <div className="label">Control</div>
+                    <div className="text">
+                      <select
+                        value={conf.conditionalControl}
+                        onChange={(e) =>
+                          confChanged("conditionalControl", e.target.value)
+                        }
+                      >
+                        <option value="">Select Control</option>
+                        {props.otherControls
+                          .filter((f) => f !== conf.label)
+                          .map((col, inx) => {
+                            return (
+                              <option key={inx} value={col}>
+                                {col}
+                              </option>
+                            );
+                          })}
+                      </select>
+                      <select
+                        value={conf.conditionalCondition}
+                        onChange={(e) =>
+                          confChanged("conditionalCondition", e.target.value)
+                        }
+                      >
+                        <option value="">Select condition</option>
+                        <option value="==">is</option>
+                        <option value="!=">is not</option>
+                        <option value=">">is greater than</option>
+                        <option value="<">is lower than</option>
+                        <option value=">=">is greater or equals to</option>
+                        <option value="<=">is lower or equals to</option>
+                      </select>
+                      <input
+                        type="text"
+                        value={conf.conditionalValue}
+                        onChange={(e) =>
+                          confChanged("conditionalValue", e.target.value)
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+        {conf.type !== "grid" && (
+          <div className="dtl">
+            <div
+              className="dtl-head"
+              onClick={() => toggle("reference-data-details")}
+            >
+              <div>Reference Data Details</div>
+              {toggleReferenceDataDetails && (
+                <div>
+                  <i className="fa-solid fa-minus"></i>
+                </div>
+              )}
+              {!toggleReferenceDataDetails && (
+                <div>
+                  <i className="fa-solid fa-plus"></i>
+                </div>
+              )}
+            </div>
+            {toggleReferenceDataDetails && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">Reference Data</div>
+                  <div className="text">
+                    <select
+                      value={conf.referData}
+                      onChange={(e) =>
+                        confChanged("referData", JSON.parse(e.target.value))
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+                {conf.referData && (
+                  <div className="label-n-text">
+                    <div className="label">Master</div>
+                    <div className="text">
+                      <select
+                        value={conf.referenceMaster}
+                        onChange={(e) =>
+                          confChanged("referenceMaster", e.target.value)
+                        }
+                      >
+                        <option value="">Select Master</option>
+                        {props.masters.map((mstr, inx) => {
                           return (
-                            <option key={inx} value={col}>
-                              {col}
+                            <option key={inx} value={mstr.name}>
+                              {mstr.name}
                             </option>
                           );
                         })}
-                    </select>
-                    <select
-                      value={conf.conditionalCondition}
-                      onChange={(e) =>
-                        confChanged("conditionalCondition", e.target.value)
-                      }
-                    >
-                      <option value="">Select condition</option>
-                      <option value="==">is</option>
-                      <option value="!=">is not</option>
-                      <option value=">">is greater than</option>
-                      <option value="<">is lower than</option>
-                      <option value=">=">is greater or equals to</option>
-                      <option value="<=">is lower or equals to</option>
-                    </select>
-                    <input
-                      type="text"
-                      value={conf.conditionalValue}
-                      onChange={(e) =>
-                        confChanged("conditionalValue", e.target.value)
-                      }
-                    ></input>
+                      </select>
+                      <select
+                        value={conf.referenceColumn}
+                        onChange={(e) =>
+                          confChanged("referenceColumn", e.target.value)
+                        }
+                      >
+                        <option value="">Select Master Column</option>
+                        {conf.referenceMaster !== "" &&
+                          props.masters
+                            .filter((f) => f.name === conf.referenceMaster)[0]
+                            .columns.split(",")
+                            .map((col, inx) => {
+                              return <option value={col}>{col}</option>;
+                            })}
+                      </select>
+                      <input
+                        type="text"
+                        value={conf.referenceFilterQuery}
+                        placeholder="API Filter Query"
+                        onChange={(e) =>
+                          confChanged("referenceFilterQuery", e.target.value)
+                        }
+                      ></input>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="dtl">
-          <div
-            className="dtl-head"
-            onClick={() => toggle("reference-data-details")}
-          >
-            <div>Reference Data Details</div>
-            {toggleReferenceDataDetails && (
-              <div>
-                <i className="fa-solid fa-minus"></i>
-              </div>
-            )}
-            {!toggleReferenceDataDetails && (
-              <div>
-                <i className="fa-solid fa-plus"></i>
+                )}
               </div>
             )}
           </div>
-          {toggleReferenceDataDetails && (
-            <div className="dtls">
-              <div className="label-n-text">
-                <div className="label">Reference Data</div>
-                <div className="text">
-                  <select
-                    value={conf.referData}
-                    onChange={(e) =>
-                      confChanged("referData", JSON.parse(e.target.value))
-                    }
-                  >
-                    <option value={false}>No</option>
-                    <option value={true}>Yes</option>
-                  </select>
-                </div>
-              </div>
-              {conf.referData && (
-                <div className="label-n-text">
-                  <div className="label">Master</div>
-                  <div className="text">
-                    <select
-                      value={conf.referenceMaster}
-                      onChange={(e) =>
-                        confChanged("referenceMaster", e.target.value)
-                      }
-                    >
-                      <option value="">Select Master</option>
-                      {props.masters.map((mstr, inx) => {
-                        return (
-                          <option key={inx} value={mstr.name}>
-                            {mstr.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <select
-                      value={conf.referenceColumn}
-                      onChange={(e) =>
-                        confChanged("referenceColumn", e.target.value)
-                      }
-                    >
-                      <option value="">Select Master Column</option>
-                      {conf.referenceMaster !== "" &&
-                        props.masters
-                          .filter((f) => f.name === conf.referenceMaster)[0]
-                          .columns.split(",")
-                          .map((col, inx) => {
-                            return <option value={col}>{col}</option>;
-                          })}
-                    </select>
-                    <input
-                      type="text"
-                      value={conf.referenceFilterQuery}
-                      placeholder="API Filter Query"
-                      onChange={(e) =>
-                        confChanged("referenceFilterQuery", e.target.value)
-                      }
-                    ></input>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

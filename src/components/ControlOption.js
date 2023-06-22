@@ -25,7 +25,7 @@ function ControlOption(props) {
         <i className={"fa-solid fa-input-" + props.type}></i>
       </div> */}
       <div title={props.type} className={props.type + "-png viz-img tooltip"}>
-        <span class="tooltiptext">{props.type}</span>
+        <span className="tooltiptext">{props.type}</span>
       </div>
     </div>
   );

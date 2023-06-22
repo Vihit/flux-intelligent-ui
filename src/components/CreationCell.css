@@ -12,6 +12,20 @@
   height: 50px;
 }
 
+.grid-creation-cell {
+  margin: 2px;
+  background-color: #bcc1c56f;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 100px;
+  cursor: pointer;
+  position: relative;
+  height: 100px;
+  flex-grow: 1;
+}
+
 .item-drop {
   opacity: 0.5;
 }
@@ -21,6 +35,8 @@
   width: 30%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 50%;
 }
 
 .clicked-cell {
