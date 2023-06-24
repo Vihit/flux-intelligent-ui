@@ -66,6 +66,7 @@ function FormStudio(props) {
         referenceColumn: "",
       },
     ],
+    conditionalVisibility: false,
   };
   const [showPreview, setShowPreview] = useState(false);
   const [vizName, setVizName] = useState("");
@@ -654,6 +655,7 @@ function FormStudio(props) {
                 <div className="viz-option-container">
                   <ControlOption type="barcode"></ControlOption>
                   <ControlOption type="datetime"></ControlOption>
+                  <ControlOption type="button"></ControlOption>
                 </div>
               </div>
             )}

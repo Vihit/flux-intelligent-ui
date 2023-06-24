@@ -104,6 +104,7 @@ select {
   /* font-weight: bolder; */
   text-align: center;
   /* color: var(--dark); */
+  outline-style: none;
 }
 
 textarea {

@@ -52,6 +52,9 @@
   background-image: url("../../public/datetime.png");
 }
 
+.button-png {
+  background-image: url("../../public/button.png");
+}
 .control-name {
   font-size: 14px;
   width: 50%;

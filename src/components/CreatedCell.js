@@ -22,7 +22,9 @@ function CreatedCell(props) {
           arr.splice(arr.indexOf(value.value), 1);
           props.dataChanged(what, arr.join(","));
         }
-      } else props.dataChanged(what, value);
+      } else {
+        props.dataChanged(what, value);
+      }
     }
   }
 
@@ -107,12 +109,14 @@ function CreatedCell(props) {
       className={
         props.conf.label !== undefined
           ? props.gridControl
-            ? "grid-creation-cell "
+            ? props.rowNum > 0
+              ? "grid-creation-cell-wh"
+              : "grid-creation-cell "
             : "created-cell "
           : "empty-created-cell"
       }
     >
-      <div className="cell-name">
+      <div className={"cell-name " + (props.rowNum > 0 ? "close-flex" : "")}>
         <div>
           {props.conf.label}
           {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}

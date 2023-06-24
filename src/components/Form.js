@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CreatedCell from "./CreatedCell";
 import "./Form.css";
 import { config } from "./config";
+import CreatedGrid from "./CreatedGrid";
 
 function Form(props) {
   console.log(props);
@@ -73,9 +74,10 @@ function Form(props) {
         conf
           .flatMap((f) => f)
           .forEach((ctrl) => {
+            console.log(ctrl);
             if (
               stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
-              JSON.parse(ctrl.isRequired) &&
+              JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
               (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
               check == false
             ) {
@@ -96,6 +98,7 @@ function Form(props) {
             }
           });
         if (!check) sendEntry(finalData, to);
+        else console.log("Check true");
         return true;
       } else {
         props.raiseAlert("red", "Error while authenticating!");
@@ -110,12 +113,23 @@ function Form(props) {
   }
 
   function sendEntry(finalData, to) {
+    let gridColumns = conf
+      .flatMap((f) => f)
+      .filter((ctrl) => ctrl.type === "grid")
+      .map((ctrl) => ctrl.key);
+    let gridData = [];
+    let dataWithoutGrids = finalData;
+    gridColumns.forEach((col) =>
+      gridData.push({ name: col, data: finalData[col] })
+    );
+    gridColumns.forEach((col) => delete dataWithoutGrids[col]);
     let logEntry = {
       id: props.entry.id == -1 ? null : props.entry.id,
       state: to,
       endState: props.form.workflow.states.filter((st) => st.label === to)[0]
         .endState,
-      data: finalData,
+      data: dataWithoutGrids,
+      gridData: gridData,
     };
     console.log(logEntry);
     fetch(config.apiUrl + "entry/" + props.form.id, {
@@ -148,7 +162,6 @@ function Form(props) {
       }
       let finalProp = splitWhat[i];
       obj[finalProp] = value;
-
       return currData;
     });
   }
@@ -190,7 +203,7 @@ function Form(props) {
               // style={{ height: "calc(100%/" + layout.length + ")" }}
             >
               {rows.map((row, inx) => {
-                return (
+                return row == 0 ? (
                   <CreatedCell
                     rowId={idx}
                     colId={inx}
@@ -213,6 +226,28 @@ function Form(props) {
                     }
                     formData={data}
                   ></CreatedCell>
+                ) : (
+                  <CreatedGrid
+                    dataChanged={dataChanged}
+                    rowId={idx}
+                    colId={inx}
+                    totalCells={rows.length}
+                    values={data[conf[idx][inx].key]}
+                    value={
+                      props.entry.id == -1
+                        ? null
+                        : props.entry[conf[idx][inx].key]
+                    }
+                    conf={
+                      viewableColumns.includes(conf[idx][inx].key) &&
+                      checkConditionalVibility(conf[idx][inx])
+                        ? conf[idx][inx]
+                        : {}
+                    }
+                    key={"1" + idx + "" + inx}
+                    type="form"
+                    formData={data}
+                  ></CreatedGrid>
                 );
               })}
             </div>
@@ -236,7 +271,7 @@ function Form(props) {
         <div className={"esign-modal " + (showESign ? " " : " close-flex")}>
           <div className="create-job-header">
             <div className="flex-row-title margin-btm">
-              <i class="fa-solid fa-signature new-job-icon"></i>
+              <i className="fa-solid fa-signature new-job-icon"></i>
               <div className="new-job-head">E-Sign</div>
             </div>
             <div className="new-esign-input">

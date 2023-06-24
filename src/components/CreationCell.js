@@ -5,7 +5,7 @@ import "./CreationCell.css";
 function CreationCell(props) {
   const [isGrid, setIsGrid] = useState(props.gridControl);
   const [viz, setViz] = useState(props.conf.type);
-
+  console.log(props);
   const [{ isOver }, drop] = useDrop({
     accept: "control-option",
     drop: (item, monitor) => {
@@ -43,13 +43,21 @@ function CreationCell(props) {
     >
       {/* {viz !== "" && <i className={"fa-solid " + viz}></i>} */}
       {/* {viz !== "" && <div className={"cell-img " + viz + "-png"}></div>} */}
-      <div className="cell-name">
+      <div
+        className={
+          "cell-name " + (props.conf.type === "button" ? " close-flex" : "")
+        }
+      >
         <div>
           {props.conf.label}
           {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
         </div>
       </div>
-      <div className="cell-control">
+      <div
+        className={
+          props.conf.type === "button" ? "btn-cell-control" : "cell-control"
+        }
+      >
         {props.conf.type === "text" && (
           <input
             type="text"
@@ -125,6 +133,11 @@ function CreationCell(props) {
             value={null}
             disabled
           ></input>
+        )}
+        {props.conf.type === "button" && (
+          <button className="f-btn transparent-btn" disabled>
+            {props.conf.label}
+          </button>
         )}
       </div>
     </div>

@@ -5,103 +5,40 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
+  // console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
   const [externalInputActivated, setExternalInputActivated] = useState(false);
+  const [gridRows, setGridRows] = useState(1);
 
-  function changed(what, value) {
-    setExternalInputActivated(false);
+  function changed(index, what, value) {
+    let gridKey = props.conf.key;
     if (props.type === "form") {
-      if (props.conf.type === "checkbox") {
-        if (value.checked) {
-          let arr = props.values === undefined ? [] : props.values.split(",");
-          arr.push(value.value);
-          props.dataChanged(what, arr.join(","));
-        } else {
-          let arr = props.values.split(",");
-          arr.splice(arr.indexOf(value.value), 1);
-          props.dataChanged(what, arr.join(","));
-        }
-      } else props.dataChanged(what, value);
+      // props.dataChanged(what, value);
+      var gridData = props.formData[gridKey];
+      console.log(gridData);
+      if (gridData == undefined || gridData.length == 0) {
+        gridData = [];
+      }
+      if (gridData.length - 1 < index) {
+        gridData.push({});
+      }
+      let obj = gridData[index];
+      obj[what] = value;
+      gridData.splice(index, 1, obj);
+      console.log(gridData);
+      props.dataChanged(gridKey, gridData);
     }
   }
 
-  useEffect(() => {
-    if (props.conf.referData) {
-      let conds = props.conf.referenceFilterQuery;
-      if (props.conf.referenceFilterQuery.length > 0) {
-        var regex = /\${(\w+)}/g;
-        var matches = props.conf.referenceFilterQuery.match(regex);
-
-        matches.forEach((variable) => {
-          conds = conds.replace(
-            variable,
-            props.formData[variable.split(/{|}/)[1]]
-          );
-        });
-      }
-      fetchReferenceData(
-        props.conf.referenceMaster,
-        props.conf.referenceColumn,
-        conds
-      );
-    }
-  }, [props.formData]);
-
-  function fetchReferenceData(refForm, refColumn, refCondition) {
-    console.log(refCondition);
-    fetch(
-      config.apiUrl +
-        "master/entry/reference/" +
-        refForm +
-        "/" +
-        refColumn +
-        "?where=" +
-        refCondition,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization:
-            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setRefData((prev) => {
-          return actualData
-            .map((data) => data.data[refColumn])
-            .filter((val, index, arr) => arr.indexOf(val) === index);
-        });
-        let inputType = props.conf.type;
-        if (inputType === "text" || inputType === "textarea") {
-          changed(
-            props.conf.key,
-            actualData
-              .map((data) => data.data[refColumn])
-              .filter((val, index, arr) => arr.indexOf(val) === index)
-              .join(",")
-          );
-        }
-      });
+  function deleteRow(indx) {
+    setGridRows((prev) => {
+      return prev - 1;
+    });
   }
 
-  function activateBarcode(e) {
-    console.log(e);
-    setExternalInputActivated(true);
-  }
-
-  function onNewScanResult(decodedText, decodedResult) {
-    console.log(decodedText + "-" + decodedResult);
-    changed(props.conf.key, decodedText);
-  }
+  useEffect(() => {}, []);
 
   return (
     <div
@@ -112,30 +49,48 @@ function CreatedGrid(props) {
       }
     >
       <div className="grid-head">{props.conf.label}</div>
-      <div className="grid-controls">
-        {[...Array(parseInt(props.conf.numCols)).keys()].map((i, idx) => {
-          return (
-            <CreatedCell
-              rowId={props.rowId}
-              colId={idx}
-              totalCells={props.conf.numCols}
-              showConf={props.showConf}
-              conf={props.conf.controls[idx]}
-              key={"1" + props.rowId + "" + idx}
-              clicked={false}
-              vizChosen={props.vizChosen}
-              gridControl={true}
-            ></CreatedCell>
-          );
-        })}
-        <div className="gr-default-control">
-          <div className="filler"></div>
-          <div className="delete-gr">
-            <i className="fa-solid fa-close"></i>
+      {[...Array(gridRows).keys()].map((j, inx) => {
+        return (
+          <div className="grid-controls">
+            {[...Array(parseInt(props.conf.numCols)).keys()].map((i, idx) => {
+              return (
+                <CreatedCell
+                  rowId={props.rowId}
+                  colId={idx}
+                  totalCells={props.conf.numCols}
+                  showConf={props.showConf}
+                  conf={props.conf.controls[idx]}
+                  key={"11" + props.rowId + "" + idx}
+                  clicked={false}
+                  vizChosen={props.vizChosen}
+                  gridControl={true}
+                  dataChanged={(a, b) => changed(j, a, b)}
+                  formData={props.formData}
+                  type={props.type}
+                  rowNum={j}
+                ></CreatedCell>
+              );
+            })}
+            <div className="gr-default-control">
+              {j == 0 && <div className="filler"></div>}
+              <div className="delete-gr" onClick={() => deleteRow(j)}>
+                <i className="fa-solid fa-close"></i>
+              </div>
+            </div>
           </div>
-        </div>
+        );
+      })}
+
+      <div
+        className="add-new-gr"
+        onClick={() =>
+          setGridRows((prev) => {
+            return prev + 1;
+          })
+        }
+      >
+        Add New
       </div>
-      <div className="add-new-gr">Add New</div>
     </div>
   );
 }

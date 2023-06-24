@@ -322,7 +322,11 @@ function UserDashboard(props) {
               <div key={inx} className="u-menu-i-head">
                 {a.name}
                 {allForms
-                  .filter((f) => f.app.id == a.id)
+                  .filter(
+                    (f) =>
+                      f.app.id == a.id &&
+                      pendingEntries.map((p) => p.formId).includes(f.id)
+                  )
                   .map((f, idx) => {
                     return (
                       <div
