@@ -189,6 +189,7 @@ function UserDashboard(props) {
         setTableData({ rows: rows, header: matCols });
         setSelectedForm(f);
         setSelectionUpdate((prev) => prev + 1);
+        console.log(rows);
       });
   }
 

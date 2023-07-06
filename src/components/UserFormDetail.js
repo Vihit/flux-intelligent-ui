@@ -11,6 +11,7 @@ function UserFormDetail(props) {
   const [initiated, setInitiated] = useState(false);
   const [entry, setEntry] = useState({ id: -1 });
   const [allEntries, setAllEntries] = useState([]);
+  const [gridEntries, setGridEntries] = useState([]);
   const [initiatedAudit, setInitiatedAudit] = useState(false);
   const hiddenFileInput = useRef(null);
   const [type, setType] = useState(props.type);
@@ -70,6 +71,27 @@ function UserFormDetail(props) {
       .then((actualData) => {
         setAllEntries(actualData);
         setInitiatedAudit(true);
+      });
+  }
+
+  function getGridEntriesFor(formId, entryId) {
+    console.log("Calling for " + formId + " and " + entryId);
+    fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setGridEntries(actualData);
       });
   }
 
@@ -176,6 +198,11 @@ function UserFormDetail(props) {
               fontFamily: "Poppins",
             },
           }}
+          muiTableBodyRowProps={({ row }) => ({
+            onClick: (event) => {
+              getGridEntriesFor(props.form.id, row.original.id);
+            },
+          })}
           muiTableBodyProps={{
             sx: {
               margin: "20px",
@@ -183,6 +210,74 @@ function UserFormDetail(props) {
           }}
         ></MaterialReactTable>
       </div>
+      {JSON.parse(props.form.template)
+        .controls.flatMap((f) => f)
+        .filter((ctrl) => ctrl.type === "grid").length > 0 &&
+        gridEntries.map((data, indx) => {
+          var matCols = data.columns.split(",").map((col) => {
+            return {
+              accessorKey: col,
+              header: col.replaceAll("_", " ").toUpperCase(),
+            };
+          });
+          var rows = [];
+
+          data.data.forEach((dt) => {
+            let obj = {};
+            data.columns.split(",").forEach((col) => {
+              obj[col] = dt.data[col];
+            });
+            rows.push(obj);
+          });
+
+          return (
+            <div className="f-table">
+              <div className="f-sub-dtl-head">{data.grid.toUpperCase()}</div>
+              <div className="f-table">
+                <MaterialReactTable
+                  columns={matCols}
+                  data={rows}
+                  enableStickyHeader
+                  enableStickyFooter
+                  muiTableBodyProps={{
+                    sx: {
+                      margin: "20px",
+                    },
+                  }}
+                  muiTableContainerProps={{
+                    sx: {
+                      maxHeight: "550px",
+                      maxWidth: "100%",
+                      overflowX: "auto",
+                    },
+                  }}
+                  initialState={{
+                    density: "compact",
+                    columnVisibility: { id: false, log_entry_id: false },
+                  }}
+                  muiTableHeadCellProps={{
+                    sx: {
+                      fontWeight: "bold",
+                      fontSize: "12px",
+                      backgroundColor: "var(--white)",
+                      color: "var(--dark)",
+                      border: "1px solid",
+                      fontFamily: "Poppins",
+                    },
+                  }}
+                  muiTableBodyCellProps={{
+                    sx: {
+                      backgroundColor: "var(--grey)",
+                      borderRight: "0.1px solid var(--white)",
+                      fontFamily: "Poppins",
+                      fontSize: "13px",
+                    },
+                  }}
+                ></MaterialReactTable>
+              </div>
+            </div>
+          );
+        })}
       {initiated && (
         <Form
           form={props.form}
