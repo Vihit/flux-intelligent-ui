@@ -53,7 +53,6 @@ function UserFormDetail(props) {
   }
 
   function getAllForEntry(formId, entryId) {
-    console.log("Calling for " + formId + " and " + entryId);
     fetch(config.apiUrl + "entry/metadata/" + formId + "/" + entryId, {
       method: "GET",
       headers: {
@@ -75,7 +74,6 @@ function UserFormDetail(props) {
   }
 
   function getGridEntriesFor(formId, entryId) {
-    console.log("Calling for " + formId + " and " + entryId);
     fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
       method: "GET",
       headers: {
@@ -231,7 +229,7 @@ function UserFormDetail(props) {
           });
 
           return (
-            <div className="f-table">
+            <div className="f-table" key={indx}>
               <div className="f-sub-dtl-head">{data.grid.toUpperCase()}</div>
               <div className="f-table">
                 <MaterialReactTable
@@ -283,7 +281,7 @@ function UserFormDetail(props) {
           form={props.form}
           closeInit={updateAndCloseInit}
           cancel={setInitiated}
-          entry={entry}
+          entry={{ ...entry, grids: gridEntries }}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
           type={props.type}

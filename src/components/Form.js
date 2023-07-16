@@ -232,12 +232,14 @@ function Form(props) {
                     rowId={idx}
                     colId={inx}
                     totalCells={rows.length}
-                    values={data[conf[idx][inx].key]}
-                    value={
+                    values={
                       props.entry.id == -1
                         ? null
-                        : props.entry[conf[idx][inx].key]
+                        : props.entry.grids.filter(
+                            (g) => g.grid === conf[idx][inx].key
+                          )[0].data
                     }
+                    disabled={disabledColumns.includes(conf[idx][inx].key)}
                     conf={
                       viewableColumns.includes(conf[idx][inx].key) &&
                       checkConditionalVibility(conf[idx][inx])

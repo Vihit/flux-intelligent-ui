@@ -5,12 +5,14 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  // console.log(props);
+  console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
   const [externalInputActivated, setExternalInputActivated] = useState(false);
-  const [gridRows, setGridRows] = useState(1);
+  const [gridRows, setGridRows] = useState(
+    props.values != null ? props.values.length : 1
+  );
 
   function changed(index, what, value) {
     let gridKey = props.conf.key;
@@ -68,29 +70,44 @@ function CreatedGrid(props) {
                   formData={props.formData}
                   type={props.type}
                   rowNum={j}
+                  disabled={props.disabled}
+                  value={
+                    props.values == null
+                      ? null
+                      : props.values[inx].data[props.conf.controls[idx].key]
+                  }
+                  values={
+                    props.values == null
+                      ? null
+                      : props.values[inx].data[props.conf.controls[idx].key]
+                  }
                 ></CreatedCell>
               );
             })}
-            <div className="gr-default-control">
-              {j == 0 && <div className="filler"></div>}
-              <div className="delete-gr" onClick={() => deleteRow(j)}>
-                <i className="fa-solid fa-close"></i>
+            {!props.disabled && (
+              <div className="gr-default-control">
+                {j == 0 && <div className="filler"></div>}
+                <div className="delete-gr" onClick={() => deleteRow(j)}>
+                  <i className="fa-solid fa-close"></i>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}
 
-      <div
-        className="add-new-gr"
-        onClick={() =>
-          setGridRows((prev) => {
-            return prev + 1;
-          })
-        }
-      >
-        Add New
-      </div>
+      {!props.disabled && (
+        <div
+          className="add-new-gr"
+          onClick={() =>
+            setGridRows((prev) => {
+              return prev + 1;
+            })
+          }
+        >
+          Add New
+        </div>
+      )}
     </div>
   );
 }

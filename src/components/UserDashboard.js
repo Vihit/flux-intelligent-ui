@@ -152,6 +152,7 @@ function UserDashboard(props) {
           "id," +
           f.columns +
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
+        console.log(f);
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
           .map((c) => c.label)
