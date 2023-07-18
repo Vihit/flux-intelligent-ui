@@ -4,7 +4,7 @@ import { config } from "./config";
 import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 
 function CreatedCell(props) {
-  console.log(props);
+  console.log(props.formData);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);

@@ -6,6 +6,8 @@ import CreatedGrid from "./CreatedGrid";
 
 function Form(props) {
   console.log(props);
+  var obj = {};
+
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const layout = JSON.parse(props.form.template).layout;
   const conf = JSON.parse(props.form.template).controls;
@@ -30,10 +32,20 @@ function Form(props) {
   )[0];
   const disabledColumns = stateConfig.disabledColumns.split(",");
   const viewableColumns = stateConfig.visibleColumns.split(",");
-  const [data, setData] = useState(props.entry.id == -1 ? {} : props.entry);
+  const [data, setData] = useState({});
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
+
+  useEffect(() => {
+    if (props.entry.id != -1) {
+      props.entry.grids.forEach((grid) => {
+        obj[grid.grid] = grid.data.map((data) => data.data);
+      });
+      console.log({ ...props.entry, ...obj });
+      setData(props.entry.id == -1 ? {} : { ...props.entry, ...obj });
+    }
+  }, []);
 
   function cancelESign() {
     setESignPwd("");
@@ -151,7 +163,9 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
-    console.log("Data changed for " + what + " to " + value);
+    console.log("Data changed");
+    console.log(what);
+    console.log(value);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -162,6 +176,7 @@ function Form(props) {
       }
       let finalProp = splitWhat[i];
       obj[finalProp] = value;
+      console.log(currData);
       return currData;
     });
   }
@@ -233,11 +248,10 @@ function Form(props) {
                     colId={inx}
                     totalCells={rows.length}
                     values={
-                      props.entry.id == -1
-                        ? null
-                        : props.entry.grids.filter(
-                            (g) => g.grid === conf[idx][inx].key
-                          )[0].data
+                      props.entry.id == -1 ? null : data[conf[idx][inx]]
+                      // props.entry.grids.filter(
+                      //     (g) => g.grid === conf[idx][inx].key
+                      //   )[0].data
                     }
                     disabled={disabledColumns.includes(conf[idx][inx].key)}
                     conf={

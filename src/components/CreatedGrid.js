@@ -5,7 +5,7 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  console.log(props);
+  console.log(props.formData);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -72,12 +72,12 @@ function CreatedGrid(props) {
                   rowNum={j}
                   disabled={props.disabled}
                   value={
-                    props.values == null
+                    props.values == null || props.values[inx] == null
                       ? null
                       : props.values[inx].data[props.conf.controls[idx].key]
                   }
                   values={
-                    props.values == null
+                    props.values == null || props.values[inx] == null
                       ? null
                       : props.values[inx].data[props.conf.controls[idx].key]
                   }
