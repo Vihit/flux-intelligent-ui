@@ -33,6 +33,8 @@ function CreatedCell(props) {
 
   function handleButtonClick(what) {
     let updatedValue = props.values == undefined ? "1" : props.values + "1";
+    var obj = {};
+    obj[what] = updatedValue;
     if (props.conf.apiCall) {
       let url = props.conf.apiUrl;
       console.log(url);
@@ -54,10 +56,16 @@ function CreatedCell(props) {
       }).then((response) => {
         if (response.ok) {
           props.dataChanged(what, updatedValue);
+          if (props.conf.sendToDraftState) {
+            props.sendEntry(obj);
+          }
         }
       });
     } else {
       props.dataChanged(what, updatedValue);
+      if (props.conf.sendToDraftState) {
+        props.sendEntry(obj);
+      }
     }
   }
 

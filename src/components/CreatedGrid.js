@@ -81,6 +81,7 @@ function CreatedGrid(props) {
                       ? null
                       : props.values[inx].data[props.conf.controls[idx].key]
                   }
+                  sendEntry={props.sendEntry}
                 ></CreatedCell>
               );
             })}

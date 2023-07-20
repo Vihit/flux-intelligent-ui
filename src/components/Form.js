@@ -19,7 +19,7 @@ function Form(props) {
       props.form.workflow.states.filter((st) => st.endState)[0].label &&
       props.form.app.name === "Master Data Management")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].label
-      : props.entry.state;
+      : props.entry.state.split("-INPA")[0];
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -103,7 +103,7 @@ function Form(props) {
           .flatMap((f) => f)
           .forEach((ctrl) => {
             if (
-              checkConditionalVibility(ctrl) &&
+              checkConditionalVisibility(ctrl) &&
               stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
               data[ctrl.key] != null
             ) {
@@ -118,6 +118,41 @@ function Form(props) {
         return false;
       }
     });
+  }
+
+  function prepareFinalDataAndSendEntry(updatedParam) {
+    var finalData = {};
+    var check = false;
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        console.log(ctrl);
+        if (
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
+          (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+          check == false
+        ) {
+          console.log(ctrl);
+          props.raiseAlert("red", "Please fill up " + ctrl.label);
+          check = true;
+        }
+      });
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        if (
+          checkConditionalVisibility(ctrl) &&
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          data[ctrl.key] != null
+        ) {
+          finalData[ctrl.key] = data[ctrl.key];
+        }
+      });
+    finalData = { ...finalData, ...updatedParam };
+    console.log(finalData);
+    if (!check) sendEntry(finalData, currState + "-INPA");
+    else console.log("Check true");
   }
 
   function submitEntry(to) {
@@ -139,8 +174,10 @@ function Form(props) {
     let logEntry = {
       id: props.entry.id == -1 ? null : props.entry.id,
       state: to,
-      endState: props.form.workflow.states.filter((st) => st.label === to)[0]
-        .endState,
+      endState: to.endsWith("-INPA")
+        ? false
+        : props.form.workflow.states.filter((st) => st.label === to)[0]
+            .endState,
       data: dataWithoutGrids,
       gridData: gridData,
     };
@@ -182,7 +219,7 @@ function Form(props) {
     });
     setUpdateCount((prev) => prev + 1);
   }
-  function checkConditionalVibility(controlConf) {
+  function checkConditionalVisibility(controlConf) {
     var check = false;
     if (JSON.parse(controlConf.conditionalVisibility)) {
       let dep = controlConf.conditionalControl
@@ -227,7 +264,7 @@ function Form(props) {
                     totalCells={rows.length}
                     conf={
                       viewableColumns.includes(conf[idx][inx].key) &&
-                      checkConditionalVibility(conf[idx][inx])
+                      checkConditionalVisibility(conf[idx][inx])
                         ? conf[idx][inx]
                         : {}
                     }
@@ -243,6 +280,7 @@ function Form(props) {
                     }
                     formData={data}
                     dataUpdated={updateCount}
+                    sendEntry={prepareFinalDataAndSendEntry}
                   ></CreatedCell>
                 ) : (
                   <CreatedGrid
@@ -259,13 +297,14 @@ function Form(props) {
                     disabled={disabledColumns.includes(conf[idx][inx].key)}
                     conf={
                       viewableColumns.includes(conf[idx][inx].key) &&
-                      checkConditionalVibility(conf[idx][inx])
+                      checkConditionalVisibility(conf[idx][inx])
                         ? conf[idx][inx]
                         : {}
                     }
                     key={"1" + idx + "" + inx}
                     type="form"
                     formData={data}
+                    sendEntry={prepareFinalDataAndSendEntry}
                   ></CreatedGrid>
                 );
               })}

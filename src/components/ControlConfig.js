@@ -30,7 +30,8 @@ function ControlConfig(props) {
     apiBody: "",
     apiMethod: "",
     apiUrl: "",
-    sendToNextState: true,
+    sendToDraftState: true,
+    nextState: "",
     buttonClickPattern: "once",
   };
 
@@ -506,13 +507,13 @@ function ControlConfig(props) {
                 )}
                 {
                   <div className="label-n-text">
-                    <div className="label">Send to next state</div>
+                    <div className="label">Save Draft</div>
                     <div className="text">
                       <select
-                        value={conf.sendToNextState}
+                        value={conf.sendToDraftState}
                         onChange={(e) =>
                           confChanged(
-                            "sendToNextState",
+                            "sendToDraftState",
                             JSON.parse(e.target.value)
                           )
                         }
