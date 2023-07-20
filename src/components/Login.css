@@ -83,6 +83,8 @@
   font-weight: bolder;
   color: #cccccc;
   letter-spacing: 1px;
+  font-style: normal;
+  text-align: center;
 }
 
 input {
@@ -116,7 +118,9 @@ textarea {
 }
 
 textarea::placeholder {
-  padding-top: 25px;
+  /* padding-top: 25px; */
+  text-align: center;
+  vertical-align: middle;
 }
 
 .submit {

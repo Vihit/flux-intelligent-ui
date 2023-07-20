@@ -105,6 +105,7 @@
   width: 98%;
   background-color: var(--white);
   font-weight: normal;
+  /* height: 10%; */
 }
 
 .cell-control > textarea::placeholder {
@@ -121,9 +122,12 @@
 }
 
 .f-btn {
-  width: 100%;
+  width: 90%;
   height: 90%;
   font-size: 16px;
+  font-family: Poppins;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .btn-cell-control {

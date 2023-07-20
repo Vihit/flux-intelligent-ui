@@ -9,6 +9,7 @@ function Form(props) {
   var obj = {};
 
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
+  const [updateCount, setUpdateCount] = useState(1);
   const layout = JSON.parse(props.form.template).layout;
   const conf = JSON.parse(props.form.template).controls;
   const [to, setTo] = useState("");
@@ -179,6 +180,7 @@ function Form(props) {
       console.log(currData);
       return currData;
     });
+    setUpdateCount((prev) => prev + 1);
   }
   function checkConditionalVibility(controlConf) {
     var check = false;
@@ -240,6 +242,7 @@ function Form(props) {
                         : props.entry[conf[idx][inx].key]
                     }
                     formData={data}
+                    dataUpdated={updateCount}
                   ></CreatedCell>
                 ) : (
                   <CreatedGrid

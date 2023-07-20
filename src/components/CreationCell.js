@@ -135,7 +135,14 @@ function CreationCell(props) {
           ></input>
         )}
         {props.conf.type === "button" && (
-          <button className="f-btn transparent-btn" disabled>
+          <button
+            className="f-btn transparent-btn"
+            style={{
+              color: props.conf.fontColor,
+              background: props.conf.color,
+            }}
+            disabled
+          >
             {props.conf.label}
           </button>
         )}

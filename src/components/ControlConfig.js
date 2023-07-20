@@ -8,6 +8,7 @@ function ControlConfig(props) {
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleReferenceDataDetails, setToggleReferenceDataDetails] =
     useState(false);
+  const [toggleClickDetails, setToggleClickDetails] = useState(false);
   const [conf, setConf] = useState(props.conf);
   const [form, setForm] = useState();
   let emptyControlConf = {
@@ -20,9 +21,17 @@ function ControlConfig(props) {
     conditionalCondition: "",
     conditionalValue: "",
     referData: false,
+    apiCall: false,
     referenceMaster: "",
     referenceFilterQuery: "",
     referenceColumn: "",
+    color: "",
+    fontColor: "",
+    apiBody: "",
+    apiMethod: "",
+    apiUrl: "",
+    sendToNextState: true,
+    buttonClickPattern: "once",
   };
 
   useEffect(() => {
@@ -34,6 +43,8 @@ function ControlConfig(props) {
     else if (what === "data-details") setToggleDataDetails(!toggleDataDetails);
     else if (what === "reference-data-details")
       setToggleReferenceDataDetails(!toggleReferenceDataDetails);
+    else if (what === "on-click-details")
+      setToggleClickDetails(!toggleClickDetails);
   }
 
   function confChanged(what, value) {
@@ -216,6 +227,32 @@ function ControlConfig(props) {
                     ></input>
                   </div>
                 </div>
+                {props.conf.type === "button" && (
+                  <div className="label-n-text">
+                    <div className="label">Button Color</div>
+                    <div className="text">
+                      <input
+                        type="color"
+                        value={conf.color}
+                        onChange={(e) => confChanged("color", e.target.value)}
+                      ></input>
+                    </div>
+                  </div>
+                )}
+                {props.conf.type === "button" && (
+                  <div className="label-n-text">
+                    <div className="label">Font Color</div>
+                    <div className="text">
+                      <input
+                        type="color"
+                        value={conf.fontColor}
+                        onChange={(e) =>
+                          confChanged("fontColor", e.target.value)
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                )}
                 {(props.conf.type === "select" ||
                   props.conf.type === "radio" ||
                   props.conf.type === "checkbox") && (
@@ -298,7 +335,7 @@ function ControlConfig(props) {
             )}
           </div>
         )}
-        {conf.type !== "grid" && (
+        {conf.type !== "grid" && conf.type !== "button" && (
           <div className="dtl">
             <div
               className="dtl-head"
@@ -362,6 +399,7 @@ function ControlConfig(props) {
                           props.masters
                             .filter((f) => f.name === conf.referenceMaster)[0]
                             .columns.split(",")
+                            .concat("id")
                             .map((col, inx) => {
                               return <option value={col}>{col}</option>;
                             })}
@@ -377,6 +415,114 @@ function ControlConfig(props) {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+        {conf.type === "button" && (
+          <div className="dtl">
+            <div
+              className="dtl-head"
+              onClick={() => toggle("on-click-details")}
+            >
+              <div>Click Event Details</div>
+              {toggleClickDetails && (
+                <div>
+                  <i className="fa-solid fa-minus"></i>
+                </div>
+              )}
+              {!toggleClickDetails && (
+                <div>
+                  <i className="fa-solid fa-plus"></i>
+                </div>
+              )}
+            </div>
+            {toggleClickDetails && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">Click Allowed</div>
+                  <div className="text">
+                    <select
+                      value={conf.buttonClickPattern}
+                      onChange={(e) =>
+                        confChanged("buttonClickPattern", e.target.value)
+                      }
+                    >
+                      <option value={"once"}>Once</option>
+                      <option value={"multiple"}>Multiple</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="label-n-text">
+                  <div className="label">API Call</div>
+                  <div className="text">
+                    <select
+                      value={conf.apiCall}
+                      onChange={(e) =>
+                        confChanged("apiCall", JSON.parse(e.target.value))
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+                {conf.apiCall && (
+                  <div className="label-n-text">
+                    <div className="label">API</div>
+                    <div className="text">
+                      <input
+                        type="text"
+                        value={conf.apiUrl}
+                        placeholder="URL"
+                        onChange={(e) => confChanged("apiUrl", e.target.value)}
+                      ></input>
+                      <select
+                        value={conf.apiMethod}
+                        onChange={(e) =>
+                          confChanged("apiMethod", e.target.value)
+                        }
+                      >
+                        <option value="">Select API Method</option>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                      </select>
+                      {(conf.apiMethod === "PUT" ||
+                        conf.apiMethod === "POST") && (
+                        <textarea
+                          className="normal-height"
+                          type="text"
+                          rows="1"
+                          value={conf.apiBody}
+                          placeholder="Body"
+                          onChange={(e) =>
+                            confChanged("apiBody", e.target.value)
+                          }
+                        ></textarea>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {
+                  <div className="label-n-text">
+                    <div className="label">Send to next state</div>
+                    <div className="text">
+                      <select
+                        value={conf.sendToNextState}
+                        onChange={(e) =>
+                          confChanged(
+                            "sendToNextState",
+                            JSON.parse(e.target.value)
+                          )
+                        }
+                      >
+                        <option value={false}>No</option>
+                        <option value={true}>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                }
               </div>
             )}
           </div>
