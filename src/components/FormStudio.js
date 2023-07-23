@@ -767,7 +767,11 @@ function FormStudio(props) {
                 : conf[currCell.row][currCell.col]
             }
             key={currCell.row + "" + currCell.col}
-            otherControls={conf.flatMap((f) => f).map((f) => f.label)}
+            otherControls={
+              !gridClicked && conf[currCell.row][0].type === "grid"
+                ? conf[currCell.row][0].controls.map((f) => f.label)
+                : conf.flatMap((f) => f).map((f) => f.label)
+            }
             saveConf={saveConfFor}
             app={apps.filter((a) => a.id == app)[0]}
             masters={forms.filter((f) => f.type === "master")}

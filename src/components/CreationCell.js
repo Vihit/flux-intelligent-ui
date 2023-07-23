@@ -45,7 +45,8 @@ function CreationCell(props) {
       {/* {viz !== "" && <div className={"cell-img " + viz + "-png"}></div>} */}
       <div
         className={
-          "cell-name " + (props.conf.type === "button" ? " close-flex" : "")
+          (props.gridControl ? "cell-name-grid " : "cell-name ") +
+          (props.conf.type === "button" ? " close-flex" : "")
         }
       >
         <div>

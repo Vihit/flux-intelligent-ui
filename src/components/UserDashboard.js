@@ -155,6 +155,7 @@ function UserDashboard(props) {
         console.log(f);
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => ctrl.type !== "grid")
           .map((c) => c.label)
           .concat([
             "ID",
@@ -169,6 +170,11 @@ function UserDashboard(props) {
         var rows = [];
         fCols
           .split(",")
+          .filter((col) =>
+            fLabels
+              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
+              .includes(col)
+          )
           .map((c) => {
             return fLabels.filter(
               (l) => l.toLowerCase().replaceAll(" ", "_") === c

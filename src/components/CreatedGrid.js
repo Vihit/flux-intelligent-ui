@@ -5,7 +5,7 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  console.log(props.formData);
+  // console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -13,13 +13,41 @@ function CreatedGrid(props) {
   const [gridRows, setGridRows] = useState(
     props.values != null ? props.values.length : 1
   );
+  const [updateCount, setUpdateCount] = useState(1);
+
+  function checkConditionalVisibility(row, col) {
+    let controlConf = props.conf.controls[col];
+    let rowData =
+      props.formData == null || props.formData[props.conf.key] == undefined
+        ? {}
+        : props.formData[props.conf.key][row];
+    var check = false;
+    if (JSON.parse(controlConf.conditionalVisibility)) {
+      let dep = controlConf.conditionalControl
+        .toLowerCase()
+        .replaceAll(" ", "_");
+      let op = controlConf.conditionalCondition;
+      let value = controlConf.conditionalValue;
+      if (op === "==") return rowData[dep] === value;
+      else if (op === "!=") return rowData[dep] !== value;
+      else if (op === ">") return rowData[dep] > value;
+      else if (op === ">=") return rowData[dep] >= value;
+      else if (op === "<") return rowData[dep] < value;
+      else if (op === "<=") return rowData[dep] <= value;
+    } else {
+      return true;
+    }
+    return true;
+  }
 
   function changed(index, what, value) {
+    console.log("Data changed in grid");
+    console.log(what);
+    console.log(value);
     let gridKey = props.conf.key;
     if (props.type === "form") {
       // props.dataChanged(what, value);
       var gridData = props.formData[gridKey];
-      console.log(gridData);
       if (gridData == undefined || gridData.length == 0) {
         gridData = [];
       }
@@ -29,19 +57,20 @@ function CreatedGrid(props) {
       let obj = gridData[index];
       obj[what] = value;
       gridData.splice(index, 1, obj);
-      console.log(gridData);
       props.dataChanged(gridKey, gridData);
     }
+    // setUpdateCount((prev) => prev + 1);
   }
 
   function deleteRow(indx) {
-    setGridRows((prev) => {
-      return prev - 1;
-    });
+    changed(props.values.length, null, null);
   }
 
   useEffect(() => {}, []);
 
+  function addRow() {
+    changed(props.values.length, null, null);
+  }
   return (
     <div
       className={
@@ -51,61 +80,62 @@ function CreatedGrid(props) {
       }
     >
       <div className="grid-head">{props.conf.label}</div>
-      {[...Array(gridRows).keys()].map((j, inx) => {
-        return (
-          <div className="grid-controls">
-            {[...Array(parseInt(props.conf.numCols)).keys()].map((i, idx) => {
-              return (
-                <CreatedCell
-                  rowId={props.rowId}
-                  colId={idx}
-                  totalCells={props.conf.numCols}
-                  showConf={props.showConf}
-                  conf={props.conf.controls[idx]}
-                  key={"11" + props.rowId + "" + idx}
-                  clicked={false}
-                  vizChosen={props.vizChosen}
-                  gridControl={true}
-                  dataChanged={(a, b) => changed(j, a, b)}
-                  formData={props.formData}
-                  type={props.type}
-                  rowNum={j}
-                  disabled={props.disabled}
-                  value={
-                    props.values == null || props.values[inx] == null
-                      ? null
-                      : props.values[inx].data[props.conf.controls[idx].key]
-                  }
-                  values={
-                    props.values == null || props.values[inx] == null
-                      ? null
-                      : props.values[inx].data[props.conf.controls[idx].key]
-                  }
-                  sendEntry={props.sendEntry}
-                ></CreatedCell>
-              );
-            })}
-            {!props.disabled && (
-              <div className="gr-default-control">
-                {j == 0 && <div className="filler"></div>}
-                <div className="delete-gr" onClick={() => deleteRow(j)}>
-                  <i className="fa-solid fa-close"></i>
+      {props.values != undefined &&
+        [...Array(props.values.length).keys()].map((j, inx) => {
+          return (
+            <div className="grid-controls" key={inx}>
+              {[...Array(parseInt(props.conf.numCols)).keys()].map((i, idx) => {
+                return (
+                  <CreatedCell
+                    rowId={props.rowId}
+                    colId={idx}
+                    totalCells={props.conf.numCols}
+                    showConf={props.showConf}
+                    conf={
+                      checkConditionalVisibility(inx, idx)
+                        ? props.conf.controls[idx]
+                        : {}
+                    }
+                    key={"11" + props.rowId + "" + idx}
+                    clicked={false}
+                    vizChosen={props.vizChosen}
+                    gridControl={true}
+                    dataChanged={(a, b) => changed(j, a, b)}
+                    formData={props.formData}
+                    type={props.type}
+                    rowNum={j}
+                    disabled={props.disabled}
+                    values={
+                      // props.values == null || props.values[inx] == null
+                      //   ? null
+                      //   : props.values[inx].data[props.conf.controls[idx].key]
+                      props.formData == null ||
+                      props.formData[props.conf.key] == undefined
+                        ? null
+                        : props.formData[props.conf.key][inx][
+                            props.conf.controls[idx].key
+                          ]
+                    }
+                    sendEntry={props.sendEntry}
+                    gridKey={props.conf.key}
+                    dataUpdated={props.dataUpdated}
+                  ></CreatedCell>
+                );
+              })}
+              {!props.disabled && (
+                <div className="gr-default-control">
+                  {j == 0 && <div className="filler"></div>}
+                  <div className="delete-gr" onClick={() => deleteRow(j)}>
+                    <i className="fa-solid fa-close"></i>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              )}
+            </div>
+          );
+        })}
 
       {!props.disabled && (
-        <div
-          className="add-new-gr"
-          onClick={() =>
-            setGridRows((prev) => {
-              return prev + 1;
-            })
-          }
-        >
+        <div className="add-new-gr" onClick={addRow}>
           Add New
         </div>
       )}

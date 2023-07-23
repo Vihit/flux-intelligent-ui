@@ -5,12 +5,11 @@ import { config } from "./config";
 import CreatedGrid from "./CreatedGrid";
 
 function Form(props) {
-  console.log(props);
   var obj = {};
 
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
-  const layout = JSON.parse(props.form.template).layout;
+  const [layout, setLayout] = useState(JSON.parse(props.form.template).layout);
   const conf = JSON.parse(props.form.template).controls;
   const [to, setTo] = useState("");
   const currState =
@@ -27,13 +26,13 @@ function Form(props) {
         props.form.workflow.states.filter((st) => st.label === currState)[0].id
     )
     .map((t) => t.toState.label);
-
   const stateConfig = props.form.workflow.states.filter(
     (st) => st.label === currState
   )[0];
   const disabledColumns = stateConfig.disabledColumns.split(",");
   const viewableColumns = stateConfig.visibleColumns.split(",");
   const [data, setData] = useState({});
+  // const [gridObj, setGridObj] = useState();
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
@@ -43,7 +42,6 @@ function Form(props) {
       props.entry.grids.forEach((grid) => {
         obj[grid.grid] = grid.data.map((data) => data.data);
       });
-      console.log({ ...props.entry, ...obj });
       setData(props.entry.id == -1 ? {} : { ...props.entry, ...obj });
     }
   }, []);
@@ -87,14 +85,12 @@ function Form(props) {
         conf
           .flatMap((f) => f)
           .forEach((ctrl) => {
-            console.log(ctrl);
             if (
               stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
               JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
               (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
               check == false
             ) {
-              console.log(ctrl);
               props.raiseAlert("red", "Please fill up " + ctrl.label);
               check = true;
             }
@@ -126,14 +122,12 @@ function Form(props) {
     conf
       .flatMap((f) => f)
       .forEach((ctrl) => {
-        console.log(ctrl);
         if (
           stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
           JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
           (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
           check == false
         ) {
-          console.log(ctrl);
           props.raiseAlert("red", "Please fill up " + ctrl.label);
           check = true;
         }
@@ -150,7 +144,6 @@ function Form(props) {
         }
       });
     finalData = { ...finalData, ...updatedParam };
-    console.log(finalData);
     if (!check) sendEntry(finalData, currState + "-INPA");
     else console.log("Check true");
   }
@@ -181,7 +174,6 @@ function Form(props) {
       data: dataWithoutGrids,
       gridData: gridData,
     };
-    console.log(logEntry);
     fetch(config.apiUrl + "entry/" + props.form.id, {
       method: props.entry.id == -1 ? "POST" : "PUT",
       headers: {
@@ -201,9 +193,6 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
-    console.log("Data changed");
-    console.log(what);
-    console.log(value);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -289,7 +278,10 @@ function Form(props) {
                     colId={inx}
                     totalCells={rows.length}
                     values={
-                      props.entry.id == -1 ? null : data[conf[idx][inx]]
+                      props.entry.id == -1 &&
+                      data[conf[idx][inx].key] == undefined
+                        ? [{}]
+                        : data[conf[idx][inx].key]
                       // props.entry.grids.filter(
                       //     (g) => g.grid === conf[idx][inx].key
                       //   )[0].data
@@ -304,6 +296,7 @@ function Form(props) {
                     key={"1" + idx + "" + inx}
                     type="form"
                     formData={data}
+                    dataUpdated={updateCount}
                     sendEntry={prepareFinalDataAndSendEntry}
                   ></CreatedGrid>
                 );

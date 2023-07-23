@@ -4,12 +4,18 @@ import { config } from "./config";
 import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 
 function CreatedCell(props) {
-  console.log(props);
+  // console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
   const [externalInputActivated, setExternalInputActivated] = useState(false);
-
+  const [accessibleData, setAccessibleData] = useState(
+    props.gridControl
+      ? props.formData[props.gridKey] != undefined
+        ? props.formData[props.gridKey][props.rowNum]
+        : {}
+      : props.formData
+  );
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
@@ -37,13 +43,12 @@ function CreatedCell(props) {
     obj[what] = updatedValue;
     if (props.conf.apiCall) {
       let url = props.conf.apiUrl;
-      console.log(url);
       var reg = /\${(\w+)}/g;
       var matches = url.match(reg);
-      console.log(matches);
-      matches.forEach((variable) => {
-        url = url.replace(variable, props.formData[variable.split(/{|}/)[1]]);
-      });
+      if (matches != null)
+        matches.forEach((variable) => {
+          url = url.replace(variable, accessibleData[variable.split(/{|}/)[1]]);
+        });
       fetch(config.apiUrl + url, {
         method: props.conf.apiMethod,
         headers: {
@@ -70,25 +75,45 @@ function CreatedCell(props) {
   }
 
   useEffect(() => {
+    let aData = props.gridControl
+      ? props.formData[props.gridKey] != undefined
+        ? props.formData[props.gridKey][props.rowNum]
+        : {}
+      : props.formData;
+    // console.log(aData);
+    setAccessibleData(
+      props.gridControl
+        ? props.formData[props.gridKey] != undefined
+          ? props.formData[props.gridKey][props.rowNum]
+          : {}
+        : props.formData
+    );
     if (props.conf.referData) {
+      var check = false;
+      // console.log(props.values);
       let conds = props.conf.referenceFilterQuery;
       if (props.conf.referenceFilterQuery.length > 0) {
-        console.log(props.conf.referenceFilterQuery);
         var regex = /\${(\w+)}/g;
         var matches = props.conf.referenceFilterQuery.match(regex);
-
-        matches.forEach((variable) => {
-          conds = conds.replace(
-            variable,
-            props.formData[variable.split(/{|}/)[1]]
-          );
-        });
+        if (matches != null) {
+          matches.forEach((variable) => {
+            // console.log(aData);
+            if (
+              aData[variable.split(/{|}/)[1]] == undefined ||
+              aData[variable.split(/{|}/)[1]] === ""
+            ) {
+              check = true;
+            }
+            conds = conds.replace(variable, aData[variable.split(/{|}/)[1]]);
+          });
+        }
       }
-      fetchReferenceData(
-        props.conf.referenceMaster,
-        props.conf.referenceColumn,
-        conds
-      );
+      if (!check)
+        fetchReferenceData(
+          props.conf.referenceMaster,
+          props.conf.referenceColumn,
+          conds
+        );
     }
   }, [props.dataUpdated]);
 
@@ -136,12 +161,10 @@ function CreatedCell(props) {
   }
 
   function activateBarcode(e) {
-    console.log(e);
     setExternalInputActivated(true);
   }
 
   function onNewScanResult(decodedText, decodedResult) {
-    console.log(decodedText + "-" + decodedResult);
     changed(props.conf.key, decodedText);
   }
 
@@ -159,7 +182,7 @@ function CreatedCell(props) {
     >
       <div
         className={
-          "cell-name " +
+          (props.gridControl ? "cell-name-grid " : "cell-name ") +
           (props.rowNum > 0 || props.conf.type === "button" ? "close-flex" : "")
         }
       >

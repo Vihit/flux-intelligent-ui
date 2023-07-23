@@ -54,6 +54,15 @@
   height: 50%;
 }
 
+.cell-name-grid {
+  font-size: 16px;
+  /* width: 30%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+}
+
 .clicked-cell {
   background-color: rgba(255, 149, 111, 0.439);
 }
