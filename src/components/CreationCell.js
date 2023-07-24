@@ -23,7 +23,6 @@ function CreationCell(props) {
   }
 
   function cellClicked(e) {
-    console.log("cell clicked");
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
     if (viz !== "") {
@@ -146,6 +145,14 @@ function CreationCell(props) {
           >
             {props.conf.label}
           </button>
+        )}
+        {props.conf.type === "user" && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={null}
+            disabled
+          ></input>
         )}
       </div>
     </div>

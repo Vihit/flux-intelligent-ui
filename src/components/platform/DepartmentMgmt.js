@@ -106,7 +106,7 @@ function DepartmentMgmt(props) {
           Add
         </div>
       </div>
-      <div className="f-table">
+      <div className="f-dept-table">
         {graphReady && (
           <DagreGraph
             nodes={deptNodes}

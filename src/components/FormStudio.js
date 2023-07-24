@@ -78,8 +78,6 @@ function FormStudio(props) {
   const [states, setStates] = useState([]);
   const [transitions, setTransitions] = useState([]);
 
-  console.log(currCell);
-  console.log(conf);
   useEffect(() => {
     if (location.state != null) {
       console.log(location.state);
@@ -656,6 +654,7 @@ function FormStudio(props) {
                   <ControlOption type="barcode"></ControlOption>
                   <ControlOption type="datetime"></ControlOption>
                   <ControlOption type="button"></ControlOption>
+                  <ControlOption type="user"></ControlOption>
                 </div>
               </div>
             )}

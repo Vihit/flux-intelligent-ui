@@ -89,7 +89,7 @@ function LogAudit(props) {
           let td = [];
           for (let i = 0; i < props.entries.length; i++) {
             td.push(
-              <div className="a-row-head">
+              <div className="a-row-head" key={i}>
                 Sent to
                 <div className="a-row-head-state">
                   {sortedEntries[i].data.state}

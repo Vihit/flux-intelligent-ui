@@ -36,7 +36,7 @@
   font-size: 100px;
   cursor: pointer;
   position: relative;
-  height: 50px;
+  /* height: 50px; */
   flex-grow: 1;
   padding: 5px 0px;
 }
@@ -149,4 +149,9 @@
 
 .transparent-btn {
   pointer-events: none;
+}
+
+.hidden-header {
+  color: #ffffff00;
+  height: 0px;
 }

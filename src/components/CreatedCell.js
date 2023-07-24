@@ -38,7 +38,10 @@ function CreatedCell(props) {
   }
 
   function handleButtonClick(what) {
-    let updatedValue = props.values == undefined ? "1" : props.values + "1";
+    let updatedValue =
+      props.values == undefined || props.values == null
+        ? "1"
+        : props.values + "1";
     var obj = {};
     obj[what] = updatedValue;
     if (props.conf.apiCall) {
@@ -88,7 +91,7 @@ function CreatedCell(props) {
           : {}
         : props.formData
     );
-    if (props.conf.referData) {
+    if (props.conf.referData && !props.disabled) {
       var check = false;
       // console.log(props.values);
       let conds = props.conf.referenceFilterQuery;
@@ -114,6 +117,14 @@ function CreatedCell(props) {
           props.conf.referenceColumn,
           conds
         );
+    }
+    if (props.conf.type === "user" && !props.disabled) {
+      changed(
+        props.conf.key,
+        JSON.parse(localStorage.getItem("user"))[
+          props.conf.userDetail === "username" ? "sub" : props.conf.userDetail
+        ]
+      );
     }
   }, [props.dataUpdated]);
 
@@ -182,14 +193,19 @@ function CreatedCell(props) {
     >
       <div
         className={
-          (props.gridControl ? "cell-name-grid " : "cell-name ") +
-          (props.rowNum > 0 || props.conf.type === "button" ? "close-flex" : "")
+          (props.gridControl
+            ? props.conf.type === "button" && props.rowNum > 0
+              ? "close-flex "
+              : "cell-name-grid "
+            : "cell-name ") + (props.rowNum > 0 ? "" : "")
         }
       >
-        <div>
-          {props.conf.label}
-          {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
-        </div>
+        {props.conf.type !== "button" && (
+          <div className={props.rowNum > 0 ? "hidden-header" : ""}>
+            {props.conf.label}
+            {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
+          </div>
+        )}
       </div>
       <div className="cell-control">
         {props.conf.type === "text" && (
@@ -201,7 +217,7 @@ function CreatedCell(props) {
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
         )}
-        {props.conf.type === "select" && (
+        {props.conf.type === "select" && !props.disabled && (
           <select
             placeholder={props.conf.placeholder}
             value={props.values}
@@ -225,6 +241,15 @@ function CreatedCell(props) {
                   );
                 })}
           </select>
+        )}
+        {props.conf.type === "select" && props.disabled && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled={props.disabled}
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
         )}
         {props.conf.type === "textarea" && (
           <textarea
@@ -322,9 +347,19 @@ function CreatedCell(props) {
               background: props.conf.color,
             }}
             onClick={(e) => handleButtonClick(props.conf.key)}
+            disabled={props.disabled}
           >
             {props.conf.label}
           </button>
+        )}
+        {props.conf.type === "user" && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
         )}
       </div>
     </div>

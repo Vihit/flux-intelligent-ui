@@ -6,7 +6,7 @@ import CreatedGrid from "./CreatedGrid";
 
 function Form(props) {
   var obj = {};
-
+  console.log(props);
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
   const [layout, setLayout] = useState(JSON.parse(props.form.template).layout);
@@ -36,14 +36,14 @@ function Form(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
-
+  console.log(disabledColumns);
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
         obj[grid.grid] = grid.data.map((data) => data.data);
       });
-      setData(props.entry.id == -1 ? {} : { ...props.entry, ...obj });
     }
+    setData(props.entry.id == -1 ? { id: -1 } : { ...props.entry, ...obj });
   }, []);
 
   function cancelESign() {
@@ -173,6 +173,7 @@ function Form(props) {
             .endState,
       data: dataWithoutGrids,
       gridData: gridData,
+      initiator: props.entry.id == -1 ? null : props.entry.created_by,
     };
     fetch(config.apiUrl + "entry/" + props.form.id, {
       method: props.entry.id == -1 ? "POST" : "PUT",
@@ -193,6 +194,7 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
+    console.log("Data changed for " + what);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -239,71 +241,72 @@ function Form(props) {
         </div>
       </div>
       <div className="created-container">
-        {layout.map((rows, idx) => {
-          return (
-            <div
-              className="created-row"
-              // style={{ height: "calc(100%/" + layout.length + ")" }}
-            >
-              {rows.map((row, inx) => {
-                return row == 0 ? (
-                  <CreatedCell
-                    rowId={idx}
-                    colId={inx}
-                    totalCells={rows.length}
-                    conf={
-                      viewableColumns.includes(conf[idx][inx].key) &&
-                      checkConditionalVisibility(conf[idx][inx])
-                        ? conf[idx][inx]
-                        : {}
-                    }
-                    key={"1" + idx + "" + inx}
-                    disabled={disabledColumns.includes(conf[idx][inx].key)}
-                    dataChanged={dataChanged}
-                    type={"form"}
-                    values={data[conf[idx][inx].key]}
-                    value={
-                      props.entry.id == -1
-                        ? null
-                        : props.entry[conf[idx][inx].key]
-                    }
-                    formData={data}
-                    dataUpdated={updateCount}
-                    sendEntry={prepareFinalDataAndSendEntry}
-                  ></CreatedCell>
-                ) : (
-                  <CreatedGrid
-                    dataChanged={dataChanged}
-                    rowId={idx}
-                    colId={inx}
-                    totalCells={rows.length}
-                    values={
-                      props.entry.id == -1 &&
-                      data[conf[idx][inx].key] == undefined
-                        ? [{}]
-                        : data[conf[idx][inx].key]
-                      // props.entry.grids.filter(
-                      //     (g) => g.grid === conf[idx][inx].key
-                      //   )[0].data
-                    }
-                    disabled={disabledColumns.includes(conf[idx][inx].key)}
-                    conf={
-                      viewableColumns.includes(conf[idx][inx].key) &&
-                      checkConditionalVisibility(conf[idx][inx])
-                        ? conf[idx][inx]
-                        : {}
-                    }
-                    key={"1" + idx + "" + inx}
-                    type="form"
-                    formData={data}
-                    dataUpdated={updateCount}
-                    sendEntry={prepareFinalDataAndSendEntry}
-                  ></CreatedGrid>
-                );
-              })}
-            </div>
-          );
-        })}
+        {Object.keys(data).length > 0 &&
+          layout.map((rows, idx) => {
+            return (
+              <div
+                className="created-row"
+                // style={{ height: "calc(100%/" + layout.length + ")" }}
+              >
+                {rows.map((row, inx) => {
+                  return row == 0 ? (
+                    <CreatedCell
+                      rowId={idx}
+                      colId={inx}
+                      totalCells={rows.length}
+                      conf={
+                        viewableColumns.includes(conf[idx][inx].key) &&
+                        checkConditionalVisibility(conf[idx][inx])
+                          ? conf[idx][inx]
+                          : {}
+                      }
+                      key={"1" + idx + "" + inx}
+                      disabled={disabledColumns.includes(conf[idx][inx].key)}
+                      dataChanged={dataChanged}
+                      type={"form"}
+                      values={data[conf[idx][inx].key]}
+                      value={
+                        props.entry.id == -1
+                          ? null
+                          : props.entry[conf[idx][inx].key]
+                      }
+                      formData={data}
+                      dataUpdated={updateCount}
+                      sendEntry={prepareFinalDataAndSendEntry}
+                    ></CreatedCell>
+                  ) : (
+                    <CreatedGrid
+                      dataChanged={dataChanged}
+                      rowId={idx}
+                      colId={inx}
+                      totalCells={rows.length}
+                      values={
+                        props.entry.id == -1 &&
+                        data[conf[idx][inx].key] == undefined
+                          ? [{}]
+                          : data[conf[idx][inx].key]
+                        // props.entry.grids.filter(
+                        //     (g) => g.grid === conf[idx][inx].key
+                        //   )[0].data
+                      }
+                      disabled={disabledColumns.includes(conf[idx][inx].key)}
+                      conf={
+                        viewableColumns.includes(conf[idx][inx].key) &&
+                        checkConditionalVisibility(conf[idx][inx])
+                          ? conf[idx][inx]
+                          : {}
+                      }
+                      key={"1" + idx + "" + inx}
+                      type="form"
+                      formData={data}
+                      dataUpdated={updateCount}
+                      sendEntry={prepareFinalDataAndSendEntry}
+                    ></CreatedGrid>
+                  );
+                })}
+              </div>
+            );
+          })}
         <div className="btn-controls">
           {props.type !== "view" &&
             toStates.map((ts, ind) => (

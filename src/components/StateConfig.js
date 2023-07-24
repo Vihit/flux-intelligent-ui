@@ -114,26 +114,20 @@ function StateConfig(props) {
     });
   }
 
-  function updateViewableColumns(index, value) {
+  function updateViewableColumns(column, value) {
     setViewableColumns((prev) => {
       let toBeUpdated = [...prev];
-      if (value)
-        toBeUpdated.push(
-          props.formColumns[index].toLowerCase().replaceAll(" ", "_")
-        );
-      else toBeUpdated.splice(index, 1);
+      if (value) toBeUpdated.push(column);
+      else toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
       return toBeUpdated;
     });
   }
 
-  function updateWritableColumns(index, value) {
+  function updateWritableColumns(column, value) {
     setWritableColumns((prev) => {
       let toBeUpdated = [...prev];
-      if (!value)
-        toBeUpdated.push(
-          props.formColumns[index].toLowerCase().replaceAll(" ", "_")
-        );
-      else toBeUpdated.splice(index, 1);
+      if (!value) toBeUpdated.push(column);
+      else toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
       return toBeUpdated;
     });
   }
@@ -432,7 +426,10 @@ function StateConfig(props) {
                           )
                         }
                         onChange={(e) =>
-                          updateWritableColumns(ind, e.target.checked)
+                          updateWritableColumns(
+                            col.toLowerCase().replaceAll(" ", "_"),
+                            e.target.checked
+                          )
                         }
                       ></input>
                     </div>
@@ -443,7 +440,10 @@ function StateConfig(props) {
                           col.toLowerCase().replaceAll(" ", "_")
                         )}
                         onChange={(e) =>
-                          updateViewableColumns(ind, e.target.checked)
+                          updateViewableColumns(
+                            col.toLowerCase().replaceAll(" ", "_"),
+                            e.target.checked
+                          )
                         }
                       ></input>
                     </div>

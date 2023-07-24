@@ -3,9 +3,10 @@ import Form from "./Form";
 import "./UserFormDetail.css";
 import { config } from "./config";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Button } from "@mui/material";
 import { AccessTime, Fullscreen } from "@mui/icons-material";
 import LogAudit from "./LogAudit";
+import { Typography } from "@mui/material/";
 
 function UserFormDetail(props) {
   const [initiated, setInitiated] = useState(false);
@@ -230,13 +231,47 @@ function UserFormDetail(props) {
 
           return (
             <div className="f-table" key={indx}>
-              <div className="f-sub-dtl-head">{data.grid.toUpperCase()}</div>
               <div className="f-table">
                 <MaterialReactTable
+                  title={<p>"Vihit"</p>}
                   columns={matCols}
                   data={rows}
                   enableStickyHeader
                   enableStickyFooter
+                  enableTopToolbar={true}
+                  renderTopToolbarCustomActions={({ table }) => (
+                    <Typography
+                      variant="h10"
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {data.grid.toUpperCase()}
+                    </Typography>
+                    // <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+                    //   <Button
+                    //     color="secondary"
+                    //     onClick={() => {
+                    //       alert("Create New Account");
+                    //     }}
+                    //     variant="contained"
+                    //   >
+                    //     Create Account
+                    //   </Button>
+                    //   <Button
+                    //     color="error"
+                    //     disabled={!table.getIsSomeRowsSelected()}
+                    //     onClick={() => {
+                    //       alert("Delete Selected Accounts");
+                    //     }}
+                    //     variant="contained"
+                    //   >
+                    //     Delete Selected Accounts
+                    //   </Button>
+                    // </Box>
+                  )}
                   muiTableBodyProps={{
                     sx: {
                       margin: "20px",

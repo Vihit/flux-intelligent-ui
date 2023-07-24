@@ -223,6 +223,7 @@ function UserDashboard(props) {
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => ctrl.type !== "grid")
           .map((c) => c.label)
           .concat([
             "ID",
@@ -237,6 +238,11 @@ function UserDashboard(props) {
         var rows = [];
         fCols
           .split(",")
+          .filter((col) =>
+            fLabels
+              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
+              .includes(col)
+          )
           .map((c) => {
             return fLabels.filter(
               (l) => l.toLowerCase().replaceAll(" ", "_") === c

@@ -33,6 +33,7 @@ function ControlConfig(props) {
     sendToDraftState: true,
     nextState: "",
     buttonClickPattern: "once",
+    userDetail: "",
   };
 
   useEffect(() => {
@@ -251,6 +252,27 @@ function ControlConfig(props) {
                           confChanged("fontColor", e.target.value)
                         }
                       ></input>
+                    </div>
+                  </div>
+                )}
+                {props.conf.type === "user" && (
+                  <div className="label-n-text">
+                    <div className="label">Detail</div>
+                    <div className="text">
+                      <select
+                        value={conf.userDetail}
+                        onChange={(e) =>
+                          confChanged("userDetail", e.target.value)
+                        }
+                      >
+                        <option value={""}>Select</option>
+                        <option value={"username"}>Username</option>
+                        <option value={"department"}>Department</option>
+                        <option value={"lastName"}>Site</option>
+                        <option value={"role"}>Role</option>
+                        <option value={"firstName"}>First Name</option>
+                        <option value={"lastName"}>Last Name</option>
+                      </select>
                     </div>
                   </div>
                 )}

@@ -63,7 +63,11 @@ function CreatedGrid(props) {
   }
 
   function deleteRow(indx) {
-    changed(props.values.length, null, null);
+    var gridData = props.formData[props.conf.key];
+    if (indx >= 0) {
+      gridData.splice(indx, 1);
+      props.dataChanged(props.conf.key, gridData);
+    }
   }
 
   useEffect(() => {}, []);
@@ -79,8 +83,11 @@ function CreatedGrid(props) {
           : "empty-created-cell"
       }
     >
-      <div className="grid-head">{props.conf.label}</div>
-      {props.values != undefined &&
+      {Object.keys(props.conf).length > 0 && (
+        <div className="grid-head">{props.conf.label}</div>
+      )}
+      {Object.keys(props.conf).length > 0 &&
+        props.values != undefined &&
         [...Array(props.values.length).keys()].map((j, inx) => {
           return (
             <div className="grid-controls" key={inx}>
@@ -133,7 +140,6 @@ function CreatedGrid(props) {
             </div>
           );
         })}
-
       {!props.disabled && (
         <div className="add-new-gr" onClick={addRow}>
           Add New

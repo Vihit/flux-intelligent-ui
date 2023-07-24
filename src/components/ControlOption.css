@@ -55,6 +55,11 @@
 .button-png {
   background-image: url("../../public/button.png");
 }
+
+.user-png {
+  background-image: url("../../public/user.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;
