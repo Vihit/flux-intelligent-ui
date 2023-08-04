@@ -41,9 +41,6 @@ function CreatedGrid(props) {
   }
 
   function changed(index, what, value) {
-    console.log("Data changed in grid");
-    console.log(what);
-    console.log(value);
     let gridKey = props.conf.key;
     if (props.type === "form") {
       // props.dataChanged(what, value);

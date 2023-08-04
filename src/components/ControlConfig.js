@@ -34,6 +34,8 @@ function ControlConfig(props) {
     nextState: "",
     buttonClickPattern: "once",
     userDetail: "",
+    customAuditLog: false,
+    customAuditCode: "",
   };
 
   useEffect(() => {
@@ -183,6 +185,41 @@ function ControlConfig(props) {
                   </div>
                 </div>
               )}
+              {props.conf.type === "grid" && (
+                <div className="label-n-text">
+                  <div className="label">Custom Audit Log</div>
+                  <div className="text">
+                    <select
+                      value={conf.customAuditLog}
+                      onChange={(e) =>
+                        confChanged(
+                          "customAuditLog",
+                          JSON.parse(e.target.value)
+                        )
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+              {props.conf.type === "grid" && conf.customAuditLog && (
+                <div className="label-n-text">
+                  <div className="label">Custom Code</div>
+                  <div className="text">
+                    <textarea
+                      className="normal-height"
+                      type="text"
+                      rows="1"
+                      value={conf.customAuditCode}
+                      onChange={(e) =>
+                        confChanged("customAuditCode", e.target.value)
+                      }
+                    ></textarea>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -268,7 +305,7 @@ function ControlConfig(props) {
                         <option value={""}>Select</option>
                         <option value={"username"}>Username</option>
                         <option value={"department"}>Department</option>
-                        <option value={"lastName"}>Site</option>
+                        <option value={"site"}>Site</option>
                         <option value={"role"}>Role</option>
                         <option value={"firstName"}>First Name</option>
                         <option value={"lastName"}>Last Name</option>

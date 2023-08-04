@@ -41,6 +41,21 @@
   cursor: pointer;
 }
 
+.f-i-btn {
+  display: flex;
+  align-items: center;
+  background-color: var(--green);
+  padding: 5px 20px;
+  color: var(--white);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.466);
+  font-size: 16px;
+  font-family: "Poppins";
+  cursor: pointer;
+  border-radius: 0px;
+  text-transform: "none" !important;
+  border: none;
+}
+
 .f-dtl {
   display: flex;
   width: 95%;

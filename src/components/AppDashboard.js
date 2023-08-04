@@ -66,12 +66,14 @@ function AppDashboard(props) {
                 <div className="f-a-icon">
                   <i className={"fa-solid " + form.app.icon}></i>
                 </div>
-                <div className="viz-n">{form.name}</div>
-                <div className="viz-i" onClick={() => showFormPreview(form)}>
-                  <i className="fa-solid fa-eye"></i>
-                </div>
-                <div className="viz-i" onClick={() => goToEdit(form)}>
-                  <i className="fa-solid fa-edit"></i>
+                <div className="viz-o-dtls">
+                  <div className="viz-n">{form.name}</div>
+                  <div className="viz-i" onClick={() => showFormPreview(form)}>
+                    <i className="fa-solid fa-eye"></i>
+                  </div>
+                  <div className="viz-i" onClick={() => goToEdit(form)}>
+                    <i className="fa-solid fa-edit"></i>
+                  </div>
                 </div>
               </div>
             );

@@ -126,3 +126,73 @@
 .close-icon {
   margin-right: 10px;
 }
+
+.g-row {
+  display: flex;
+  width: 90%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 0px auto;
+  font-size: 14px;
+  flex-direction: row;
+}
+
+.g-row-head {
+  width: 33%;
+  text-align: center;
+}
+
+.g-data-container {
+  flex-grow: 1;
+  margin-bottom: 20px;
+  background-color: var(--grey);
+}
+
+.g-data {
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 15%; */
+  width: 100%;
+}
+
+.g-data-head {
+  background-color: var(--dark);
+  color: white;
+  text-align: center;
+
+  /* width: 100%; */
+}
+
+.g-data-log {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  font-style: italic;
+  font-size: 14px;
+}
+
+.n-g-a-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.n-g-a-head {
+  display: flex;
+  width: 100%;
+  background-color: var(--dark);
+  color: white;
+}
+.n-g-a-log {
+  display: flex;
+  width: 100%;
+}
+.n-g-a-cell {
+  display: flex;
+  /* flex-grow: 1; */
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+}

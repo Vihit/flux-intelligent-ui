@@ -45,7 +45,6 @@ function Login(props) {
   }
 
   function pressedKey(e) {
-    console.log("key down");
     if (e.key === "Enter") {
       loginHandler();
     }

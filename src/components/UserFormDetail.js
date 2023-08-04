@@ -105,7 +105,7 @@ function UserFormDetail(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
+      {/* <div className="f-dtl-head">
         <div className="f-dtl-name">{props.form.name}</div>
         {props.type === "initiate" && (
           <div className="i-btn" onClick={() => setInitiated(true)}>
@@ -139,18 +139,68 @@ function UserFormDetail(props) {
               </div>
             </div>
           )}
-      </div>
+      </div> */}
       <div className="f-dtl"></div>
       <div className="f-table">
         <MaterialReactTable
           columns={props.tableData.header}
           data={props.tableData.rows}
           enableStickyHeader
-          enableStickyFooter
+          enableStickyFooterenableTopToolbar={true}
+          renderTopToolbarCustomActions={({ table }) => (
+            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontFamily: "Poppins",
+                }}
+              >
+                {props.form.name}
+              </Typography>
+              {props.type === "initiate" && (
+                <div className="i-btn" onClick={() => setInitiated(true)}>
+                  {
+                    props.form.workflow.states.filter((st) => st.firstState)[0]
+                      .label
+                  }
+                </div>
+              )}
+              {props.type === "view" &&
+                props.form.app.name === "Master Data Management" && (
+                  <div className="btns">
+                    <div className="i-btn">
+                      <a
+                        href={
+                          config.apiUrl +
+                          "master/entry/bulk/template/" +
+                          props.form.id
+                        }
+                        target="_blank"
+                        download
+                      >
+                        Download Bulk Upload Template
+                      </a>
+                    </div>
+                    <div className="i-btn" onClick={handleClick}>
+                      Bulk Upload
+                      <input
+                        type="file"
+                        ref={hiddenFileInput}
+                        onChange={handleFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  </div>
+                )}
+            </Box>
+          )}
           enableRowActions={type === "pending" || type === "view"}
           renderRowActions={({ row }) => (
             <Box className="c-actions">
-              {type === "pending" ? (
+              {type === "pendings" ? (
                 <IconButton onClick={() => openFormView(row)}>
                   <Fullscreen />
                 </IconButton>
@@ -233,7 +283,6 @@ function UserFormDetail(props) {
             <div className="f-table" key={indx}>
               <div className="f-table">
                 <MaterialReactTable
-                  title={<p>"Vihit"</p>}
                   columns={matCols}
                   data={rows}
                   enableStickyHeader
@@ -250,27 +299,6 @@ function UserFormDetail(props) {
                     >
                       {data.grid.toUpperCase()}
                     </Typography>
-                    // <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
-                    //   <Button
-                    //     color="secondary"
-                    //     onClick={() => {
-                    //       alert("Create New Account");
-                    //     }}
-                    //     variant="contained"
-                    //   >
-                    //     Create Account
-                    //   </Button>
-                    //   <Button
-                    //     color="error"
-                    //     disabled={!table.getIsSomeRowsSelected()}
-                    //     onClick={() => {
-                    //       alert("Delete Selected Accounts");
-                    //     }}
-                    //     variant="contained"
-                    //   >
-                    //     Delete Selected Accounts
-                    //   </Button>
-                    // </Box>
                   )}
                   muiTableBodyProps={{
                     sx: {
@@ -322,7 +350,7 @@ function UserFormDetail(props) {
           type={props.type}
         ></Form>
       )}
-      {initiatedAudit && (
+      {initiatedAudit && allEntries.length > 0 && (
         <LogAudit
           form={props.form}
           entries={allEntries.sort((a, b) => {

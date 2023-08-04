@@ -36,7 +36,7 @@ function Form(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
-  console.log(disabledColumns);
+  // console.log(disabledColumns);
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
@@ -186,15 +186,12 @@ function Form(props) {
       body: JSON.stringify(logEntry),
     }).then((response) => {
       if (response.ok) {
-        console.log("Response ok");
-
         props.closeInit(props.form);
         props.raiseAlert("green", "Entry submitted!");
       }
     });
   }
   function dataChanged(what, value) {
-    console.log("Data changed for " + what);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -205,7 +202,6 @@ function Form(props) {
       }
       let finalProp = splitWhat[i];
       obj[finalProp] = value;
-      console.log(currData);
       return currData;
     });
     setUpdateCount((prev) => prev + 1);

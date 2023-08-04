@@ -4,7 +4,6 @@ import { config } from "./config";
 import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 
 function CreatedCell(props) {
-  // console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -38,10 +37,14 @@ function CreatedCell(props) {
   }
 
   function handleButtonClick(what) {
+    console.log(props.values);
     let updatedValue =
-      props.values == undefined || props.values == null
+      props.values == undefined ||
+      props.values == null ||
+      props.values === "null"
         ? "1"
         : props.values + "1";
+    console.log("Updated value " + updatedValue);
     var obj = {};
     obj[what] = updatedValue;
     if (props.conf.apiCall) {
@@ -65,7 +68,10 @@ function CreatedCell(props) {
         if (response.ok) {
           props.dataChanged(what, updatedValue);
           if (props.conf.sendToDraftState) {
-            props.sendEntry(obj);
+            const timer = setTimeout(() => {
+              props.sendEntry(obj);
+            }, 1000);
+            // clearTimeout(timer);
           }
         }
       });
@@ -119,6 +125,7 @@ function CreatedCell(props) {
         );
     }
     if (props.conf.type === "user" && !props.disabled) {
+      // console.log(props);
       changed(
         props.conf.key,
         JSON.parse(localStorage.getItem("user"))[

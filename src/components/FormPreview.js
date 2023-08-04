@@ -11,7 +11,6 @@ function FormPreview(props) {
   useEffect(() => {}, []);
 
   function dataChanged(what, value) {
-    console.log("data changed");
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -39,7 +38,6 @@ function FormPreview(props) {
         .replaceAll(" ", "_");
       let op = controlConf.conditionalCondition;
       let value = controlConf.conditionalValue;
-      console.log(dep + " -- " + op + " -- " + value);
       if (op === "==") return data[dep] === value;
       else if (op === "!=") return data[dep] !== value;
       else if (op === ">") return data[dep] > value;

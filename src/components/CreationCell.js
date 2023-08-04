@@ -5,7 +5,7 @@ import "./CreationCell.css";
 function CreationCell(props) {
   const [isGrid, setIsGrid] = useState(props.gridControl);
   const [viz, setViz] = useState(props.conf.type);
-  console.log(props);
+  // console.log(props);
   const [{ isOver }, drop] = useDrop({
     accept: "control-option",
     drop: (item, monitor) => {
