@@ -154,6 +154,13 @@ function CreationCell(props) {
             disabled
           ></input>
         )}
+        {props.conf.type === "all-users" && (
+          <select placeholder={props.conf.placeholder} value={null} disabled>
+            {props.conf.selectValues.split(",").map((value, indx) => {
+              return <option value={value}>{value}</option>;
+            })}
+          </select>
+        )}
       </div>
     </div>
   );

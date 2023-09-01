@@ -8,6 +8,7 @@ function ControlConfig(props) {
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleReferenceDataDetails, setToggleReferenceDataDetails] =
     useState(false);
+  const [toggleApiCallDetails, setToggleApiCallDetails] = useState(false);
   const [toggleClickDetails, setToggleClickDetails] = useState(false);
   const [conf, setConf] = useState(props.conf);
   const [form, setForm] = useState();
@@ -36,6 +37,7 @@ function ControlConfig(props) {
     userDetail: "",
     customAuditLog: false,
     customAuditCode: "",
+    referApi: false,
   };
 
   useEffect(() => {
@@ -49,6 +51,8 @@ function ControlConfig(props) {
       setToggleReferenceDataDetails(!toggleReferenceDataDetails);
     else if (what === "on-click-details")
       setToggleClickDetails(!toggleClickDetails);
+    else if (what === "api-details")
+      setToggleApiCallDetails(!toggleApiCallDetails);
   }
 
   function confChanged(what, value) {
@@ -395,90 +399,168 @@ function ControlConfig(props) {
             )}
           </div>
         )}
-        {conf.type !== "grid" && conf.type !== "button" && (
-          <div className="dtl">
-            <div
-              className="dtl-head"
-              onClick={() => toggle("reference-data-details")}
-            >
-              <div>Reference Data Details</div>
-              {toggleReferenceDataDetails && (
-                <div>
-                  <i className="fa-solid fa-minus"></i>
-                </div>
-              )}
-              {!toggleReferenceDataDetails && (
-                <div>
-                  <i className="fa-solid fa-plus"></i>
-                </div>
-              )}
-            </div>
-            {toggleReferenceDataDetails && (
-              <div className="dtls">
-                <div className="label-n-text">
-                  <div className="label">Reference Data</div>
-                  <div className="text">
-                    <select
-                      value={conf.referData}
-                      onChange={(e) =>
-                        confChanged("referData", JSON.parse(e.target.value))
-                      }
-                    >
-                      <option value={false}>No</option>
-                      <option value={true}>Yes</option>
-                    </select>
+        {conf.type !== "grid" &&
+          conf.type !== "button" &&
+          conf.type !== "all-users" && (
+            <div className="dtl">
+              <div
+                className="dtl-head"
+                onClick={() => toggle("reference-data-details")}
+              >
+                <div>Reference Data Details</div>
+                {toggleReferenceDataDetails && (
+                  <div>
+                    <i className="fa-solid fa-minus"></i>
                   </div>
-                </div>
-                {conf.referData && (
-                  <div className="label-n-text">
-                    <div className="label">Master</div>
-                    <div className="text">
-                      <select
-                        value={conf.referenceMaster}
-                        onChange={(e) =>
-                          confChanged("referenceMaster", e.target.value)
-                        }
-                      >
-                        <option value="">Select Master</option>
-                        {props.masters.map((mstr, inx) => {
-                          return (
-                            <option key={inx} value={mstr.name}>
-                              {mstr.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <select
-                        value={conf.referenceColumn}
-                        onChange={(e) =>
-                          confChanged("referenceColumn", e.target.value)
-                        }
-                      >
-                        <option value="">Select Master Column</option>
-                        {conf.referenceMaster !== "" &&
-                          props.masters
-                            .filter((f) => f.name === conf.referenceMaster)[0]
-                            .columns.split(",")
-                            .concat("id")
-                            .map((col, inx) => {
-                              return <option value={col}>{col}</option>;
-                            })}
-                      </select>
-                      <input
-                        type="text"
-                        value={conf.referenceFilterQuery}
-                        placeholder="API Filter Query"
-                        onChange={(e) =>
-                          confChanged("referenceFilterQuery", e.target.value)
-                        }
-                      ></input>
-                    </div>
+                )}
+                {!toggleReferenceDataDetails && (
+                  <div>
+                    <i className="fa-solid fa-plus"></i>
                   </div>
                 )}
               </div>
-            )}
-          </div>
-        )}
+              {toggleReferenceDataDetails && (
+                <div className="dtls">
+                  <div className="label-n-text">
+                    <div className="label">Reference Data</div>
+                    <div className="text">
+                      <select
+                        value={conf.referData}
+                        onChange={(e) =>
+                          confChanged("referData", JSON.parse(e.target.value))
+                        }
+                      >
+                        <option value={false}>No</option>
+                        <option value={true}>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                  {conf.referData && (
+                    <div className="label-n-text">
+                      <div className="label">Master</div>
+                      <div className="text">
+                        <select
+                          value={conf.referenceMaster}
+                          onChange={(e) =>
+                            confChanged("referenceMaster", e.target.value)
+                          }
+                        >
+                          <option value="">Select Master</option>
+                          {props.masters.map((mstr, inx) => {
+                            return (
+                              <option key={inx} value={mstr.name}>
+                                {mstr.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          value={conf.referenceColumn}
+                          onChange={(e) =>
+                            confChanged("referenceColumn", e.target.value)
+                          }
+                        >
+                          <option value="">Select Master Column</option>
+                          {conf.referenceMaster !== "" &&
+                            props.masters
+                              .filter((f) => f.name === conf.referenceMaster)[0]
+                              .columns.split(",")
+                              .concat("id")
+                              .map((col, inx) => {
+                                return <option value={col}>{col}</option>;
+                              })}
+                        </select>
+                        <input
+                          type="text"
+                          value={conf.referenceFilterQuery}
+                          placeholder="API Filter Query"
+                          onChange={(e) =>
+                            confChanged("referenceFilterQuery", e.target.value)
+                          }
+                        ></input>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        {conf.type !== "grid" &&
+          conf.type !== "button" &&
+          conf.type !== "all-users" && (
+            <div className="dtl">
+              <div className="dtl-head" onClick={() => toggle("api-details")}>
+                <div>API Call Details</div>
+                {toggleApiCallDetails && (
+                  <div>
+                    <i className="fa-solid fa-minus"></i>
+                  </div>
+                )}
+                {!toggleApiCallDetails && (
+                  <div>
+                    <i className="fa-solid fa-plus"></i>
+                  </div>
+                )}
+              </div>
+              {toggleApiCallDetails && (
+                <div className="dtls">
+                  <div className="label-n-text">
+                    <div className="label">API Call</div>
+                    <div className="text">
+                      <select
+                        value={conf.referApi}
+                        onChange={(e) =>
+                          confChanged("referApi", JSON.parse(e.target.value))
+                        }
+                      >
+                        <option value={false}>No</option>
+                        <option value={true}>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                  {conf.referApi && (
+                    <div className="label-n-text">
+                      <div className="label">API</div>
+                      <div className="text">
+                        <input
+                          type="text"
+                          value={conf.apiUrl}
+                          placeholder="URL"
+                          onChange={(e) =>
+                            confChanged("apiUrl", e.target.value)
+                          }
+                        ></input>
+                        <select
+                          value={conf.apiMethod}
+                          onChange={(e) =>
+                            confChanged("apiMethod", e.target.value)
+                          }
+                        >
+                          <option value="">Select API Method</option>
+                          <option value="GET">GET</option>
+                          <option value="POST">POST</option>
+                          <option value="PUT">PUT</option>
+                        </select>
+                        {(conf.apiMethod === "PUT" ||
+                          conf.apiMethod === "POST") && (
+                          <textarea
+                            className="normal-height"
+                            type="text"
+                            rows="1"
+                            value={conf.apiBody}
+                            placeholder="Body"
+                            onChange={(e) =>
+                              confChanged("apiBody", e.target.value)
+                            }
+                          ></textarea>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         {conf.type === "button" && (
           <div className="dtl">
             <div

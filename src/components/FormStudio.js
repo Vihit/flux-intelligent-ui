@@ -655,6 +655,7 @@ function FormStudio(props) {
                   <ControlOption type="datetime"></ControlOption>
                   <ControlOption type="button"></ControlOption>
                   <ControlOption type="user"></ControlOption>
+                  <ControlOption type="all-users"></ControlOption>
                 </div>
               </div>
             )}

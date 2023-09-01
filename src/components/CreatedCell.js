@@ -15,6 +15,8 @@ function CreatedCell(props) {
         : {}
       : props.formData
   );
+  const [usersData, setUsersData] = useState([]);
+
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
@@ -83,13 +85,40 @@ function CreatedCell(props) {
     }
   }
 
+  function fetchUsersData() {
+    fetch(config.apiUrl + "users/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setUsersData((prev) => {
+          console.log(actualData);
+          return actualData.map((d) => {
+            return {
+              userName: d.username,
+              firstName: d.first_name,
+              lastName: d.last_name,
+            };
+          });
+        });
+      });
+  }
   useEffect(() => {
     let aData = props.gridControl
       ? props.formData[props.gridKey] != undefined
         ? props.formData[props.gridKey][props.rowNum]
         : {}
       : props.formData;
-    // console.log(aData);
     setAccessibleData(
       props.gridControl
         ? props.formData[props.gridKey] != undefined
@@ -124,6 +153,36 @@ function CreatedCell(props) {
           conds
         );
     }
+    if (props.conf.referApi && !props.disabled) {
+      console.log("Refer API");
+      let url = props.conf.apiUrl;
+      var reg = /\${(\w+)}/g;
+      var matches = url.match(reg);
+      if (matches != null)
+        matches.forEach((variable) => {
+          url = url.replace(variable, accessibleData[variable.split(/{|}/)[1]]);
+        });
+      fetch(config.apiUrl + url, {
+        method: props.conf.apiMethod,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+        body: props.conf.apiBody,
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((actualData) => {
+          setRefData((prev) => {
+            return actualData.map((d) => d.split("|")[1]);
+          });
+        });
+    }
     if (props.conf.type === "user" && !props.disabled) {
       // console.log(props);
       changed(
@@ -132,6 +191,9 @@ function CreatedCell(props) {
           props.conf.userDetail === "username" ? "sub" : props.conf.userDetail
         ]
       );
+    }
+    if (props.conf.type === "all-users" && !props.disabled) {
+      fetchUsersData();
     }
   }, [props.dataUpdated]);
 
@@ -232,7 +294,7 @@ function CreatedCell(props) {
             onChange={(e) => changed(props.conf.key, e.target.value)}
           >
             <option value="">Select</option>
-            {props.conf.referData
+            {props.conf.referData || props.conf.referApi
               ? refData.map((value, indx) => {
                   return (
                     <option key={indx} value={value}>
@@ -367,6 +429,23 @@ function CreatedCell(props) {
             disabled
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
+        )}
+        {props.conf.type === "all-users" && !props.disabled && (
+          <select
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled={props.disabled}
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          >
+            <option value="">Select</option>
+            {usersData.map((user, indx) => {
+              return (
+                <option key={indx} value={user.userName}>
+                  {user.firstName + " " + user.lastName}
+                </option>
+              );
+            })}
+          </select>
         )}
       </div>
     </div>

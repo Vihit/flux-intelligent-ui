@@ -60,6 +60,10 @@
   background-image: url("../../public/user.png");
 }
 
+.all-users-png {
+  background-image: url("../../public/all-users.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;
