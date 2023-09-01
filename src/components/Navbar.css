@@ -19,17 +19,18 @@
   color: var(--white);
   font-weight: bold;
   font-size: 40px;
+  margin-right: 20px;
 }
 
-.delogo {
+/* .delogo {
   padding: 5px 5px 5px 5px;
-  /* content: url("./../../public/Group\ 1.svg"); */
+  content: url("./../../public/Group\ 1.svg");
   object-fit: fill;
   height: 45px;
   margin-right: 10px;
   margin-bottom: 15px;
   margin-top: 15px;
-}
+} */
 
 .applogo {
   padding: 5px 5px 5px 5px;
@@ -157,6 +158,17 @@ a {
 .delogo {
   padding: 5px 5px 5px 5px;
   content: url("./../../public/delogo1.png");
+  object-fit: fill;
+  height: 45px;
+  margin-right: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.client-logo {
+  content: url("../../public/client-logo.png");
+  background-color: white;
+  padding: 5px 5px 5px 5px;
   object-fit: fill;
   height: 45px;
   margin-right: 10px;

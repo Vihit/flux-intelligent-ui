@@ -24,6 +24,7 @@ function Navbar(props) {
         <div className="logo">
           <div className="delogo"></div>
           <div className="appname">Flux-Intelligent</div>
+          <div className="client-logo"></div>
         </div>
         <div className="options">
           <div>
@@ -66,6 +67,7 @@ function Navbar(props) {
         <div className="logo">
           <img className="delogo"></img>
           <div className="appname">Flux-Intelligent</div>
+          <img className="client-logo"></img>
         </div>
       </div>
     );

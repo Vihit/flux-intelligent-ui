@@ -1,12 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { bgcolor } from "@mui/system";
 import { useState } from "react";
 import "./AppCard.css";
 import { config } from "../config";
 import { Link, useHistory } from "react-router-dom";
 
 function AppCard(props) {
-  const [newCard, setNewCard] = useState(props.new);
   const [appName, setAppName] = useState("");
   const [type, setType] = useState("internal");
   const [url, setUrl] = useState("");
