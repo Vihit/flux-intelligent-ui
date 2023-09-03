@@ -11,6 +11,7 @@ function DepartmentEdit(props) {
     setDepartment((prev) => {
       let toBeUpdated = { ...prev };
       toBeUpdated[what] = value;
+      console.log(toBeUpdated);
       return toBeUpdated;
     });
   }
@@ -21,6 +22,7 @@ function DepartmentEdit(props) {
       parentId: department.parentId,
       code: department.code,
       site: department.site,
+      hod: department.hod,
     };
     fetch(config.apiUrl + "departments/", {
       method: "POST",
@@ -114,6 +116,29 @@ function DepartmentEdit(props) {
                       </option>
                     );
                   })}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="created-row">
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>HOD</div>
+            </div>
+            <div className="cell-control r-e-text-area">
+              <select
+                type="text"
+                value={department.hod}
+                onChange={(e) => deptChanged("hod", e.target.value)}
+              >
+                <option value={null}>Select</option>
+                {props.users.map((user, inx) => {
+                  return (
+                    <option key={inx} value={user.username}>
+                      {user.username}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </div>

@@ -105,6 +105,7 @@ function UserEdit(props) {
       roles: rolesArr,
       department: department,
       dateOfBirth: user.dateOfBirth,
+      reporting_manager: user.reporting_manager,
     };
     fetch(config.apiUrl + "users/", {
       method: user.id == undefined ? "POST" : "PUT",
@@ -146,14 +147,25 @@ function UserEdit(props) {
             </div>
             <div className="cell-control">
               <input
-                type="username"
+                type="text"
                 value={user.username}
                 disabled={user.id != undefined}
                 onChange={(e) => userChanged("username", e.target.value)}
               ></input>
             </div>
           </div>
-          <div className="empty-creation-cell" style={{ width: "50%" }}></div>
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Emp Code</div>
+            </div>
+            <div className="cell-control">
+              <input
+                type="text"
+                value={user.employee_code}
+                disabled={user.id != undefined}
+              ></input>
+            </div>
+          </div>
         </div>
         <div className="created-row">
           <div className="creation-cell" style={{ width: "50%" }}>
@@ -221,7 +233,18 @@ function UserEdit(props) {
               ></input>
             </div>
           </div>
-          <div className="empty-creation-cell" style={{ width: "50%" }}></div>
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Designation</div>
+            </div>
+            <div className="cell-control">
+              <input
+                type="text"
+                value={user.designation}
+                disabled={user.id != undefined}
+              ></input>
+            </div>
+          </div>
         </div>
         <div className="created-row">
           <div className="creation-cell" style={{ width: "50%" }}>
@@ -244,10 +267,46 @@ function UserEdit(props) {
               </select>
             </div>
           </div>
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Windows ID</div>
+            </div>
+            <div className="cell-control">
+              <input
+                type="text"
+                value={user.windows_id}
+                disabled={user.id != undefined}
+              ></input>
+            </div>
+          </div>
+        </div>
+        <div className="created-row">
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Reporting Manager</div>
+            </div>
+            <div className="cell-control">
+              <select
+                value={user.reporting_manager}
+                onChange={(e) =>
+                  userChanged("reporting_manager", e.target.value)
+                }
+              >
+                <option value={null}>Select</option>
+                {props.users.map((user, inx) => {
+                  return (
+                    <option key={inx} value={user.username}>
+                      {user.username}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
         </div>
         <div className="created-row">
           <div className="role-creation-cell" style={{ width: "100%" }}>
-            <div className="cell-name">
+            <div className="role-cell-name">
               <div>Roles</div>
             </div>
             <div className="role-cell-control">

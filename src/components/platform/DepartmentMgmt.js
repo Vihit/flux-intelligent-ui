@@ -7,6 +7,7 @@ function DepartmentMgmt(props) {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [selectedDept, setSelectedDept] = useState({});
   const [departments, setDepartments] = useState([]);
+  const [users, setUsers] = useState([]);
   const [deptNodes, setDeptNodes] = useState([]);
   const [deptHierarchy, setDeptHierarchy] = useState([]);
   const [newDept, setNewDept] = useState(false);
@@ -14,8 +15,29 @@ function DepartmentMgmt(props) {
 
   useEffect(() => {
     getDepartments();
+    getUsers();
   }, []);
 
+  function getUsers() {
+    fetch(config.apiUrl + "users/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        // props.raiseAlert("green", "Fetched Users!");
+        setUsers(actualData);
+      });
+  }
   function getDepartments() {
     fetch(config.apiUrl + "departments/", {
       method: "GET",
@@ -47,6 +69,9 @@ function DepartmentMgmt(props) {
                   (d.site != null ? "Site:" + d.site + "  " : "") +
                   "Code:" +
                   d.code +
+                  "</li>" +
+                  "<li>" +
+                  (d.hod != null ? "HOD:" + d.hod + "  " : "HOD :") +
                   "</li>",
                 labelType: "html",
                 class: "dept-node",
@@ -128,6 +153,7 @@ function DepartmentMgmt(props) {
           dept={selectedDept}
           closeWindow={closeWindow}
           depts={departments}
+          users={users}
         ></DepartmentEdit>
       )}
     </div>

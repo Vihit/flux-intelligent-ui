@@ -20,6 +20,7 @@ function UserMgmt(props) {
     "DateOfBirth",
     "Department",
     "Roles",
+    "Reporting Manager",
   ];
   var keys = [
     "id",
@@ -30,6 +31,7 @@ function UserMgmt(props) {
     "dateOfBirth",
     "department",
     "roles",
+    "reporting_manager",
   ];
 
   useEffect(() => {
@@ -163,6 +165,7 @@ function UserMgmt(props) {
           raiseAlert={props.raiseAlert}
           user={selectedUser}
           closeWindow={closeWindow}
+          users={tableData.rows}
         ></UserEdit>
       )}
     </div>

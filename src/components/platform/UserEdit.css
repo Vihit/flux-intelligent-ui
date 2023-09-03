@@ -27,11 +27,20 @@
 }
 
 .role-cell-control {
-  width: 70%;
+  width: 85%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   height: 100%;
   flex-wrap: wrap;
   gap: 30px;
+}
+
+.role-cell-name {
+  font-size: 16px;
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
 }
