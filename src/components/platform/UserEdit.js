@@ -7,8 +7,8 @@ function UserEdit(props) {
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
 
+  console.log(props.user);
   useEffect(() => {
-    console.log(props.user);
     getDepartments();
     getRoles();
   }, []);
@@ -56,7 +56,6 @@ function UserEdit(props) {
   }
 
   function userChanged(what, value) {
-    console.log(value);
     setUser((prev) => {
       let toBeUpdated = { ...prev };
       if (what !== "final") {
@@ -65,7 +64,19 @@ function UserEdit(props) {
           toBeUpdated["department"] = value;
         } else if (what === "roles") {
           // let roles = [roles.filter((r) => r.role === value)[0].id];
-          toBeUpdated["roles"] = value;
+          // toBeUpdated["roles"] = value;
+          if (value.checked) {
+            let arr =
+              toBeUpdated["roles"] === undefined ? [] : toBeUpdated["roles"];
+            let arrr = arr.split(",");
+            arrr.push(value.value);
+            toBeUpdated["roles"] = arrr.join(",");
+          } else {
+            let arr = toBeUpdated["roles"];
+            let arrr = arr.split(",");
+            arrr.splice(arrr.indexOf(value.value), 1);
+            toBeUpdated["roles"] = arrr.join(",");
+          }
         } else {
           toBeUpdated[what] = value;
         }
@@ -75,7 +86,7 @@ function UserEdit(props) {
   }
   function updateUser() {
     let rolesArr = roles
-      .filter((r) => r.role === user.roles)
+      .filter((r) => user.roles.split(",").includes(r.role))
       .map((r) => {
         return {
           id: r.id,
@@ -233,24 +244,41 @@ function UserEdit(props) {
               </select>
             </div>
           </div>
-          <div className="creation-cell" style={{ width: "50%" }}>
+        </div>
+        <div className="created-row">
+          <div className="role-creation-cell" style={{ width: "100%" }}>
             <div className="cell-name">
-              <div>Role</div>
+              <div>Roles</div>
             </div>
-            <div className="cell-control">
-              <select
-                value={user.roles}
-                onChange={(e) => userChanged("roles", e.target.value)}
-              >
-                <option value={""}>Select</option>
-                {roles.map((role, inx) => {
-                  return (
-                    <option key={inx} value={role.name}>
-                      {role.role}
-                    </option>
-                  );
-                })}
-              </select>
+            <div className="role-cell-control">
+              {roles.map((sV, ind) => {
+                return (
+                  <div
+                    className="r-group"
+                    style={{
+                      width: "20%",
+                    }}
+                  >
+                    <div className="r-label">{sV.role}</div>
+                    <div className="r-r">
+                      <input
+                        type="checkbox"
+                        value={sV.role}
+                        disabled={props.disabled}
+                        onChange={(e) => userChanged("roles", e.target)}
+                        checked={
+                          user.roles != undefined
+                            ? user.roles
+                                .split(",")
+                                .map((r) => r)
+                                .includes(sV.role)
+                            : false
+                        }
+                      ></input>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

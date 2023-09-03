@@ -11,3 +11,27 @@
   box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
   z-index: 100;
 }
+
+.role-creation-cell {
+  /* height: 100%; */
+  /* border: 1px solid red; */
+  margin: 2px;
+  background-color: #bcc1c56f;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 100px;
+  cursor: pointer;
+  position: relative;
+  /* height: 50px; */
+}
+
+.role-cell-control {
+  width: 70%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  flex-wrap: wrap;
+  gap: 30px;
+}
