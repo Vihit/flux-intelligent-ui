@@ -313,6 +313,7 @@ function UserEdit(props) {
               {roles.map((sV, ind) => {
                 return (
                   <div
+                    key={ind}
                     className="r-group"
                     style={{
                       width: "20%",
