@@ -89,6 +89,7 @@ function Form(props) {
               stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
               JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
               (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+              checkConditionalVisibility(ctrl) &&
               check == false
             ) {
               props.raiseAlert("red", "Please fill up " + ctrl.label);
@@ -126,6 +127,7 @@ function Form(props) {
           stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
           JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
           (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+          checkConditionalVisibility(ctrl) &&
           check == false
         ) {
           props.raiseAlert("red", "Please fill up " + ctrl.label);

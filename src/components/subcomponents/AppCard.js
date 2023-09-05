@@ -16,6 +16,7 @@ function AppCard(props) {
     "fa-star",
     "fa-database",
     "fa-chart-bar",
+    "fa-fingerprint",
   ];
 
   let history = useHistory();
