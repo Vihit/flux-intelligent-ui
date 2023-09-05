@@ -128,7 +128,11 @@ function SettingsMgmt(props) {
                         </div>
                         <div className="cell-control">
                           <input
-                            type="text"
+                            type={
+                              set.key.toLowerCase().includes("password")
+                                ? "password"
+                                : "text"
+                            }
                             value={set.value}
                             onChange={(e) =>
                               settingChanged(set.id, e.target.value)
