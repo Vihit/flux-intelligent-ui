@@ -12,6 +12,26 @@
   width: 90%;
 }
 
+.a-w-print-window {
+  position: fixed;
+  /* height: 631px; */
+  width: 595px;
+  background-color: white;
+  /* border: 3px solid black; */
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  font-size: 12px !important;
+}
+
+.a-w-print-window > * {
+  margin: 5px !important;
+}
+
+.a-w-print-window > div {
+  font-size: 10px !important;
+}
+
 .height-limit {
   height: 90vh;
 }

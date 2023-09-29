@@ -26,6 +26,7 @@ function Form(props) {
         props.form.workflow.states.filter((st) => st.label === currState)[0].id
     )
     .map((t) => t.toState.label);
+  console.log(toStates);
   const stateConfig = props.form.workflow.states.filter(
     (st) => st.label === currState
   )[0];
@@ -306,7 +307,7 @@ function Form(props) {
             );
           })}
         <div className="btn-controls">
-          {props.type !== "view" &&
+          {(props.type !== "view" || props.form.type === "master") &&
             toStates.map((ts, ind) => (
               <div
                 key={ind}

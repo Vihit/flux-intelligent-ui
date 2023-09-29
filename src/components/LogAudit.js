@@ -37,27 +37,35 @@ function LogAudit(props) {
     for (let btn of closeBtns) {
       btn.classList.add("close-flex");
     }
-
+    input.classList.remove("audit-window");
     input.classList.remove("a-w-shadow");
+    input.classList.add("a-w-print-window");
 
     html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      let pdf = null;
-      if (canvas.width > canvas.height) {
-        pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "pt",
-          format: [canvas.width, canvas.height],
-        });
-      } else {
-        pdf = new jsPDF({
-          orientation: "potrait",
-          unit: "pt",
-          format: [canvas.width, canvas.height],
-        });
+      const imgData = canvas.toDataURL("image/svg", 1.0);
+      const htmlHeight = canvas.height;
+      let pdf = new jsPDF("p", "px", "a4");
+      console.log(pdf.internal.pageSize.getWidth());
+      console.log(pdf.internal.pageSize.getHeight());
+      var pdfHeight = pdf.internal.pageSize.getHeight();
+      var pdfWidth = pdf.internal.pageSize.getWidth();
+      canvas.setAttribute("width", pdfWidth);
+      var totalPDFPages = Math.ceil(htmlHeight / pdfHeight);
+      console.log("img height " + htmlHeight);
+      console.log("Page height " + pdfHeight);
+      console.log("Total pages " + totalPDFPages);
+      for (var i = 0; i < totalPDFPages; i++) {
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          0,
+          0 - i * pdfHeight,
+          canvas.width,
+          htmlHeight
+        );
+        if (i < totalPDFPages - 1) pdf.addPage();
       }
-
-      pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+      // pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
       var file =
         "Audit_trail_" +
         props.form.name.replaceAll(" ", "_") +
@@ -72,7 +80,8 @@ function LogAudit(props) {
     for (let download of closeBtns) {
       download.classList.remove("close-flex");
     }
-
+    input.classList.add("audit-window");
+    input.classList.remove("a-w-print-window");
     input.classList.add("a-w-shadow");
     input.classList.add("height-limit");
   }
