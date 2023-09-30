@@ -1,11 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link, useHistory } from "react-router-dom";
 import { config } from "./config";
+import jwt from "jwt-decode";
 
 function Navbar(props) {
   const [accountClick, setAccountClick] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [user, setUser] = useState(
+    localStorage.getItem("user") != null
+      ? JSON.parse(localStorage.getItem("user"))["sub"]
+      : ""
+  );
+  const [pwd, setPwd] = useState("");
+
+  useEffect(() => {
+    setInterval(() => {
+      if (
+        localStorage.getItem("user") == null ||
+        localStorage.getItem("user").exp <= Date.now()
+      ) {
+        props.onLogout();
+      } else {
+        console.log(
+          Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp
+        );
+        if (
+          Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp >=
+          -60
+        )
+          setShowLogin(true);
+      }
+    }, 2000);
+  }, []);
 
   function handleAccountClick() {
     setAccountClick(!accountClick);
@@ -14,6 +42,49 @@ function Navbar(props) {
   function handleLogout() {
     setAccountClick(false);
     props.onLogout();
+  }
+
+  function cancelExtend() {
+    setUser("");
+    setShowLogin(false);
+  }
+
+  function extend() {
+    var formBody = [];
+    formBody.push(
+      encodeURIComponent("username") + "=" + encodeURIComponent(user)
+    );
+    formBody.push(
+      encodeURIComponent("password") + "=" + encodeURIComponent(pwd)
+    );
+    formBody = formBody.join("&");
+    fetch(config.apiUrl + "login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        Accept: "application/json",
+      },
+      body: formBody,
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        else {
+          props.raiseAlert("red", "Username or Password incorrect!");
+          props.onLogout();
+          setPwd("");
+          throw new Error("");
+        }
+      })
+      .then((actualData) => {
+        props.raiseAlert("green", "Session extended!");
+        localStorage.setItem("access", JSON.stringify(actualData));
+        localStorage.setItem(
+          "user",
+          JSON.stringify(jwt(actualData["access_token"]))
+        );
+        setPwd("");
+        setShowLogin(false);
+      });
   }
 
   function goToSettings() {}
@@ -59,6 +130,38 @@ function Navbar(props) {
             Logout
           </li>
         </ul>
+        <div className={"esign-modal " + (showLogin ? " " : " close-flex")}>
+          <div className="create-job-header">
+            <div className="flex-row-title margin-btm">
+              <i className="fa-solid fa-signature new-job-icon"></i>
+              <div className="new-job-head">Extend</div>
+            </div>
+            <div className="new-esign-input">
+              <div className="new-esign-label">Username</div>
+              <div className="new-job-ta">
+                <input type="text" value={user} disabled></input>
+              </div>
+            </div>
+            <div className="new-esign-input">
+              <div className="new-esign-label">Password</div>
+              <div className="new-job-ta">
+                <input
+                  type="password"
+                  value={pwd}
+                  onChange={(e) => setPwd(e.target.value)}
+                ></input>
+              </div>
+            </div>
+            <div className="flex-row-title">
+              <div className="btn-save" onClick={extend}>
+                Extend
+              </div>
+              <div className="btn-cancel" onClick={cancelExtend}>
+                Cancel
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   } else {

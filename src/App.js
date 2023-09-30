@@ -29,9 +29,9 @@ function App() {
 
   let history = useHistory();
   useEffect(() => {
-    setInterval(() => {
-      renewToken();
-    }, 500000);
+    // setInterval(() => {
+    //   renewToken();
+    // }, 500000);
   }, []);
 
   function raiseAlert(type, message) {
@@ -103,7 +103,11 @@ function App() {
           <div>{alertContent}</div>
         </div>
       </div>
-      <Navbar isLoggedIn={loggedIn} onLogout={logoutHandler}></Navbar>
+      <Navbar
+        raiseAlert={raiseAlert}
+        isLoggedIn={loggedIn}
+        onLogout={logoutHandler}
+      ></Navbar>
       {!loggedIn ? (
         <Login raiseAlert={raiseAlert} onLogin={loginHandler}></Login>
       ) : null}
