@@ -27,13 +27,39 @@ function Navbar(props) {
           Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp >=
           -60
         )
-          setShowLogin(true);
+          // setShowLogin(true);
+          renewToken();
       }
-    }, 2000);
+    }, 10000);
   }, []);
 
   function handleAccountClick() {
     setAccountClick(!accountClick);
+  }
+
+  function renewToken() {
+    let token = JSON.parse(localStorage.getItem("access"));
+    if (token != null) {
+      fetch(config.apiUrl + "token/refresh", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " +
+            JSON.parse(localStorage.getItem("access")).refresh_token,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((actualData) => {
+          console.log(actualData);
+          localStorage.setItem("access", JSON.stringify(actualData));
+        });
+    }
   }
 
   function handleLogout() {
@@ -42,7 +68,6 @@ function Navbar(props) {
   }
 
   function cancelExtend() {
-    setUser("");
     setShowLogin(false);
   }
 

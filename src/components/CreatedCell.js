@@ -8,7 +8,7 @@ function CreatedCell(props) {
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
-  const [refMulData, setRefMulData] = useState({});
+  const [refMulData, setRefMulData] = useState({ selected: [], all: [] });
   const [externalInputActivated, setExternalInputActivated] = useState(false);
   const [accessibleData, setAccessibleData] = useState(
     props.gridControl
@@ -41,14 +41,12 @@ function CreatedCell(props) {
   }
 
   function handleButtonClick(what) {
-    console.log(props.values);
     let updatedValue =
       props.values == undefined ||
       props.values == null ||
       props.values === "null"
         ? "1"
         : props.values + "1";
-    console.log("Updated value " + updatedValue);
     var obj = {};
     obj[what] = updatedValue;
     if (props.conf.apiCall) {
@@ -133,14 +131,12 @@ function CreatedCell(props) {
     );
     if (props.conf.referData && !props.disabled) {
       var check = false;
-      // console.log(props.values);
       let conds = props.conf.referenceFilterQuery;
       if (props.conf.referenceFilterQuery.length > 0) {
         var regex = /\${(\w+)}/g;
         var matches = props.conf.referenceFilterQuery.match(regex);
         if (matches != null) {
           matches.forEach((variable) => {
-            // console.log(aData);
             if (
               aData[variable.split(/{|}/)[1]] == undefined ||
               aData[variable.split(/{|}/)[1]] === ""
@@ -163,9 +159,11 @@ function CreatedCell(props) {
       let url = props.conf.apiUrl;
       var reg = /\${(\w+)}/g;
       var matches = url.match(reg);
+      console.log(aData);
+      console.log(props);
       if (matches != null)
         matches.forEach((variable) => {
-          url = url.replace(variable, accessibleData[variable.split(/{|}/)[1]]);
+          url = url.replace(variable, aData[variable.split(/{|}/)[1]]);
         });
       fetch(config.apiUrl + url, {
         method: props.conf.apiMethod,
@@ -180,14 +178,18 @@ function CreatedCell(props) {
         .then((response) => {
           if (response.ok) {
             return response.json();
+          } else {
+            return [];
           }
         })
         .then((actualData) => {
-          if (props.conf.type === "multiselect") {
+          console.log(actualData);
+          if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-          } else
+            changed(props.conf.key, refMulData.selected.join(","));
+          } else if (actualData != [])
             setRefData((prev) => {
-              return actualData.map((d) => d.split("|")[1]);
+              return actualData.map((d) => d.split("|")[0]);
             });
         });
     }
@@ -447,6 +449,7 @@ function CreatedCell(props) {
           >
             <option value="">Select</option>
             {usersData.map((user, indx) => {
+              console.log(user[props.conf.allUserKey]);
               return (
                 <option
                   key={indx}

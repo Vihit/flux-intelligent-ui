@@ -44,37 +44,6 @@ function App() {
     }, 500);
   }
 
-  function renewToken() {
-    let token = JSON.parse(localStorage.getItem("access"));
-    if (token != null) {
-      if (
-        jwt(JSON.parse(localStorage.getItem("access"))["access_token"]).exp -
-          5000 <
-        Date.now()
-      ) {
-        fetch(config.apiUrl + "token/refresh", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization:
-              "Bearer " +
-              JSON.parse(localStorage.getItem("access")).refresh_token,
-          },
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
-          })
-          .then((actualData) => {
-            console.log(actualData);
-            localStorage.setItem("access", JSON.stringify(actualData));
-          });
-      }
-    }
-  }
-
   function loginHandler() {
     setLoggedIn(true);
     history.push("/dashboard");
