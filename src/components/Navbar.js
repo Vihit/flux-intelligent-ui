@@ -23,9 +23,6 @@ function Navbar(props) {
       ) {
         props.onLogout();
       } else {
-        console.log(
-          Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp
-        );
         if (
           Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp >=
           -60
@@ -47,6 +44,12 @@ function Navbar(props) {
   function cancelExtend() {
     setUser("");
     setShowLogin(false);
+  }
+
+  function pressedKey(e) {
+    if (e.key === "Enter") {
+      extend();
+    }
   }
 
   function extend() {
@@ -149,6 +152,7 @@ function Navbar(props) {
                   type="password"
                   value={pwd}
                   onChange={(e) => setPwd(e.target.value)}
+                  onKeyDown={(e) => pressedKey(e)}
                 ></input>
               </div>
             </div>

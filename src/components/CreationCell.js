@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useDrop } from "react-dnd";
 import "./CreationCell.css";
+import Multiselect from "multiselect-react-dropdown";
+import { config } from "./config";
 
 function CreationCell(props) {
   const [isGrid, setIsGrid] = useState(props.gridControl);
@@ -160,6 +162,15 @@ function CreationCell(props) {
               return <option value={value}>{value}</option>;
             })}
           </select>
+        )}
+        {props.conf.type === "multiselect" && (
+          <Multiselect
+            isObject={false}
+            style={config.multiSelectStyle}
+            options={[1, 2, 3]}
+            showCheckbox={true}
+            showArrow={true}
+          ></Multiselect>
         )}
       </div>
     </div>

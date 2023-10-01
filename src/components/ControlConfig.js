@@ -38,6 +38,8 @@ function ControlConfig(props) {
     customAuditLog: false,
     customAuditCode: "",
     referApi: false,
+    allUserValue: "",
+    allUserKey: "",
   };
 
   useEffect(() => {
@@ -312,14 +314,23 @@ function ControlConfig(props) {
                         <option value={"site"}>Site</option>
                         <option value={"role"}>Role</option>
                         <option value={"firstName"}>First Name</option>
+                        <option value={"employee_code"}>User ID</option>
                         <option value={"lastName"}>Last Name</option>
+                        <option value={"reporting_manager"}>
+                          Reporting Manager
+                        </option>
+                        <option value={"windows_id"}>Windows ID</option>
+                        <option value={"designation"}>Designation</option>
+                        <option value={"hire_date"}>Date of Joining</option>
+                        <option value={"email"}>Email</option>
                       </select>
                     </div>
                   </div>
                 )}
                 {(props.conf.type === "select" ||
                   props.conf.type === "radio" ||
-                  props.conf.type === "checkbox") && (
+                  props.conf.type === "checkbox" ||
+                  props.conf.type === "multiselect") && (
                   <div className="label-n-text">
                     <div className="label">Values</div>
                     <div className="text">
@@ -384,6 +395,7 @@ function ControlConfig(props) {
                         <option value="<">is lower than</option>
                         <option value=">=">is greater or equals to</option>
                         <option value="<=">is lower or equals to</option>
+                        <option value="in">is one of</option>
                       </select>
                       <input
                         type="text"
@@ -395,6 +407,35 @@ function ControlConfig(props) {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {conf.type === "all-users" && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">Key</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={conf.allUserKey}
+                      onChange={(e) =>
+                        confChanged("allUserKey", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
+                <div className="label-n-text">
+                  <div className="label">Value</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={conf.allUserValue}
+                      onChange={(e) =>
+                        confChanged("allUserValue", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
               </div>
             )}
           </div>

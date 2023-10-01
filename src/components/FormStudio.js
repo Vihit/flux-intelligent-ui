@@ -77,7 +77,7 @@ function FormStudio(props) {
   const [id, setId] = useState(null);
   const [states, setStates] = useState([]);
   const [transitions, setTransitions] = useState([]);
-
+  console.log(conf);
   useEffect(() => {
     if (location.state != null) {
       console.log(location.state);
@@ -656,6 +656,9 @@ function FormStudio(props) {
                   <ControlOption type="button"></ControlOption>
                   <ControlOption type="user"></ControlOption>
                   <ControlOption type="all-users"></ControlOption>
+                </div>
+                <div className="viz-option-container">
+                  <ControlOption type="multiselect"></ControlOption>
                 </div>
               </div>
             )}

@@ -64,6 +64,10 @@
   background-image: url("../../public/all-users.png");
 }
 
+.multiselect-png {
+  background-image: url("../../public/multiselect.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;

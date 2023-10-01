@@ -26,7 +26,7 @@ function Form(props) {
         props.form.workflow.states.filter((st) => st.label === currState)[0].id
     )
     .map((t) => t.toState.label);
-  console.log(toStates);
+
   const stateConfig = props.form.workflow.states.filter(
     (st) => st.label === currState
   )[0];
@@ -209,6 +209,11 @@ function Form(props) {
     });
     setUpdateCount((prev) => prev + 1);
   }
+  function pressedKey(e) {
+    if (e.key === "Enter") {
+      esign();
+    }
+  }
   function checkConditionalVisibility(controlConf) {
     var check = false;
     if (JSON.parse(controlConf.conditionalVisibility)) {
@@ -223,6 +228,7 @@ function Form(props) {
       else if (op === ">=") return data[dep] >= value;
       else if (op === "<") return data[dep] < value;
       else if (op === "<=") return data[dep] <= value;
+      else if (op === "in") return value.split(",").includes(data[dep]);
     } else {
       return true;
     }
@@ -340,6 +346,7 @@ function Form(props) {
                   type="password"
                   value={esignPwd}
                   onChange={(e) => setESignPwd(e.target.value)}
+                  onKeyDown={(e) => pressedKey(e)}
                 ></input>
               </div>
             </div>

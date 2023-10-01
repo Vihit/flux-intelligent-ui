@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import "./CreatedCell.css";
 import { config } from "./config";
 import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
+import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
+  const [refMulData, setRefMulData] = useState({});
   const [externalInputActivated, setExternalInputActivated] = useState(false);
   const [accessibleData, setAccessibleData] = useState(
     props.gridControl
@@ -108,6 +110,9 @@ function CreatedCell(props) {
               userName: d.username,
               firstName: d.first_name,
               lastName: d.last_name,
+              employeeCode: d.employee_code,
+              userID: d.user_id,
+              email: d.email,
             };
           });
         });
@@ -178,9 +183,12 @@ function CreatedCell(props) {
           }
         })
         .then((actualData) => {
-          setRefData((prev) => {
-            return actualData.map((d) => d.split("|")[1]);
-          });
+          if (props.conf.type === "multiselect") {
+            setRefMulData(actualData);
+          } else
+            setRefData((prev) => {
+              return actualData.map((d) => d.split("|")[1]);
+            });
         });
     }
     if (props.conf.type === "user" && !props.disabled) {
@@ -440,12 +448,71 @@ function CreatedCell(props) {
             <option value="">Select</option>
             {usersData.map((user, indx) => {
               return (
-                <option key={indx} value={user.userName}>
-                  {user.firstName + " " + user.lastName}
+                <option
+                  key={indx}
+                  value={
+                    props.conf.allUserKey === ""
+                      ? user.userName
+                      : user[props.conf.allUserKey]
+                  }
+                >
+                  {props.conf.allUserValue === "" ||
+                  props.conf.allUserValue == undefined
+                    ? user.firstName + " " + user.lastName
+                    : props.conf.allUserValue
+                        .split(",")
+                        .map((key) => user[key])
+                        .join(" | ")}
                 </option>
               );
             })}
           </select>
+        )}
+        {props.conf.type === "all-users" && props.disabled && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={props.values}
+            disabled={props.disabled}
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
+        )}
+        {props.conf.type === "multiselect" &&
+          !props.disabled &&
+          (props.conf.referData || props.conf.referApi ? (
+            <Multiselect
+              style={config.multiSelectStyle}
+              disabled={props.disabled}
+              onSelect={(e) => changed(props.conf.key, e.join(","))}
+              onRemove={(e) => changed(props.conf.key, e.join(","))}
+              selectedValues={
+                refMulData.selected == undefined ? [] : refMulData.selected
+              }
+              isObject={false}
+              options={refMulData.all == undefined ? [] : refMulData.all}
+            ></Multiselect>
+          ) : (
+            <Multiselect
+              style={config.multiSelectStyle}
+              disabled={props.disabled}
+              onSelect={(e) => changed(props.conf.key, e.join(","))}
+              onRemove={(e) => changed(props.conf.key, e.join(","))}
+              selectedValues={
+                props.values == undefined ? [] : props.values.split(",")
+              }
+              isObject={false}
+              options={props.conf.selectValues.split(",")}
+            ></Multiselect>
+          ))}
+        {props.conf.type === "multiselect" && props.disabled && (
+          <Multiselect
+            style={config.multiSelectStyle}
+            disabled={props.disabled}
+            selectedValues={
+              props.values == undefined ? [] : props.values.split(",")
+            }
+            isObject={false}
+          ></Multiselect>
         )}
       </div>
     </div>
