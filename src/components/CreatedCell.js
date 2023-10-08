@@ -18,8 +18,8 @@ function CreatedCell(props) {
       : props.formData
   );
   const [usersData, setUsersData] = useState([]);
-
   function changed(what, value) {
+    console.log("Changed:" + what + " Value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -101,8 +101,8 @@ function CreatedCell(props) {
         }
       })
       .then((actualData) => {
+        console.log(actualData);
         setUsersData((prev) => {
-          console.log(actualData);
           return actualData.map((d) => {
             return {
               userName: d.username,
@@ -111,6 +111,11 @@ function CreatedCell(props) {
               employeeCode: d.employee_code,
               userID: d.user_id,
               email: d.email,
+              department: d.department.name,
+              reporting_manager: d.reporting_manager,
+              windowsID: d.windows_id,
+              hireDate: d.hire_date,
+              designation: d.designation,
             };
           });
         });
@@ -155,12 +160,9 @@ function CreatedCell(props) {
         );
     }
     if (props.conf.referApi && !props.disabled) {
-      console.log("Refer API");
       let url = props.conf.apiUrl;
       var reg = /\${(\w+)}/g;
       var matches = url.match(reg);
-      console.log(aData);
-      console.log(props);
       if (matches != null)
         matches.forEach((variable) => {
           url = url.replace(variable, aData[variable.split(/{|}/)[1]]);
@@ -183,10 +185,20 @@ function CreatedCell(props) {
           }
         })
         .then((actualData) => {
-          console.log(actualData);
           if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-            changed(props.conf.key, refMulData.selected.join(","));
+            console.log(
+              props.values == undefined
+                ? refMulData.selected
+                : props.values.split(",").concat(refMulData.selected)
+            );
+          } else if (props.conf.type === "text") {
+            const arr = [];
+            arr.push(actualData.value);
+            changed(props.conf.key, actualData.value);
+            setRefData((prev) => {
+              return arr;
+            });
           } else if (actualData != [])
             setRefData((prev) => {
               return actualData.map((d) => d.split("|")[0]);
@@ -291,7 +303,9 @@ function CreatedCell(props) {
           <input
             type="text"
             placeholder={props.conf.placeholder}
-            value={props.values}
+            value={
+              props.conf.referApi && !props.disabled ? refData[0] : props.values
+            }
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
@@ -449,7 +463,6 @@ function CreatedCell(props) {
           >
             <option value="">Select</option>
             {usersData.map((user, indx) => {
-              console.log(user[props.conf.allUserKey]);
               return (
                 <option
                   key={indx}
@@ -486,10 +499,14 @@ function CreatedCell(props) {
             <Multiselect
               style={config.multiSelectStyle}
               disabled={props.disabled}
-              onSelect={(e) => changed(props.conf.key, e.join(","))}
+              onSelect={(e) => {
+                changed(props.conf.key, e.join(","));
+              }}
               onRemove={(e) => changed(props.conf.key, e.join(","))}
               selectedValues={
-                refMulData.selected == undefined ? [] : refMulData.selected
+                props.values == undefined
+                  ? refMulData.selected
+                  : props.values.split(",")
               }
               isObject={false}
               options={refMulData.all == undefined ? [] : refMulData.all}

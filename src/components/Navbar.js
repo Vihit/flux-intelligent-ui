@@ -58,6 +58,10 @@ function Navbar(props) {
         .then((actualData) => {
           console.log(actualData);
           localStorage.setItem("access", JSON.stringify(actualData));
+          localStorage.setItem(
+            "user",
+            JSON.stringify(jwt(actualData["access_token"]))
+          );
         });
     }
   }

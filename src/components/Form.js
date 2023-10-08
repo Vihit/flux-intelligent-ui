@@ -6,7 +6,6 @@ import CreatedGrid from "./CreatedGrid";
 
 function Form(props) {
   var obj = {};
-  console.log(props);
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
   const [layout, setLayout] = useState(JSON.parse(props.form.template).layout);
