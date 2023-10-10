@@ -1,6 +1,6 @@
 export const config = {
-  apiUrl: "http://localhost:8080/",
-  // apiUrl: "http://ec2-13-234-66-36.ap-south-1.compute.amazonaws.com:8080/",
+  // apiUrl: "http://localhost:8080/",
+  apiUrl: "http://ec2-15-206-178-32.ap-south-1.compute.amazonaws.com:8080/",
   measures: ["sum", "avg", "max", "min", "count"],
   filterOps: ["=", "<>", ">", "<", ">=", "<="],
   logicalOps: ["and", "or"],
@@ -20,6 +20,7 @@ export const config = {
       maxWidth: "100%",
       overflow: "auto",
       textAlign: "center",
+      color: "black",
     },
     optionListContainer: {
       position: "relative !important",
@@ -39,7 +40,11 @@ export const config = {
     },
     chips: {
       color: "white",
+      background: "#0096fb",
       fontSize: "16px",
+    },
+    chip: {
+      background: "#0096fb",
     },
   },
 };

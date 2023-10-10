@@ -79,6 +79,7 @@ function DepartmentMgmt(props) {
                 code: d.code,
                 parentId: d.parentId,
                 name: d.name,
+                hod: d.hod,
               };
             });
         });
@@ -139,7 +140,7 @@ function DepartmentMgmt(props) {
             width="100%"
             height="100%"
             shape="rect"
-            fitBoundaries
+            // fitBoundaries
             options={{ rankdir: "BT", ranksep: 100, ranker: "longest-path" }}
             zoomable
             onNodeClick={(e) => handleRowClick(e)}

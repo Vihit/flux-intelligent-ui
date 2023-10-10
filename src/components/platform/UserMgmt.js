@@ -16,22 +16,30 @@ function UserMgmt(props) {
     "Username",
     "FirstName",
     "LastName",
+    "Designation",
     "Email",
     "DateOfBirth",
     "Department",
     "Roles",
     "Reporting Manager",
+    "Employee Code",
+    "Windows ID",
+    "Date of Joining",
   ];
   var keys = [
     "id",
     "username",
     "first_name",
     "last_name",
+    "designation",
     "email",
     "dateOfBirth",
     "department",
     "roles",
     "reporting_manager",
+    "employee_code",
+    "windows_id",
+    "hireDate",
   ];
 
   useEffect(() => {
@@ -98,6 +106,10 @@ function UserMgmt(props) {
         password: "",
         department: "",
         roles: "",
+        employee_code: "",
+        windows_id: "",
+        designation: "",
+        reporting_manager: "",
       };
     });
   }

@@ -6,7 +6,7 @@ function DepartmentEdit(props) {
   const [department, setDepartment] = useState(props.dept);
   const [depts, setDepts] = useState(props.depts);
   useEffect(() => {}, []);
-
+  console.log(props.dept);
   function deptChanged(what, value) {
     setDepartment((prev) => {
       let toBeUpdated = { ...prev };

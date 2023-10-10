@@ -5,6 +5,7 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
+  console.log(props.values);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -455,34 +456,42 @@ function CreatedCell(props) {
           ></input>
         )}
         {props.conf.type === "all-users" && !props.disabled && (
-          <select
-            placeholder={props.conf.placeholder}
-            value={props.values}
+          <Multiselect
+            style={config.multiSelectStyle}
             disabled={props.disabled}
-            onChange={(e) => changed(props.conf.key, e.target.value)}
-          >
-            <option value="">Select</option>
-            {usersData.map((user, indx) => {
-              return (
-                <option
-                  key={indx}
-                  value={
-                    props.conf.allUserKey === ""
-                      ? user.userName
-                      : user[props.conf.allUserKey]
-                  }
-                >
-                  {props.conf.allUserValue === "" ||
-                  props.conf.allUserValue == undefined
-                    ? user.firstName + " " + user.lastName
-                    : props.conf.allUserValue
-                        .split(",")
-                        .map((key) => user[key])
-                        .join(" | ")}
-                </option>
+            onSelect={(e) => {
+              changed(
+                props.conf.key,
+                e[0][
+                  props.conf.allUserKey === ""
+                    ? "userName"
+                    : props.conf.allUserKey
+                ]
               );
-            })}
-          </select>
+            }}
+            onRemove={(e) => changed(props.conf.key, "")}
+            selectedValues={
+              props.values != undefined
+                ? usersData.filter(
+                    (user) =>
+                      user[
+                        props.conf.allUserKey === ""
+                          ? "userName"
+                          : props.conf.allUserKey
+                      ] === props.values.split(",")[0]
+                  )
+                : []
+            }
+            options={usersData}
+            displayValue={
+              props.conf.allUserValue === "" ||
+              props.conf.allUserValue == undefined
+                ? "firstName"
+                : props.conf.allUserValue.split(",")[0]
+            }
+            // singleSelect={true}
+            selectionLimit={1}
+          ></Multiselect>
         )}
         {props.conf.type === "all-users" && props.disabled && (
           <input

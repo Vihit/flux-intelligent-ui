@@ -106,6 +106,9 @@ function UserEdit(props) {
       department: department,
       dateOfBirth: user.dateOfBirth,
       reporting_manager: user.reporting_manager,
+      designation: user.designation,
+      employee_code: user.employee_code,
+      windows_id: user.windows_id,
     };
     fetch(config.apiUrl + "users/", {
       method: user.id == undefined ? "POST" : "PUT",
@@ -163,6 +166,7 @@ function UserEdit(props) {
                 type="text"
                 value={user.employee_code}
                 disabled={user.id != undefined}
+                onChange={(e) => userChanged("employee_code", e.target.value)}
               ></input>
             </div>
           </div>
@@ -242,6 +246,7 @@ function UserEdit(props) {
                 type="text"
                 value={user.designation}
                 disabled={user.id != undefined}
+                onChange={(e) => userChanged("designation", e.target.value)}
               ></input>
             </div>
           </div>
@@ -276,6 +281,7 @@ function UserEdit(props) {
                 type="text"
                 value={user.windows_id}
                 disabled={user.id != undefined}
+                onChange={(e) => userChanged("windows_id", e.target.value)}
               ></input>
             </div>
           </div>
