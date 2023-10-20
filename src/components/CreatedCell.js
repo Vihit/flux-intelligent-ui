@@ -536,7 +536,7 @@ function CreatedCell(props) {
         {props.conf.type === "multiselect" && props.disabled && (
           <Multiselect
             style={config.multiSelectStyle}
-            disabled={props.disabled}
+            disable={props.disabled}
             selectedValues={
               props.values == undefined ? [] : props.values.split(",")
             }
