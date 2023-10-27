@@ -459,7 +459,7 @@ function FormStudio(props) {
       console.log(
         toBeUpdated.filter((t) => !(t.source == from && t.target == to))
       );
-      return toBeUpdated.filter((t) => !(t.source === from && t.target === to));
+      return toBeUpdated.filter((t) => !(t.source == from && t.target == to));
     });
   }
 

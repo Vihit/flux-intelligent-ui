@@ -5,7 +5,7 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
-  console.log(props.values);
+  // console.log(props.values);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -20,7 +20,7 @@ function CreatedCell(props) {
   );
   const [usersData, setUsersData] = useState([]);
   function changed(what, value) {
-    console.log("Changed:" + what + " Value " + value);
+    // console.log("Changed:" + what + " Value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -188,11 +188,11 @@ function CreatedCell(props) {
         .then((actualData) => {
           if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-            console.log(
-              props.values == undefined
-                ? refMulData.selected
-                : props.values.split(",").concat(refMulData.selected)
-            );
+            // console.log(
+            //   props.values == undefined
+            //     ? refMulData.selected
+            //     : props.values.split(",").concat(refMulData.selected)
+            // );
           } else if (props.conf.type === "text") {
             const arr = [];
             arr.push(actualData.value);
@@ -314,7 +314,7 @@ function CreatedCell(props) {
         {props.conf.type === "select" && !props.disabled && (
           <select
             placeholder={props.conf.placeholder}
-            value={props.values}
+            value={props.values == null ? "" : props.values}
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           >

@@ -204,6 +204,16 @@ function Form(props) {
       }
       let finalProp = splitWhat[i];
       obj[finalProp] = value;
+      conf
+        .flatMap((f) => f)
+        .forEach((ctrl) => {
+          if (!checkConditionalVisibilityAgainst(ctrl, obj)) {
+            delete obj[ctrl.key];
+          } else if (checkDependency(ctrl, finalProp)) {
+            delete obj[ctrl.key];
+          }
+        });
+      // console.log(currData);
       return currData;
     });
     setUpdateCount((prev) => prev + 1);
@@ -212,6 +222,27 @@ function Form(props) {
     if (e.key === "Enter") {
       esign();
     }
+  }
+  function checkDependency(of, on) {
+    if (JSON.parse(of.referData)) {
+      var refQuery = of.referenceFilterQuery;
+      var reg = /\${(\w+)}/g;
+      var matches = refQuery.match(reg);
+      if (matches != null) {
+        return matches.map((match) => match.split(/{|}/)[1]).includes(on);
+      }
+    } else if (of.referApi != undefined && JSON.parse(of.referApi)) {
+      // console.log(of);
+      var apiDetail = of.apiUrl + " " + of.apiBody;
+      var reg = /\${(\w+)}/g;
+      var matches = apiDetail.match(reg);
+      // console.log(matches);
+      if (matches != null) {
+        // console.log(matches.map((match) => match.split(/{|}/)[1]).includes(on));
+        return matches.map((match) => match.split(/{|}/)[1]).includes(on);
+      }
+    }
+    return false;
   }
   function checkConditionalVisibility(controlConf) {
     var check = false;
@@ -228,6 +259,25 @@ function Form(props) {
       else if (op === "<") return data[dep] < value;
       else if (op === "<=") return data[dep] <= value;
       else if (op === "in") return value.split(",").includes(data[dep]);
+    } else {
+      return true;
+    }
+  }
+  function checkConditionalVisibilityAgainst(controlConf, updData) {
+    var check = false;
+    if (JSON.parse(controlConf.conditionalVisibility)) {
+      let dep = controlConf.conditionalControl
+        .toLowerCase()
+        .replaceAll(" ", "_");
+      let op = controlConf.conditionalCondition;
+      let value = controlConf.conditionalValue;
+      if (op === "==") return updData[dep] === value;
+      else if (op === "!=") return updData[dep] !== value;
+      else if (op === ">") return updData[dep] > value;
+      else if (op === ">=") return updData[dep] >= value;
+      else if (op === "<") return updData[dep] < value;
+      else if (op === "<=") return updData[dep] <= value;
+      else if (op === "in") return value.split(",").includes(updData[dep]);
     } else {
       return true;
     }
