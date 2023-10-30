@@ -297,6 +297,52 @@
   text-align: center;
 }
 
+.start-node {
+  fill: #0055c2;
+  font-family: "Poppins";
+  outline: 0px outset #0055c2;
+  /* outline-offset: 0px; */
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-node:hover {
+  fill: #0055c2;
+}
+
+.start-node text {
+  fill: white;
+  font-size: 10px;
+  font-family: "Poppins";
+  text-align: center;
+}
+
+.end-node {
+  fill: #fea260;
+  font-family: "Poppins";
+  outline: 0px outset #fea260;
+  /* outline-offset: 0px; */
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.end-node:hover {
+  fill: #fea260;
+}
+
+.end-node text {
+  fill: white;
+  font-size: 10px;
+  font-family: "Poppins";
+  text-align: center;
+}
+
 path {
   stroke: #333;
   fill: #333;

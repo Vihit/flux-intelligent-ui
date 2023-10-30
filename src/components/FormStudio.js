@@ -77,8 +77,9 @@ function FormStudio(props) {
   const [id, setId] = useState(null);
   const [states, setStates] = useState([]);
   const [transitions, setTransitions] = useState([]);
-  console.log(conf);
+
   useEffect(() => {
+    // console.log(location);
     if (location.state != null) {
       console.log(location.state);
       const template = JSON.parse(location.state.template);
@@ -107,7 +108,11 @@ function FormStudio(props) {
                 id: st.id + "",
                 label: st.label,
                 labelType: "string",
-                class: "success-node",
+                class: JSON.parse(st.firstState)
+                  ? "start-node"
+                  : st.endState
+                  ? "end-node"
+                  : "success-node",
                 type: "main",
                 selectedRoles: st.roles.map((r) => r.id),
                 selectedDepartments: st.departments.map((r) => r.id),
@@ -751,7 +756,11 @@ function FormStudio(props) {
                 fitBoundaries
                 zoomable
                 onNodeClick={(e) => openConfForState(e)}
-                config={{ rankdir: "LR", ranksep: 100, ranker: "longest-path" }}
+                config={{
+                  rankdir: "LR",
+                  ranksep: 100,
+                  ranker: "network-simplex",
+                }}
               ></DagreGraph>
             </div>
           </div>
