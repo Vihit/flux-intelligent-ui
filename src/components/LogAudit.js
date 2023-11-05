@@ -1,6 +1,7 @@
 import "./LogAudit.css";
 import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import jsPDF from 'jspdf';
+import  autoTable   from "jspdf-autotable";
 import delogo from "../delogo1.png";
 import { useEffect, useState } from "react";
 import { config } from "./config.js";
@@ -84,6 +85,59 @@ function LogAudit(props) {
     input.classList.remove("a-w-print-window");
     input.classList.add("a-w-shadow");
     input.classList.add("height-limit");
+  }
+
+  function newAuditReportDownload(){
+
+      const doc = new jsPDF();
+      
+      doc.rect(0, 0, 210, 20, 'F', [204, 204, 204]);
+      var img = new Image()
+      img.src = "delogo1.png"
+      doc.addImage(img, 'png', 10, 2, 20, 15);
+      doc.setFontSize(12)
+      doc.setTextColor("#00ADB5");
+      doc.text(`Audit for ${props.form.name} Entry #${props.entries[0].data.log_entry_id}`, 100, 12);
+      var client_logo = new Image()
+      client_logo.src = "client-logo.png"
+      doc.rect(189, 0, 25, 20, 'F', "#fff");
+      doc.addImage(client_logo, 'png', 190, 2, 20, 15);
+      doc.setTextColor(0, 0, 0);
+      var finalY = doc.lastAutoTable.finalY || 30;
+      doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
+      doc.text(`Request Id  : ${props.entries[0].data.log_entry_id}`, 14, finalY+10);
+  
+      sortedEntries.forEach((element,index) => {
+        let currentData=element["data"]
+        finalY = finalY + 20;
+        doc.text(`Target State : ${currentData["state"]}`, 14, finalY);
+        finalY = finalY + 5;
+        doc.setFontSize(10)
+        doc.text(`Performed by  : ${currentData["created_by"]}`, 14, finalY);
+        finalY = finalY + 5;
+        doc.setFontSize(12)
+        let oldData={}
+        if(index>0){
+          oldData=sortedEntries[index-1]['data']
+        }
+        const keyValueArray = fLabels.map((key) =>{ 
+          let actual_key=key.toLowerCase().replaceAll(" ", "_")
+           return  [key,oldData[actual_key] ,currentData[actual_key]]
+        });
+        autoTable(doc, {
+          head: [['Reference', 'Old Value', 'New Value']],
+          body: keyValueArray,
+          startY: finalY
+        });
+        finalY = doc.lastAutoTable.finalY
+      });
+      var file_name =
+      "Audit_trail_" +
+      props.form.name.replaceAll(" ", "_") +
+      "_" +
+      props.entries[0].data.log_entry_id +
+      ".pdf";
+      doc.save(file_name);
   }
 
   useEffect(() => {
@@ -222,7 +276,7 @@ function LogAudit(props) {
           <div className="a-id">{"#" + props.entries[0].data.log_entry_id}</div>
         </div>
         <div className="grow"></div>
-        <div className="download-btn" onClick={downloadAudit}>
+        <div className="download-btn" onClick={newAuditReportDownload}>
           Download
         </div>
         <div className="close-icon">
