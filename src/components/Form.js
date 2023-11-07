@@ -3,6 +3,8 @@ import CreatedCell from "./CreatedCell";
 import "./Form.css";
 import { config } from "./config";
 import CreatedGrid from "./CreatedGrid";
+import jsPDF from 'jspdf';
+import  autoTable   from "jspdf-autotable";
 
 function Form(props) {
   var obj = {};
@@ -282,11 +284,56 @@ function Form(props) {
       return true;
     }
   }
+
+  function exportToPDF() {
+    const doc = new jsPDF();
+
+    let img = new Image()
+    img.src = "delogo1.png"
+
+    doc.addImage(img, 'png', 10, 0, 70, 20);
+    doc.setTextColor("#00ADB5");
+
+    doc.text(`Audit record for `, 100, 12, { maxWidth: 80 });
+    doc.setTextColor(0, 0, 0);
+    let finalY = doc.lastAutoTable.finalY || 30;
+    doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
+
+    Object.keys(data).forEach((key) => {
+     
+      finalY = finalY + 10;
+      let value=null==data[key]?"":data[key]
+      autoTable(doc, {
+        head: [['Reference', 'New Value']],
+        body: [key,value],
+        startY: finalY
+      });
+      finalY =doc.lastAutoTable.finalY;
+      doc.setFontSize(8);
+
+      // element["update_history"].forEach((history) => {
+      //   finalY += 10;
+      //   let historyData = history["data"];
+
+      //   doc.text(`${historyData["fromState"]} by :`, 14, finalY);
+      //   doc.text(`${historyData["created_by"]} on ${historyData["log_create_dt"]}`, 14 + historyData["fromState"].length + 10, finalY);
+
+
+      // });
+    });
+
+
+
+    doc.save('tableToPdf.pdf');
+  }
   return (
     <div className="analytics-preview">
       <div className="viz-preview-details">
         <div className="viz-name">{props.form.name}</div>
         <div className="grow"></div>
+        <div className="download-btn" onClick={exportToPDF}>
+          Download
+        </div>
         <div className="close-icon">
           <i
             className="fa-solid fa-close"
