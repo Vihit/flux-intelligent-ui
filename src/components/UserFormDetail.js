@@ -44,35 +44,43 @@ function UserFormDetail(props) {
     }
   }
 
-  function openFormView(row) {
+  async function openFormView(row) {
     setEntry(row.original);
+    await getAllForEntry(props.form.id, row.original.id);
     setInitiated(true);
   }
 
-  function openAuditView(row) {
-    getAllForEntry(props.form.id, row.original.id);
+  async function openAuditView(row) {
+    await getAllForEntry(props.form.id, row.original.id);
+    setInitiatedAudit(true)
   }
 
-  function getAllForEntry(formId, entryId) {
-    fetch(config.apiUrl + "entry/metadata/" + formId + "/" + entryId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
+
+  async function getAllForEntry(formId, entryId) {
+    try {
+      const response = await fetch(
+        config.apiUrl + "entry/metadata/" + formId + "/" + entryId,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+          },
         }
-      })
-      .then((actualData) => {
+      );
+  
+      if (response.ok) {
+        const actualData = await response.json();
         setAllEntries(actualData);
-        setInitiatedAudit(true);
-      });
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error("Error fetching data:", error);
+    }
   }
+  
 
   function getGridEntriesFor(formId, entryId) {
     fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {

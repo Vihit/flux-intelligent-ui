@@ -25,12 +25,7 @@ function Form(props) {
       props.form.app.name === "Master Data Management")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].label
       : props.entry.state.split("-INPA")[0];
-
-  const sortedEntries = props.entries
-  .filter((entry) => !entry.data["state"].endsWith("-INPA"))
-  .sort(function (a, b) {
-    return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
-  });
+  const [sortedEntries, setSortedEntries] =useState([]);
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -57,6 +52,7 @@ function Form(props) {
       });
     }
     setData(props.entry.id == -1 ? { id: -1 } : { ...props.entry, ...obj });
+
   }, []);
 
   function cancelESign() {
@@ -296,7 +292,13 @@ function Form(props) {
     }
   }
 
-  function exportToPDF() {
+  async function exportToPDF() {
+    let sortedEntries = await props.entries
+    .filter((entry) => !entry.data["state"].endsWith("-INPA"))
+    .sort(function (a, b) {
+      return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
+    });
+
     const doc = new jsPDF();
 
     doc.rect(0, 0, 210, 20, 'F', [204, 204, 204]);
