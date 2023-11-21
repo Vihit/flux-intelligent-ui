@@ -38,7 +38,10 @@ function Navbar(props) {
   }
 
   function renewToken() {
-    let token = JSON.parse(localStorage.getItem("access"));
+    let tokenStr=localStorage.getItem("access");
+    if(tokenStr!=="undefined"){
+   
+    let token = JSON.parse(tokenStr);
     if (token != null) {
       fetch(config.apiUrl + "token/refresh", {
         method: "GET",
@@ -47,7 +50,7 @@ function Navbar(props) {
           Accept: "application/json",
           Authorization:
             "Bearer " +
-            JSON.parse(localStorage.getItem("access")).refresh_token,
+            JSON.parse(tokenStr).refresh_token,
         },
       })
         .then((response) => {
@@ -64,6 +67,8 @@ function Navbar(props) {
           );
         });
     }
+       
+  }
   }
 
   function handleLogout() {

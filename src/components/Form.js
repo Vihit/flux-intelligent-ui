@@ -11,6 +11,11 @@ function Form(props) {
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
   const [layout, setLayout] = useState(JSON.parse(props.form.template).layout);
+  const parsedForm = JSON.parse(props.form.template);
+  const fLabels = parsedForm["controls"]
+    .flatMap((ctrl) => ctrl)
+    .filter((ctrl) => ctrl.type !== "grid")
+    .map((c) => c.label);
   const conf = JSON.parse(props.form.template).controls;
   const [to, setTo] = useState("");
   const currState =
@@ -298,30 +303,37 @@ function Form(props) {
     doc.setTextColor(0, 0, 0);
     let finalY = doc.lastAutoTable.finalY || 30;
     doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
+    finalY+=10
+    let keys=Object.keys(data);
+    
+    keys.forEach((key,index)=>{
+      if(index%4===0){
+        let lastIndex=index+4;
+        if(lastIndex>=keys.length){
+          lastIndex=keys.length;
+        }
+        autoTable(doc, {
+          head: [Object.keys(data).slice(index,lastIndex)],
+          body: [Object.values(data).slice(index,lastIndex)],
+          startY: finalY,
+          theme:"grid",
+          styles: {
+            overflow: 'linebreak',
+            align: 'left',
+          },
+          headStyles: { 
+            fillColor: [255, 255, 255],
+            textColor:[0,0,0],
+            lineColor: [128, 128, 128],
+            lineWidth: 0.1      
+          }
+          
+        });
+        finalY = doc.lastAutoTable.finalY || 30
+        finalY+=5
+      }
 
-    Object.keys(data).forEach((key) => {
-     
-      finalY = finalY + 10;
-      let value=null==data[key]?"":data[key]
-      autoTable(doc, {
-        head: [['Reference', 'New Value']],
-        body: [key,value],
-        startY: finalY
-      });
-      finalY =doc.lastAutoTable.finalY;
-      doc.setFontSize(8);
-
-      // element["update_history"].forEach((history) => {
-      //   finalY += 10;
-      //   let historyData = history["data"];
-
-      //   doc.text(`${historyData["fromState"]} by :`, 14, finalY);
-      //   doc.text(`${historyData["created_by"]} on ${historyData["log_create_dt"]}`, 14 + historyData["fromState"].length + 10, finalY);
-
-
-      // });
-    });
-
+    })
 
 
     doc.save('tableToPdf.pdf');
