@@ -25,6 +25,12 @@ function Form(props) {
       props.form.app.name === "Master Data Management")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].label
       : props.entry.state.split("-INPA")[0];
+
+  const sortedEntries = props.entries
+  .filter((entry) => !entry.data["state"].endsWith("-INPA"))
+  .sort(function (a, b) {
+    return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
+  });
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -343,6 +349,16 @@ function Form(props) {
         finalY+=5
       }
 
+    })
+    doc.setFontSize(10);
+    var currentFont = "helvetica";
+    sortedEntries.forEach(entry=>{
+      entry=entry["data"]
+      finalY = finalY + 10;
+      doc.setFont(currentFont, 'bold').text(`${entry["state"]} by : `, 14, finalY);
+      doc.setTextColor("#FF0000");
+      doc.setFont(currentFont,'normal ').text(`${entry["created_by"]} on ${entry["log_create_dt"]}`, entry["state"].length+50, finalY,{textColor:[255,0,0]});
+      doc.setTextColor("#000000");
     })
 
     var file_name =

@@ -345,6 +345,9 @@ function UserFormDetail(props) {
           closeInit={updateAndCloseInit}
           cancel={setInitiated}
           entry={{ ...entry, grids: gridEntries }}
+          entries={allEntries.sort((a, b) => {
+            return a.data.id > b.data.id ? 1 : -1;
+          })}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
           type={props.type}
