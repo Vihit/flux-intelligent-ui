@@ -293,19 +293,29 @@ function Form(props) {
   function exportToPDF() {
     const doc = new jsPDF();
 
-    let img = new Image()
+    doc.rect(0, 0, 210, 20, 'F', [204, 204, 204]);
+    var img = new Image()
     img.src = "delogo1.png"
-
-    doc.addImage(img, 'png', 10, 0, 70, 20);
+    doc.addImage(img, 'png', 10, 2, 20, 15);
     doc.setTextColor("#00ADB5");
-
-    doc.text(`Audit record for `, 100, 12, { maxWidth: 80 });
+    doc.text(` ${props.form.name}`, 100, 12, { maxWidth: 80 });
+    var client_logo = new Image()
+    client_logo.src = "client-logo.png"
+    doc.rect(189, 0, 25, 20, 'F', "#fff");
+    doc.addImage(client_logo, 'png', 190, 2, 20, 15);
     doc.setTextColor(0, 0, 0);
     let finalY = doc.lastAutoTable.finalY || 30;
-    doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
-    finalY+=10
-    let keys=Object.keys(data);
     
+    finalY+=10
+  
+    let updatedData={};
+
+    for (let label of fLabels){
+      let actual_key=label.toLowerCase().replaceAll(" ", "_")
+      updatedData[label]=data[actual_key]
+    }
+    let keys=Object.keys(updatedData);
+
     keys.forEach((key,index)=>{
       if(index%4===0){
         let lastIndex=index+4;
@@ -313,8 +323,8 @@ function Form(props) {
           lastIndex=keys.length;
         }
         autoTable(doc, {
-          head: [Object.keys(data).slice(index,lastIndex)],
-          body: [Object.values(data).slice(index,lastIndex)],
+          head: [Object.keys(updatedData).slice(index,lastIndex)],
+          body: [Object.values(updatedData).slice(index,lastIndex)],
           startY: finalY,
           theme:"grid",
           styles: {
@@ -335,8 +345,14 @@ function Form(props) {
 
     })
 
+    var file_name =
+    "Form Entry_" +
+    props.form.name.replaceAll(" ", "_") +
+    "_" +
+    data.id +
+    ".pdf";
 
-    doc.save('tableToPdf.pdf');
+    doc.save(file_name);
   }
   return (
     <div className="analytics-preview">
