@@ -38,37 +38,33 @@ function Navbar(props) {
   }
 
   function renewToken() {
-    let tokenStr=localStorage.getItem("access");
-    if(tokenStr!=="undefined"){
-   
-    let token = JSON.parse(tokenStr);
-    if (token != null) {
-      fetch(config.apiUrl + "token/refresh", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization:
-            "Bearer " +
-            JSON.parse(tokenStr).refresh_token,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
+    let tokenStr = localStorage.getItem("access");
+    if (tokenStr !== "undefined") {
+      let token = JSON.parse(tokenStr);
+      if (token != null) {
+        fetch(config.apiUrl + "token/refresh", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Bearer " + JSON.parse(tokenStr).refresh_token,
+          },
         })
-        .then((actualData) => {
-          console.log(actualData);
-          localStorage.setItem("access", JSON.stringify(actualData));
-          localStorage.setItem(
-            "user",
-            JSON.stringify(jwt(actualData["access_token"]))
-          );
-        });
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+          })
+          .then((actualData) => {
+            console.log(actualData);
+            localStorage.setItem("access", JSON.stringify(actualData));
+            localStorage.setItem(
+              "user",
+              JSON.stringify(jwt(actualData["access_token"]))
+            );
+          });
+      }
     }
-       
-  }
   }
 
   function handleLogout() {
@@ -140,6 +136,13 @@ function Navbar(props) {
           </div>
           {JSON.parse(localStorage.getItem("user")).role.includes(
             "ROLE_ADMIN"
+          ) && (
+            <div>
+              <Link to="/platform">Platform</Link>
+            </div>
+          )}
+          {JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_SYSTEM_ADMIN"
           ) && (
             <div>
               <Link to="/platform">Platform</Link>
