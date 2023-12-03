@@ -72,6 +72,16 @@ function DepartmentMgmt(props) {
                   "</li>" +
                   "<li>" +
                   (d.hod != null ? "HOD:" + d.hod + "  " : "HOD :") +
+                  "</li>" +
+                  "<li>" +
+                  (d.designee1 != null
+                    ? "Designee-1:" + d.designee1 + "  "
+                    : "Designee-1 :") +
+                  "</li>" +
+                  "<li>" +
+                  (d.designee2 != null
+                    ? "Designee-2:" + d.designee2 + "  "
+                    : "Designee-2 :") +
                   "</li>",
                 labelType: "html",
                 class: "dept-node",
@@ -80,6 +90,8 @@ function DepartmentMgmt(props) {
                 parentId: d.parentId,
                 name: d.name,
                 hod: d.hod,
+                designee1: d.designee1,
+                designee2: d.designee2,
               };
             });
         });

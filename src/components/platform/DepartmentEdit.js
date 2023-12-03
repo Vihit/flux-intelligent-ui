@@ -23,6 +23,8 @@ function DepartmentEdit(props) {
       code: department.code,
       site: department.site,
       hod: department.hod,
+      designee1: department.designee1,
+      designee2: department.designee2,
     };
     fetch(config.apiUrl + "departments/", {
       method: "POST",
@@ -130,6 +132,50 @@ function DepartmentEdit(props) {
                 type="text"
                 value={department.hod}
                 onChange={(e) => deptChanged("hod", e.target.value)}
+              >
+                <option value={null}>Select</option>
+                {props.users.map((user, inx) => {
+                  return (
+                    <option key={inx} value={user.username}>
+                      {user.username}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="created-row">
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Designee1</div>
+            </div>
+            <div className="cell-control r-e-text-area">
+              <select
+                type="text"
+                value={department.designee1}
+                onChange={(e) => deptChanged("designee1", e.target.value)}
+              >
+                <option value={null}>Select</option>
+                {props.users.map((user, inx) => {
+                  return (
+                    <option key={inx} value={user.username}>
+                      {user.username}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="creation-cell" style={{ width: "50%" }}>
+            <div className="cell-name">
+              <div>Designee2</div>
+            </div>
+            <div className="cell-control r-e-text-area">
+              <select
+                type="text"
+                value={department.designee2}
+                onChange={(e) => deptChanged("designee2", e.target.value)}
               >
                 <option value={null}>Select</option>
                 {props.users.map((user, inx) => {
