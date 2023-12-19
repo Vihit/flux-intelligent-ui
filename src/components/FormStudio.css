@@ -182,6 +182,16 @@
   color: gray;
 }
 
+.form-viz-name > input {
+  background-color: #bcc1c56f;
+  color: #0055c2;
+  width: 100%;
+}
+
+.form-viz-name > input::placeholder {
+  color: gray;
+}
+
 .viz-frequency > select {
   background-color: #bcc1c56f;
   color: #0055c2;
