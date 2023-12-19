@@ -693,7 +693,7 @@ function FormStudio(props) {
         {selectedFWOption === "form" && (
           <div className="creation-container">
             <div className="viz-details">
-              <div className="viz-name">
+              <div className="form-viz-name">
                 <input
                   type="text"
                   placeholder="Form Name*"

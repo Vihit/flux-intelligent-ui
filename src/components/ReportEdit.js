@@ -44,7 +44,7 @@ function ReportEdit(props) {
         }
       })
       .then((actualData) => {
-        props.raiseAlert("green", "User updated!");
+        props.raiseAlert("green", "Report updated!");
         props.closeWindow(false);
       });
   }
