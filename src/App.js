@@ -11,6 +11,7 @@ import FormStudio from "./components/FormStudio";
 import AppDashboard from "./components/AppDashboard";
 import PlatformSetup from "./components/platform/PlatformSetup";
 import jwt from "jwt-decode";
+import Reports from "./components/Reports";
 
 function App() {
   const [alert, setAlert] = useState(false);
@@ -110,6 +111,15 @@ function App() {
               <div>
                 <Route exact path="/platform">
                   <PlatformSetup raiseAlert={raiseAlert}></PlatformSetup>
+                </Route>
+              </div>
+            )}
+            {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
+              ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role)
+            ).length > 0 && (
+              <div>
+                <Route exact path="/reports">
+                  <Reports raiseAlert={raiseAlert}></Reports>
                 </Route>
               </div>
             )}

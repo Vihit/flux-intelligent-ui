@@ -1,0 +1,13 @@
+.i-a-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--green);
+  padding: 5px 20px;
+  color: var(--white);
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.466);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 20px;
+  margin: 5px 20px;
+}

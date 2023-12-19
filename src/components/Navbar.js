@@ -148,6 +148,13 @@ function Navbar(props) {
               <Link to="/platform">Platform</Link>
             </div>
           )}
+          {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
+            ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role)
+          ).length > 0 && (
+            <div>
+              <Link to="/reports">Reports</Link>
+            </div>
+          )}
           {JSON.parse(localStorage.getItem("user")).role.includes(
             "ROLE_ADMIN"
           ) && (
