@@ -295,7 +295,7 @@ function UserDashboard(props) {
   }
   return (
     <div className="u-d-container">
-      <div className="u-menu">
+      <div className="u-menu p-menu-sidebar">
         <div
           className="u-menu-head"
           onClick={() => handleTypeClicked("initiate")}
