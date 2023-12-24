@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import MaterialReactTable from "material-react-table";
+import { Box, IconButton, Typography } from "@mui/material";
 
 function AuditMgmt(props) {
   const [tableData, setTableData] = useState({ header: [], rows: [] });
@@ -100,15 +101,29 @@ function AuditMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
-        <div className="f-dtl-name">Audit Trail</div>
-      </div>
       <div className="f-table">
         <MaterialReactTable
           columns={tableData.header}
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          renderTopToolbarCustomActions={({ table }) => (
+            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontFamily: "Poppins",
+                  fontSize: "18px",
+                  alignSelf: "center",
+                }}
+              >
+                Audit Trail
+              </Typography>
+            </Box>
+          )}
           muiTableContainerProps={{
             sx: {
               maxHeight: "550px",

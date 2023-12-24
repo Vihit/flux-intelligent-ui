@@ -117,6 +117,7 @@ function CreatedCell(props) {
               windowsID: d.windows_id,
               hireDate: d.hire_date,
               designation: d.designation,
+              fullName: d.fullName,
             };
           });
         });

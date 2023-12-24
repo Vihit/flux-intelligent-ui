@@ -3,7 +3,7 @@ import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
 
@@ -116,11 +116,6 @@ function Reports(props) {
         </div>
 
         <div className="f-dtl-container">
-          <div className="f-dtl-head">
-            {activeReport.name != undefined && (
-              <div className="f-dtl-name">{activeReport.name}</div>
-            )}
-          </div>
           <div className="f-table">
             {activeReport.name != undefined && (
               <MaterialReactTable
@@ -128,6 +123,23 @@ function Reports(props) {
                 data={reportData.rows}
                 enableStickyHeader
                 enableStickyFooter
+                renderTopToolbarCustomActions={({ table }) => (
+                  <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontFamily: "Poppins",
+                        fontSize: "18px",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {activeReport.name}
+                    </Typography>
+                  </Box>
+                )}
                 muiTableContainerProps={{
                   sx: {
                     maxHeight: "550px",

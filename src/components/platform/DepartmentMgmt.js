@@ -138,7 +138,7 @@ function DepartmentMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
+      <div className="f-p-dtl-head">
         <div className="f-dtl-name">Departments</div>
         <div className="i-btn" onClick={() => addANewDept()}>
           Add

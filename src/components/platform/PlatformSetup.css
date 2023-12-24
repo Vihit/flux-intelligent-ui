@@ -7,3 +7,14 @@
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.466);
   z-index: 10;
 }
+
+.f-p-dtl-head {
+  display: flex;
+  justify-content: flex-start;
+  width: 95%;
+  margin-top: 10px;
+  height: 5%;
+  align-items: center;
+  font-size: 18px;
+  gap: 20px;
+}
