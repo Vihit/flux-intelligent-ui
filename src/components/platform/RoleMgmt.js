@@ -35,9 +35,10 @@ function RoleMgmt(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Roles!");
-        setRoles(actualData);
+        const filterData = actualData.filter((role) => role.id > 1);
+        setRoles(filterData);
         setTableData({
-          rows: actualData.map((aD) => {
+          rows: filterData.map((aD) => {
             let data = { ...aD };
             return data;
           }),

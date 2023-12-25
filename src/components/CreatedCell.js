@@ -104,22 +104,24 @@ function CreatedCell(props) {
       .then((actualData) => {
         console.log(actualData);
         setUsersData((prev) => {
-          return actualData.map((d) => {
-            return {
-              userName: d.username,
-              firstName: d.first_name,
-              lastName: d.last_name,
-              employeeCode: d.employee_code,
-              userID: d.user_id,
-              email: d.email,
-              department: d.department.name,
-              reporting_manager: d.reporting_manager,
-              windowsID: d.windows_id,
-              hireDate: d.hire_date,
-              designation: d.designation,
-              fullName: d.fullName,
-            };
-          });
+          return actualData
+            .filter((aD) => aD["username"] !== "admin")
+            .map((d) => {
+              return {
+                userName: d.username,
+                firstName: d.first_name,
+                lastName: d.last_name,
+                employeeCode: d.employee_code,
+                userID: d.user_id,
+                email: d.email,
+                department: d.department.name,
+                reporting_manager: d.reporting_manager,
+                windowsID: d.windows_id,
+                hireDate: d.hire_date,
+                designation: d.designation,
+                fullName: d.fullName,
+              };
+            });
         });
       });
   }
@@ -516,7 +518,9 @@ function CreatedCell(props) {
               selectedValues={
                 props.values == undefined
                   ? refMulData.selected
-                  : props.values.split(",")
+                  : props.values != null && props.values.length > 0
+                  ? props.values.split(",")
+                  : ""
               }
               isObject={false}
               options={refMulData.all == undefined ? [] : refMulData.all}

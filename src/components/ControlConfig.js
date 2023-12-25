@@ -316,6 +316,7 @@ function ControlConfig(props) {
                         <option value={"firstName"}>First Name</option>
                         <option value={"employee_code"}>User ID</option>
                         <option value={"lastName"}>Last Name</option>
+                        <option value={"fullName"}>Full Name</option>
                         <option value={"reporting_manager"}>
                           Reporting Manager
                         </option>

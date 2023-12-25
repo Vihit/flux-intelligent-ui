@@ -1,0 +1,33 @@
+.creation-cell-ta {
+  height: 100%;
+  /* border: 1px solid red; */
+  margin: 2px;
+  background-color: #bcc1c56f;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 100px;
+  cursor: pointer;
+  position: relative;
+  /* height: 50px; */
+}
+
+.created-row-ta {
+  display: flex;
+  flex-grow: 1;
+}
+
+.cell-control-ta {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.cell-control-ta > textarea {
+  width: 98%;
+  background-color: var(--white);
+  font-weight: normal;
+  height: 96%;
+}

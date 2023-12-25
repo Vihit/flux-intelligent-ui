@@ -13,6 +13,7 @@ function Reports(props) {
   const [reportData, setReportData] = useState({ rows: [], header: [] });
   const [newReport, setNewReport] = useState(false);
   const [selectedReport, setSelectedReport] = useState({});
+  const [reportEdit, setReportEdit] = useState(false);
 
   useEffect(() => {
     getReports();
@@ -35,7 +36,7 @@ function Reports(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Reports!");
-        setReports(actualData);
+        setReports(actualData.filter((report) => report.active));
       });
   }
 
@@ -89,7 +90,15 @@ function Reports(props) {
 
   function closeWindow() {
     setNewReport(false);
+    setReportEdit(false);
     getReports();
+  }
+
+  function editReport(r) {
+    setReportEdit(true);
+    setSelectedReport((prev) => {
+      return r;
+    });
   }
 
   return (
@@ -98,11 +107,21 @@ function Reports(props) {
         <div className="u-menu p-menu-sidebar">
           {reports.map((report) => {
             return (
-              <div
-                className="u-menu-head p-menu"
-                onClick={() => setReportClicked(report.id)}
-              >
-                {report.name}
+              <div className="u-menu-head r-menu">
+                <div
+                  className="r-name"
+                  onClick={() => setReportClicked(report.id)}
+                >
+                  {report.name}
+                </div>
+                {JSON.parse(localStorage.getItem("user")).role.includes(
+                  "ROLE_ADMIN"
+                ) && (
+                  <i
+                    className="fa-solid fa-edit"
+                    onClick={() => editReport(report)}
+                  ></i>
+                )}
               </div>
             );
           })}
@@ -178,7 +197,7 @@ function Reports(props) {
           </div>
         </div>
       </div>
-      {newReport && selectedReport != {} && (
+      {(newReport || reportEdit) && selectedReport != {} && (
         <ReportEdit
           raiseAlert={props.raiseAlert}
           report={selectedReport}

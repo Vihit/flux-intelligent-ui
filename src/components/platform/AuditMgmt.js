@@ -11,19 +11,17 @@ function AuditMgmt(props) {
   var cols = [
     "ID",
     "UserName",
-    "Type",
+    "Module",
     "Action",
-    "PKValue",
     "PrevState",
     "NewState",
-    "AuditDt",
+    "Activity Timestamp",
   ];
   var keys = [
     "id",
     "userName",
     "type",
     "action",
-    "pkValue",
     "prevState",
     "newState",
     "auditDt",

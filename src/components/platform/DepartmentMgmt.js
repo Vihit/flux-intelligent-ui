@@ -35,7 +35,7 @@ function DepartmentMgmt(props) {
       })
       .then((actualData) => {
         // props.raiseAlert("green", "Fetched Users!");
-        setUsers(actualData);
+        setUsers(actualData.filter((aD) => aD["username"] !== "admin"));
       });
   }
   function getDepartments() {
@@ -153,10 +153,21 @@ function DepartmentMgmt(props) {
             height="100%"
             shape="rect"
             // fitBoundaries
-            options={{ rankdir: "BT", ranksep: 100, ranker: "longest-path" }}
+            // options={{
+            //   rankdir: "BT",
+            //   ranksep: 100,
+            //   align: "UL",
+            //   ranker: "tight-tree",
+            // }}
             zoomable
             onNodeClick={(e) => handleRowClick(e)}
-            config={{ rankdir: "BT", ranksep: 100, ranker: "longest-path" }}
+            config={{
+              rankdir: "BT",
+              // align: "DL",
+              ranksep: 200,
+              ranker: "tight-tree",
+              edgesep: 20,
+            }}
           ></DagreGraph>
         )}
       </div>

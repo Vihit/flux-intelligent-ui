@@ -66,12 +66,14 @@ function UserMgmt(props) {
         props.raiseAlert("green", "Fetched Users!");
         // setUsers(actualData);
         setTableData({
-          rows: actualData.map((aD) => {
-            let data = { ...aD };
-            data["department"] = aD.department.name;
-            data["roles"] = aD.roles.map((r) => r.role).join(",");
-            return data;
-          }),
+          rows: actualData
+            .filter((aD) => aD["username"] !== "admin")
+            .map((aD) => {
+              let data = { ...aD };
+              data["department"] = aD.department.name;
+              data["roles"] = aD.roles.map((r) => r.role).join(",");
+              return data;
+            }),
           header: cols.map((element, inx) => {
             return {
               accessorKey: keys[inx],

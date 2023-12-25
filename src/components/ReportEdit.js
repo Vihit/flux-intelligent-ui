@@ -17,6 +17,7 @@ function ReportEdit(props) {
 
   function updateReport() {
     let updatedReport = {
+      id: report.id,
       name: report.name,
       template: report.template,
       columns: report.template
@@ -71,21 +72,19 @@ function ReportEdit(props) {
               <input
                 type="text"
                 value={report.name}
-                disabled={report.id != undefined}
                 onChange={(e) => reportChanged("name", e.target.value)}
               ></input>
             </div>
           </div>
         </div>
-        <div className="created-row">
-          <div className="creation-cell" style={{ width: "100%" }}>
+        <div className="created-row-ta">
+          <div className="creation-cell-ta" style={{ width: "100%" }}>
             <div className="cell-name">
               <div>Template</div>
             </div>
-            <div className="cell-control">
+            <div className="cell-control-ta">
               <textarea
                 value={report.template}
-                disabled={report.id != undefined}
                 onChange={(e) => reportChanged("template", e.target.value)}
               ></textarea>
             </div>
