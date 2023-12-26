@@ -38,12 +38,16 @@ function PlatformSetup(props) {
           >
             Audit Trail
           </div>
-          <div
-            className="u-menu-head p-menu"
-            onClick={() => setItemClicked("settings")}
-          >
-            Settings
-          </div>
+          {JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_ADMIN"
+          ) && (
+            <div
+              className="u-menu-head p-menu"
+              onClick={() => setItemClicked("settings")}
+            >
+              Settings
+            </div>
+          )}
         </div>
         {itemClicked === "department" && (
           <DepartmentMgmt raiseAlert={props.raiseAlert}></DepartmentMgmt>

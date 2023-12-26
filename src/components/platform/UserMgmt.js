@@ -124,6 +124,15 @@ function UserMgmt(props) {
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
+            },
+          }}
           renderTopToolbarCustomActions={({ table }) => (
             <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
               <Typography

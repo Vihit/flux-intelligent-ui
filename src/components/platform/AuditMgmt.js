@@ -143,6 +143,15 @@ function AuditMgmt(props) {
               fontFamily: "Poppins",
             },
           }}
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
+            },
+          }}
           muiTableBodyCellProps={{
             sx: {
               backgroundColor: "var(--grey)",

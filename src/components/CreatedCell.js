@@ -249,9 +249,13 @@ function CreatedCell(props) {
       })
       .then((actualData) => {
         setRefData((prev) => {
-          return actualData
+          var ad = actualData
             .map((data) => data.data[refColumn])
             .filter((val, index, arr) => arr.indexOf(val) === index);
+          ad.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase());
+          });
+          return ad;
         });
         let inputType = props.conf.type;
         if (inputType === "text" || inputType === "textarea") {

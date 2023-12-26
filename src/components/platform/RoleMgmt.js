@@ -82,6 +82,7 @@ function RoleMgmt(props) {
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          // enableColumnActions={false}
           renderTopToolbarCustomActions={({ table }) => (
             <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
               <Typography
@@ -129,6 +130,15 @@ function RoleMgmt(props) {
               color: "var(--white)",
               border: "1px solid",
               fontFamily: "Poppins",
+            },
+          }}
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
             },
           }}
           muiTableBodyCellProps={{
