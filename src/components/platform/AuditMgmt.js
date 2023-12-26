@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import MaterialReactTable from "material-react-table";
+import { Box, IconButton, Typography } from "@mui/material";
 
 function AuditMgmt(props) {
   const [tableData, setTableData] = useState({ header: [], rows: [] });
@@ -10,19 +11,17 @@ function AuditMgmt(props) {
   var cols = [
     "ID",
     "UserName",
-    "Type",
+    "Module",
     "Action",
-    "PKValue",
     "PrevState",
     "NewState",
-    "AuditDt",
+    "Activity Timestamp",
   ];
   var keys = [
     "id",
     "userName",
     "type",
     "action",
-    "pkValue",
     "prevState",
     "newState",
     "auditDt",
@@ -100,15 +99,29 @@ function AuditMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
-        <div className="f-dtl-name">Audit Trail</div>
-      </div>
       <div className="f-table">
         <MaterialReactTable
           columns={tableData.header}
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          renderTopToolbarCustomActions={({ table }) => (
+            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontFamily: "Poppins",
+                  fontSize: "18px",
+                  alignSelf: "center",
+                }}
+              >
+                Audit Trail
+              </Typography>
+            </Box>
+          )}
           muiTableContainerProps={{
             sx: {
               maxHeight: "550px",
@@ -128,6 +141,15 @@ function AuditMgmt(props) {
               color: "var(--white)",
               border: "1px solid",
               fontFamily: "Poppins",
+            },
+          }}
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
             },
           }}
           muiTableBodyCellProps={{

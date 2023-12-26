@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import "./DepartmentEdit.css";
+import Multiselect from "multiselect-react-dropdown";
 
 function DepartmentEdit(props) {
   const [department, setDepartment] = useState(props.dept);
   const [depts, setDepts] = useState(props.depts);
   useEffect(() => {}, []);
-  console.log(props.dept);
+
   function deptChanged(what, value) {
     setDepartment((prev) => {
       let toBeUpdated = { ...prev };
       toBeUpdated[what] = value;
-      console.log(toBeUpdated);
       return toBeUpdated;
     });
   }
+
   function updateDept() {
     let updatedDept = {
       name: department.name,
@@ -128,22 +129,30 @@ function DepartmentEdit(props) {
               <div>HOD</div>
             </div>
             <div className="cell-control r-e-text-area">
-              <select
-                type="text"
-                value={department.hod}
-                onChange={(e) => deptChanged("hod", e.target.value)}
-              >
-                <option value={null}>Select</option>
-                {props.users.map((user, inx) => {
-                  return (
-                    <option key={inx} value={user.username}>
-                      {user.username}
-                    </option>
-                  );
-                })}
-              </select>
+              <Multiselect
+                style={
+                  department.hod == undefined ||
+                  department.hod == null ||
+                  department.hod.length == 0
+                    ? config.multiSelectStyle
+                    : config.platformMultiSelectStyle
+                }
+                disabled={props.disabled}
+                onSelect={(e) => {
+                  deptChanged("hod", e[0]["username"]);
+                }}
+                onRemove={(e) => deptChanged("hod", "")}
+                selectedValues={props.users.filter(
+                  (user) => user["username"] === department.hod
+                )}
+                options={props.users}
+                displayValue={"fullName"}
+                selectionLimit={1}
+                hidePlaceholder
+              ></Multiselect>
             </div>
           </div>
+          <div className="empty-creation-cell" style={{ width: "50%" }}></div>
         </div>
         <div className="created-row">
           <div className="creation-cell" style={{ width: "50%" }}>
@@ -151,20 +160,27 @@ function DepartmentEdit(props) {
               <div>Designee1</div>
             </div>
             <div className="cell-control r-e-text-area">
-              <select
-                type="text"
-                value={department.designee1}
-                onChange={(e) => deptChanged("designee1", e.target.value)}
-              >
-                <option value={null}>Select</option>
-                {props.users.map((user, inx) => {
-                  return (
-                    <option key={inx} value={user.username}>
-                      {user.username}
-                    </option>
-                  );
-                })}
-              </select>
+              <Multiselect
+                style={
+                  department.designee1 == undefined ||
+                  department.designee1 == null ||
+                  department.designee1.length == 0
+                    ? config.multiSelectStyle
+                    : config.platformMultiSelectStyle
+                }
+                disabled={props.disabled}
+                onSelect={(e) => {
+                  deptChanged("designee1", e[0]["username"]);
+                }}
+                onRemove={(e) => deptChanged("designee1", "")}
+                selectedValues={props.users.filter(
+                  (user) => user["username"] === department.designee1
+                )}
+                hidePlaceholder
+                options={props.users}
+                displayValue={"fullName"}
+                selectionLimit={1}
+              ></Multiselect>
             </div>
           </div>
           <div className="creation-cell" style={{ width: "50%" }}>
@@ -172,20 +188,27 @@ function DepartmentEdit(props) {
               <div>Designee2</div>
             </div>
             <div className="cell-control r-e-text-area">
-              <select
-                type="text"
-                value={department.designee2}
-                onChange={(e) => deptChanged("designee2", e.target.value)}
-              >
-                <option value={null}>Select</option>
-                {props.users.map((user, inx) => {
-                  return (
-                    <option key={inx} value={user.username}>
-                      {user.username}
-                    </option>
-                  );
-                })}
-              </select>
+              <Multiselect
+                style={
+                  department.designee2 == undefined ||
+                  department.designee2 == null ||
+                  department.designee2.length == 0
+                    ? config.multiSelectStyle
+                    : config.platformMultiSelectStyle
+                }
+                disabled={props.disabled}
+                onSelect={(e) => {
+                  deptChanged("designee2", e[0]["username"]);
+                }}
+                onRemove={(e) => deptChanged("designee2", "")}
+                selectedValues={props.users.filter(
+                  (user) => user["username"] === department.designee2
+                )}
+                options={props.users}
+                displayValue={"fullName"}
+                selectionLimit={1}
+                hidePlaceholder
+              ></Multiselect>
             </div>
           </div>
         </div>

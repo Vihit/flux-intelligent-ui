@@ -3,7 +3,7 @@ import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
 
@@ -13,6 +13,7 @@ function Reports(props) {
   const [reportData, setReportData] = useState({ rows: [], header: [] });
   const [newReport, setNewReport] = useState(false);
   const [selectedReport, setSelectedReport] = useState({});
+  const [reportEdit, setReportEdit] = useState(false);
 
   useEffect(() => {
     getReports();
@@ -35,7 +36,7 @@ function Reports(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Reports!");
-        setReports(actualData);
+        setReports(actualData.filter((report) => report.active));
       });
   }
 
@@ -89,7 +90,15 @@ function Reports(props) {
 
   function closeWindow() {
     setNewReport(false);
+    setReportEdit(false);
     getReports();
+  }
+
+  function editReport(r) {
+    setReportEdit(true);
+    setSelectedReport((prev) => {
+      return r;
+    });
   }
 
   return (
@@ -98,11 +107,21 @@ function Reports(props) {
         <div className="u-menu p-menu-sidebar">
           {reports.map((report) => {
             return (
-              <div
-                className="u-menu-head p-menu"
-                onClick={() => setReportClicked(report.id)}
-              >
-                {report.name}
+              <div className="u-menu-head r-menu">
+                <div
+                  className="r-name"
+                  onClick={() => setReportClicked(report.id)}
+                >
+                  {report.name}
+                </div>
+                {JSON.parse(localStorage.getItem("user")).role.includes(
+                  "ROLE_ADMIN"
+                ) && (
+                  <i
+                    className="fa-solid fa-edit"
+                    onClick={() => editReport(report)}
+                  ></i>
+                )}
               </div>
             );
           })}
@@ -116,11 +135,6 @@ function Reports(props) {
         </div>
 
         <div className="f-dtl-container">
-          <div className="f-dtl-head">
-            {activeReport.name != undefined && (
-              <div className="f-dtl-name">{activeReport.name}</div>
-            )}
-          </div>
           <div className="f-table">
             {activeReport.name != undefined && (
               <MaterialReactTable
@@ -128,6 +142,23 @@ function Reports(props) {
                 data={reportData.rows}
                 enableStickyHeader
                 enableStickyFooter
+                renderTopToolbarCustomActions={({ table }) => (
+                  <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontFamily: "Poppins",
+                        fontSize: "18px",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {activeReport.name}
+                    </Typography>
+                  </Box>
+                )}
                 muiTableContainerProps={{
                   sx: {
                     maxHeight: "550px",
@@ -166,7 +197,7 @@ function Reports(props) {
           </div>
         </div>
       </div>
-      {newReport && selectedReport != {} && (
+      {(newReport || reportEdit) && selectedReport != {} && (
         <ReportEdit
           raiseAlert={props.raiseAlert}
           report={selectedReport}

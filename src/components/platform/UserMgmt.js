@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import UserEdit from "./UserEdit";
 
@@ -66,12 +66,14 @@ function UserMgmt(props) {
         props.raiseAlert("green", "Fetched Users!");
         // setUsers(actualData);
         setTableData({
-          rows: actualData.map((aD) => {
-            let data = { ...aD };
-            data["department"] = aD.department.name;
-            data["roles"] = aD.roles.map((r) => r.role).join(",");
-            return data;
-          }),
+          rows: actualData
+            .filter((aD) => aD["username"] !== "admin")
+            .map((aD) => {
+              let data = { ...aD };
+              data["department"] = aD.department.name;
+              data["roles"] = aD.roles.map((r) => r.role).join(",");
+              return data;
+            }),
           header: cols.map((element, inx) => {
             return {
               accessorKey: keys[inx],
@@ -116,18 +118,41 @@ function UserMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
-        <div className="f-dtl-name">Users</div>
-        <div className="i-btn" onClick={() => addANewUser()}>
-          Add
-        </div>
-      </div>
       <div className="f-table">
         <MaterialReactTable
           columns={tableData.header}
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
+            },
+          }}
+          renderTopToolbarCustomActions={({ table }) => (
+            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontFamily: "Poppins",
+                  fontSize: "18px",
+                  alignSelf: "center",
+                }}
+              >
+                Users
+              </Typography>{" "}
+              <div className="i-btn" onClick={() => addANewUser()}>
+                Add
+              </div>
+            </Box>
+          )}
           enableRowActions
           renderRowActions={({ row }) => (
             <Box>

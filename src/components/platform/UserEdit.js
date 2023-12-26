@@ -30,7 +30,7 @@ function UserEdit(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Roles!");
-        setRoles(actualData);
+        setRoles(actualData.filter((role) => role.id > 1));
       });
   }
 

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import RoleEdit from "./RoleEdit";
-import { getRoles } from "@testing-library/react";
 
 function RoleMgmt(props) {
   const [tableData, setTableData] = useState({ header: [], rows: [] });
@@ -36,9 +35,10 @@ function RoleMgmt(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Roles!");
-        setRoles(actualData);
+        const filterData = actualData.filter((role) => role.id > 1);
+        setRoles(filterData);
         setTableData({
-          rows: actualData.map((aD) => {
+          rows: filterData.map((aD) => {
             let data = { ...aD };
             return data;
           }),
@@ -76,18 +76,33 @@ function RoleMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
-        <div className="f-dtl-name">Roles</div>
-        <div className="i-btn" onClick={() => addANewRole()}>
-          Add
-        </div>
-      </div>
       <div className="f-table">
         <MaterialReactTable
           columns={tableData.header}
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          // enableColumnActions={false}
+          renderTopToolbarCustomActions={({ table }) => (
+            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontFamily: "Poppins",
+                  fontSize: "18px",
+                  alignSelf: "center",
+                }}
+              >
+                Roles
+              </Typography>
+              <div className="i-btn" onClick={() => addANewRole()}>
+                Add
+              </div>
+            </Box>
+          )}
           enableRowActions
           renderRowActions={({ row }) => (
             <Box>
@@ -115,6 +130,15 @@ function RoleMgmt(props) {
               color: "var(--white)",
               border: "1px solid",
               fontFamily: "Poppins",
+            },
+          }}
+          muiTableHeadCellColumnActionsButtonProps={{
+            sx: {
+              path: {
+                stroke: "white",
+                fill: "white",
+                strokeWidth: "1.5px",
+              },
             },
           }}
           muiTableBodyCellProps={{

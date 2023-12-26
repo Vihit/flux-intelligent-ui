@@ -170,9 +170,6 @@ function Navbar(props) {
           <li className="dropdown-item user">
             {JSON.parse(localStorage.getItem("user")).firstName}
           </li>
-          <li className="dropdown-item" onClick={() => setShowSettings(true)}>
-            Settings
-          </li>
           <li className="dropdown-item" onClick={handleLogout}>
             Logout
           </li>

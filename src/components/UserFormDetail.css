@@ -88,6 +88,10 @@
   box-shadow: none !important;
 }
 
+.MuiMenu-paper {
+  width: auto;
+}
+
 table {
   margin-bottom: 10px;
 }

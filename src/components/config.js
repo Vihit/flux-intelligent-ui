@@ -47,4 +47,53 @@ export const config = {
       background: "#0096fb",
     },
   },
+  platformMultiSelectStyle: {
+    multiselectContainer: {
+      background: "white",
+      // padding: "2px",
+      height: "95%",
+      maxWidth: "99%",
+      borderRadius: "12px",
+    },
+    searchBox: {
+      borderRadius: "12px",
+      fontSize: "15px",
+      height: "100%",
+      padding: "0",
+      maxWidth: "100%",
+      overflow: "auto",
+      textAlign: "center",
+      color: "black",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    optionListContainer: {
+      position: "relative !important",
+    },
+    optionContainer: {
+      border: "1px solid black",
+      fontSize: "15px",
+      maxHeight: "130px",
+    },
+    option: {
+      fontFamily: "Poppins",
+      display: "flex",
+      justifyContent: "left",
+      alignItems: "center",
+      align: "center",
+      maxHeight: "40px",
+    },
+    chips: {
+      color: "white",
+      background: "#0096fb",
+      fontSize: "16px",
+    },
+    chip: {
+      background: "#0096fb",
+    },
+    inputField: {
+      display: "none",
+    },
+  },
 };
