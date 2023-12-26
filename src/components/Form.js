@@ -313,7 +313,7 @@ function Form(props) {
     doc.addImage(client_logo, 'png', 190, 2, 20, 15);
     doc.setTextColor(0, 0, 0);
     let finalY = doc.lastAutoTable.finalY || 30;
-    
+    var pageHeight = doc.internal.pageSize.getHeight();
     finalY+=10
   
     let updatedData={};
@@ -356,7 +356,12 @@ function Form(props) {
     var currentFont = "helvetica";
     sortedEntries.forEach(entry=>{
       entry=entry["data"]
+      
       finalY = finalY + 10;
+      if(finalY>pageHeight){
+        doc.addPage()
+        finalY=20
+      }
       doc.setFont(currentFont, 'bold').text(`${entry["state"]} by : `, 14, finalY);
       doc.setTextColor("#FF0000");
       doc.setFont(currentFont,'normal ').text(`${entry["created_by"]} on ${entry["log_create_dt"]}`, entry["state"].length+50, finalY,{textColor:[255,0,0]});
