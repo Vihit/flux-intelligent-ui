@@ -13,11 +13,10 @@
 }
 
 .dept-node {
-  color: var(--main);
-  fill: var(--accent);
+  background-color: var(--accent);
   font-family: "Poppins";
-  outline: 5px outset var(--dark);
-  outline-offset: -5px;
+  outline: 3px outset var(--dark);
+  outline-offset: -3px;
   cursor: pointer;
 }
 
@@ -31,4 +30,8 @@
 .nodes li {
   color: var(--dark);
   font-size: 15px;
+}
+
+.tree-org {
+  overflow-x: auto;
 }

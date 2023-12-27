@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import DagreGraph from "dagre-d3-react";
 import DepartmentEdit from "./DepartmentEdit";
+import OrgTree from "react-org-tree";
 
 function DepartmentMgmt(props) {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [selectedDept, setSelectedDept] = useState({});
   const [departments, setDepartments] = useState([]);
   const [users, setUsers] = useState([]);
-  const [deptNodes, setDeptNodes] = useState([]);
-  const [deptHierarchy, setDeptHierarchy] = useState([]);
   const [newDept, setNewDept] = useState(false);
   const [graphReady, setGraphReady] = useState(false);
+  const [treeData, setTreeData] = useState({});
 
   useEffect(() => {
     getDepartments();
@@ -54,65 +53,47 @@ function DepartmentMgmt(props) {
         }
       })
       .then((actualData) => {
-        // props.raiseAlert("green", "Fetched Roles!");
+        props.raiseAlert("green", "Fetched Departments!");
         setDepartments(actualData);
-        setDeptNodes((prev) => {
-          return actualData
-            .filter((d) => d.parentId >= 0)
-            .map((d) => {
-              return {
-                id: d.id + "",
-                label:
-                  "<p>" +
-                  d.name +
-                  "</p><li>" +
-                  (d.site != null ? "Site:" + d.site + "  " : "") +
-                  "Code:" +
-                  d.code +
-                  "</li>" +
-                  "<li>" +
-                  (d.hod != null ? "HOD:" + d.hod + "  " : "HOD :") +
-                  "</li>" +
-                  "<li>" +
-                  (d.designee1 != null
-                    ? "Designee-1:" + d.designee1 + "  "
-                    : "Designee-1 :") +
-                  "</li>" +
-                  "<li>" +
-                  (d.designee2 != null
-                    ? "Designee-2:" + d.designee2 + "  "
-                    : "Designee-2 :") +
-                  "</li>",
-                labelType: "html",
-                class: "dept-node",
-                site: d.site,
-                code: d.code,
-                parentId: d.parentId,
-                name: d.name,
-                hod: d.hod,
-                designee1: d.designee1,
-                designee2: d.designee2,
-              };
-            });
+        var rootDept = actualData.filter((d) => d.parentId == 0)[0];
+        var data = {
+          id: rootDept.id,
+          label: rootDept.name,
+          dept: rootDept,
+          children: [],
+        };
+        var otherDepts = actualData.filter((d) => d.parentId > 0);
+        otherDepts.sort(function (a, b) {
+          return a.id > b.id;
         });
-        setDeptHierarchy((prev) => {
-          return actualData
-            .filter((d) => d.parentId > 0)
-            .map((d) => {
-              return {
-                source: d.id + "",
-                target: d.parentId + "",
-              };
-            });
+
+        otherDepts.forEach((dept) => {
+          findAndAddChild(data, dept);
         });
+        setTreeData(data);
         setGraphReady(true);
       });
   }
 
-  function handleRowClick(node) {
+  function findAndAddChild(tree, dept) {
+    if (tree.id == dept.parentId) {
+      tree["children"].push({
+        id: dept.id,
+        label: dept.name,
+        dept: dept,
+        children: [],
+        onClick: handleRowClick,
+      });
+    } else {
+      tree.children.forEach((treeNode) => {
+        findAndAddChild(treeNode, dept);
+      });
+    }
+  }
+  function handleRowClick(e, node) {
     setGraphReady(false);
     setNewDept(false);
-    setSelectedDept(node.original);
+    setSelectedDept(node.dept);
     setToggleEdit(true);
   }
 
@@ -146,29 +127,16 @@ function DepartmentMgmt(props) {
       </div>
       <div className="f-dept-table">
         {graphReady && (
-          <DagreGraph
-            nodes={deptNodes}
-            links={deptHierarchy}
-            width="100%"
-            height="100%"
-            shape="rect"
-            // fitBoundaries
-            // options={{
-            //   rankdir: "BT",
-            //   ranksep: 100,
-            //   align: "UL",
-            //   ranker: "tight-tree",
-            // }}
-            zoomable
-            onNodeClick={(e) => handleRowClick(e)}
-            config={{
-              rankdir: "BT",
-              // align: "DL",
-              ranksep: 200,
-              ranker: "tight-tree",
-              edgesep: 20,
-            }}
-          ></DagreGraph>
+          <div className="tree-org">
+            <OrgTree
+              data={treeData}
+              horizontal={false}
+              collapsable={true}
+              expandAll={false}
+              labelClassName="dept-node"
+              onClick={handleRowClick}
+            />
+          </div>
         )}
       </div>
       {toggleEdit && selectedDept != {} && (
