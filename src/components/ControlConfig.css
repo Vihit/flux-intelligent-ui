@@ -102,7 +102,7 @@
   border-radius: 0px;
   width: 98%;
   font-size: 14px;
-  text-align: center;
+  /* text-align: center; */
   background-color: var(--grey);
   font-style: normal;
 }

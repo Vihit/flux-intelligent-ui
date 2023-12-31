@@ -300,7 +300,7 @@ function UserDashboard(props) {
           className="u-menu-head"
           onClick={() => handleTypeClicked("initiate")}
         >
-          Initiate Actions
+          Initiate Request
         </div>
         <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
           {iApps.map((a, inx) => {
@@ -328,7 +328,7 @@ function UserDashboard(props) {
           className="u-menu-head"
           onClick={() => handleTypeClicked("pending")}
         >
-          Pending Actions {pApps.length > 0 && <div className="p-not"></div>}
+          Pending Requests {pApps.length > 0 && <div className="p-not"></div>}
         </div>
         <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
           {pApps.map((a, inx) => {
@@ -359,7 +359,7 @@ function UserDashboard(props) {
           })}
         </div>
         <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
-          My Actions
+          My Requests
         </div>
         <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
           {aApps.map((a, inx) => {

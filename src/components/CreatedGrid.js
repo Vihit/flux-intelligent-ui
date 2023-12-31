@@ -123,6 +123,7 @@ function CreatedGrid(props) {
                     sendEntry={props.sendEntry}
                     gridKey={props.conf.key}
                     dataUpdated={props.dataUpdated}
+                    formId={props.formId}
                   ></CreatedCell>
                 );
               })}

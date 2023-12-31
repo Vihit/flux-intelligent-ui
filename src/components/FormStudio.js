@@ -664,6 +664,7 @@ function FormStudio(props) {
                 </div>
                 <div className="viz-option-container">
                   <ControlOption type="multiselect"></ControlOption>
+                  <ControlOption type="attachment"></ControlOption>
                 </div>
               </div>
             )}

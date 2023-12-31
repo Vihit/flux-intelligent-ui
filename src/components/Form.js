@@ -3,8 +3,8 @@ import CreatedCell from "./CreatedCell";
 import "./Form.css";
 import { config } from "./config";
 import CreatedGrid from "./CreatedGrid";
-import jsPDF from 'jspdf';
-import  autoTable   from "jspdf-autotable";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Form(props) {
   var obj = {};
@@ -25,7 +25,7 @@ function Form(props) {
       props.form.app.name === "Master Data Management")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].label
       : props.entry.state.split("-INPA")[0];
-  const [sortedEntries, setSortedEntries] =useState([]);
+  const [sortedEntries, setSortedEntries] = useState([]);
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -44,7 +44,7 @@ function Form(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
-  // console.log(disabledColumns);
+  console.log(props);
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
@@ -52,7 +52,6 @@ function Form(props) {
       });
     }
     setData(props.entry.id == -1 ? { id: -1 } : { ...props.entry, ...obj });
-
   }, []);
 
   function cancelESign() {
@@ -116,6 +115,9 @@ function Form(props) {
               finalData[ctrl.key] = data[ctrl.key];
             }
           });
+        finalData["_files"] = Object.keys(data)
+          .filter((k) => k.startsWith("_files_"))
+          .map((k) => data[k]);
         if (!check) sendEntry(finalData, to);
         else console.log("Check true");
         return true;
@@ -165,6 +167,9 @@ function Form(props) {
   }
 
   function sendEntry(finalData, to) {
+    let formData = new FormData();
+    finalData["_files"].forEach((f) => formData.append("files", f));
+    delete finalData["_files"];
     let gridColumns = conf
       .flatMap((f) => f)
       .filter((ctrl) => ctrl.type === "grid")
@@ -186,15 +191,19 @@ function Form(props) {
       gridData: gridData,
       initiator: props.entry.id == -1 ? null : props.entry.created_by,
     };
+
+    formData.append("body", JSON.stringify(logEntry));
+
+    // formData.append("files", finalData["_files"]);
     fetch(config.apiUrl + "entry/" + props.form.id, {
       method: props.entry.id == -1 ? "POST" : "PUT",
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        // "Content-Type": "multipart/form-data",
+        Accept: "multipart/form-data",
         Authorization:
           "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
       },
-      body: JSON.stringify(logEntry),
+      body: formData,
     }).then((response) => {
       if (response.ok) {
         props.closeInit(props.form);
@@ -294,86 +303,93 @@ function Form(props) {
 
   async function exportToPDF() {
     let sortedEntries = await props.entries
-    .filter((entry) => !entry.data["state"].endsWith("-INPA"))
-    .sort(function (a, b) {
-      return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
-    });
+      .filter((entry) => !entry.data["state"].endsWith("-INPA"))
+      .sort(function (a, b) {
+        return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
+      });
 
     const doc = new jsPDF();
 
-    doc.rect(0, 0, 210, 20, 'F', [204, 204, 204]);
-    var img = new Image()
-    img.src = "delogo1.png"
-    doc.addImage(img, 'png', 10, 2, 20, 15);
+    doc.rect(0, 0, 210, 20, "F", [204, 204, 204]);
+    var img = new Image();
+    img.src = "delogo1.png";
+    doc.addImage(img, "png", 10, 2, 20, 15);
     doc.setTextColor("#00ADB5");
     doc.text(` ${props.form.name}`, 100, 12, { maxWidth: 80 });
-    var client_logo = new Image()
-    client_logo.src = "client-logo.png"
-    doc.rect(189, 0, 25, 20, 'F', "#fff");
-    doc.addImage(client_logo, 'png', 190, 2, 20, 15);
+    var client_logo = new Image();
+    client_logo.src = "client-logo.png";
+    doc.rect(189, 0, 25, 20, "F", "#fff");
+    doc.addImage(client_logo, "png", 190, 2, 20, 15);
     doc.setTextColor(0, 0, 0);
     let finalY = doc.lastAutoTable.finalY || 30;
     var pageHeight = doc.internal.pageSize.getHeight();
-    finalY+=10
-  
-    let updatedData={};
+    finalY += 10;
 
-    for (let label of fLabels){
-      let actual_key=label.toLowerCase().replaceAll(" ", "_")
-      updatedData[label]=data[actual_key]
+    let updatedData = {};
+
+    for (let label of fLabels) {
+      let actual_key = label.toLowerCase().replaceAll(" ", "_");
+      updatedData[label] = data[actual_key];
     }
-    let keys=Object.keys(updatedData);
+    let keys = Object.keys(updatedData);
 
-    keys.forEach((key,index)=>{
-      if(index%4===0){
-        let lastIndex=index+4;
-        if(lastIndex>=keys.length){
-          lastIndex=keys.length;
+    keys.forEach((key, index) => {
+      if (index % 4 === 0) {
+        let lastIndex = index + 4;
+        if (lastIndex >= keys.length) {
+          lastIndex = keys.length;
         }
         autoTable(doc, {
-          head: [Object.keys(updatedData).slice(index,lastIndex)],
-          body: [Object.values(updatedData).slice(index,lastIndex)],
+          head: [Object.keys(updatedData).slice(index, lastIndex)],
+          body: [Object.values(updatedData).slice(index, lastIndex)],
           startY: finalY,
-          theme:"grid",
+          theme: "grid",
           styles: {
-            overflow: 'linebreak',
-            align: 'left',
+            overflow: "linebreak",
+            align: "left",
           },
-          headStyles: { 
+          headStyles: {
             fillColor: [255, 255, 255],
-            textColor:[0,0,0],
+            textColor: [0, 0, 0],
             lineColor: [128, 128, 128],
-            lineWidth: 0.1      
-          }
-          
+            lineWidth: 0.1,
+          },
         });
-        finalY = doc.lastAutoTable.finalY || 30
-        finalY+=5
+        finalY = doc.lastAutoTable.finalY || 30;
+        finalY += 5;
       }
-
-    })
+    });
     doc.setFontSize(10);
     var currentFont = "helvetica";
-    sortedEntries.forEach(entry=>{
-      entry=entry["data"]
-      
+    sortedEntries.forEach((entry) => {
+      entry = entry["data"];
+
       finalY = finalY + 10;
-      if(finalY>pageHeight){
-        doc.addPage()
-        finalY=20
+      if (finalY > pageHeight) {
+        doc.addPage();
+        finalY = 20;
       }
-      doc.setFont(currentFont, 'bold').text(`${entry["state"]} by : `, 14, finalY);
+      doc
+        .setFont(currentFont, "bold")
+        .text(`${entry["state"]} by : `, 14, finalY);
       doc.setTextColor("#FF0000");
-      doc.setFont(currentFont,'normal ').text(`${entry["created_by"]} on ${entry["log_create_dt"]}`, entry["state"].length+50, finalY,{textColor:[255,0,0]});
+      doc
+        .setFont(currentFont, "normal ")
+        .text(
+          `${entry["created_by"]} on ${entry["log_create_dt"]}`,
+          entry["state"].length + 50,
+          finalY,
+          { textColor: [255, 0, 0] }
+        );
       doc.setTextColor("#000000");
-    })
+    });
 
     var file_name =
-    "Form Entry_" +
-    props.form.name.replaceAll(" ", "_") +
-    "_" +
-    data.id +
-    ".pdf";
+      "Form Entry_" +
+      props.form.name.replaceAll(" ", "_") +
+      "_" +
+      data.id +
+      ".pdf";
 
     doc.save(file_name);
   }
@@ -413,7 +429,10 @@ function Form(props) {
                           : {}
                       }
                       key={"1" + idx + "" + inx}
-                      disabled={disabledColumns.includes(conf[idx][inx].key)}
+                      disabled={
+                        disabledColumns.includes(conf[idx][inx].key) ||
+                        props.type === "view"
+                      }
                       dataChanged={dataChanged}
                       type={"form"}
                       values={data[conf[idx][inx].key]}
@@ -425,6 +444,7 @@ function Form(props) {
                       formData={data}
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
+                      formId={props.form.id}
                     ></CreatedCell>
                   ) : (
                     <CreatedGrid
@@ -453,6 +473,7 @@ function Form(props) {
                       formData={data}
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
+                      formId={props.form.id}
                     ></CreatedGrid>
                   );
                 })}

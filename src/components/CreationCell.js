@@ -172,6 +172,9 @@ function CreationCell(props) {
             showArrow={true}
           ></Multiselect>
         )}
+        {props.conf.type === "attachment" && (
+          <input type="file" value={null} disabled></input>
+        )}
       </div>
     </div>
   );

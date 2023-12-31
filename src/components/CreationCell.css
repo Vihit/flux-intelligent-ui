@@ -110,6 +110,27 @@
   background-color: var(--white);
 }
 
+.cell-control > input[type="file"] {
+  text-align-last: left;
+  /* padding-left: 10px; */
+  /* border: 1px solid red; */
+  direction: ltr;
+  display: inline-block;
+  content: "Attach";
+  border-radius: none;
+  line-height: 40px;
+  background-color: var(--white);
+}
+
+input::file-selector-button {
+  background-color: dodgerblue;
+  color: white;
+  height: 100%;
+  float: left;
+  font-family: "Poppins";
+  cursor: pointer;
+}
+
 .cell-control > select {
   width: 98%;
   font-weight: normal;

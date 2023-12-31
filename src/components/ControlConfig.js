@@ -260,18 +260,20 @@ function ControlConfig(props) {
                     </select>
                   </div>
                 </div>
-                <div className="label-n-text">
-                  <div className="label">Placeholder</div>
-                  <div className="text">
-                    <input
-                      type="text"
-                      value={conf.placeholder}
-                      onChange={(e) =>
-                        confChanged("placeholder", e.target.value)
-                      }
-                    ></input>
+                {props.conf.type !== "attachment" && (
+                  <div className="label-n-text">
+                    <div className="label">Placeholder</div>
+                    <div className="text">
+                      <input
+                        type="text"
+                        value={conf.placeholder}
+                        onChange={(e) =>
+                          confChanged("placeholder", e.target.value)
+                        }
+                      ></input>
+                    </div>
                   </div>
-                </div>
+                )}
                 {props.conf.type === "button" && (
                   <div className="label-n-text">
                     <div className="label">Button Color</div>
@@ -443,7 +445,8 @@ function ControlConfig(props) {
         )}
         {conf.type !== "grid" &&
           conf.type !== "button" &&
-          conf.type !== "all-users" && (
+          conf.type !== "all-users" &&
+          conf.type !== "attachment" && (
             <div className="dtl">
               <div
                 className="dtl-head"
@@ -529,7 +532,8 @@ function ControlConfig(props) {
           )}
         {conf.type !== "grid" &&
           conf.type !== "button" &&
-          conf.type !== "all-users" && (
+          conf.type !== "all-users" &&
+          conf.type !== "attachment" && (
             <div className="dtl">
               <div className="dtl-head" onClick={() => toggle("api-details")}>
                 <div>API Call Details</div>

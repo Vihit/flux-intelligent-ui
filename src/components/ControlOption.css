@@ -68,6 +68,10 @@
   background-image: url("../../public/multiselect.png");
 }
 
+.attachment-png {
+  background-image: url("../../public/attachment.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;

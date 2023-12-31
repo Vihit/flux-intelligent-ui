@@ -41,6 +41,40 @@ function CreatedCell(props) {
     }
   }
 
+  function downloadAttachment() {
+    fetch(
+      config.apiUrl +
+        "attachment/" +
+        props.formId +
+        "/" +
+        props.formData.id +
+        "/" +
+        props.values,
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+      }
+    )
+      .then((response) => {
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", props.values);
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.parentNode.removeChild(link);
+      });
+  }
+
   function handleButtonClick(what) {
     let updatedValue =
       props.values == undefined ||
@@ -551,6 +585,24 @@ function CreatedCell(props) {
             }
             isObject={false}
           ></Multiselect>
+        )}
+        {props.conf.type === "attachment" && !props.disabled && (
+          <input
+            type="file"
+            onChange={(e) => {
+              changed(props.conf.key, e.target.files[0].name);
+              changed("_files_" + props.conf.key, e.target.files[0]);
+            }}
+          ></input>
+        )}
+        {props.conf.type === "attachment" && props.disabled && (
+          <div className="attachment-disabled">
+            <i
+              className="fa-solid fa-download a-download-icon"
+              onClick={downloadAttachment}
+            ></i>
+            <div className="attchment-name">{props.values}</div>
+          </div>
         )}
       </div>
     </div>
