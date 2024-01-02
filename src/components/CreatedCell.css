@@ -89,6 +89,16 @@
   opacity: 0.8;
 }
 
+.disabled-attachment-name {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  background-color: var(--grey);
+  height: 100%;
+  align-items: center;
+  opacity: 0.8;
+}
+
 .a-download-icon {
   cursor: pointer;
   background-color: dodgerblue;

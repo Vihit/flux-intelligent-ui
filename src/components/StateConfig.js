@@ -28,12 +28,7 @@ function StateConfig(props) {
       ? props.conf.viewableColumns
       : props.formColumns.map((col) => col.toLowerCase().replaceAll(" ", "_"))
   );
-  useEffect(() => {
-    console.log(props);
-    console.log();
-    //
-    //
-  }, []);
+  useEffect(() => {}, []);
 
   function toggle(what) {
     if (what === "basic-details") setToggleBasicDetails(!toggleBasicDetails);
@@ -64,6 +59,7 @@ function StateConfig(props) {
         let finalProp = splitWhat[i];
         obj[finalProp] = value;
       }
+      console.log(currConf);
       return currConf;
     });
     if (what === "final") {
@@ -170,6 +166,20 @@ function StateConfig(props) {
           {toggleBasicDetails && (
             <div className="dtls">
               <div className="label-n-text">
+                <div className="label">Name</div>
+                <div className="text">
+                  <input
+                    type="text"
+                    value={conf.name}
+                    onChange={(e) => confChanged("name", e.target.value)}
+                  ></input>
+                </div>
+              </div>
+            </div>
+          )}
+          {toggleBasicDetails && (
+            <div className="dtls">
+              <div className="label-n-text">
                 <div className="label">Label</div>
                 <div className="text">
                   <input
@@ -225,12 +235,12 @@ function StateConfig(props) {
                       .filter(
                         (st) =>
                           st.id !== props.currCell &&
-                          !prevStates.includes(st.label)
+                          !prevStates.includes(st.name)
                       )
                       .map((state, idx) => {
                         return (
                           <option key={idx} value={state.id}>
-                            {state.label}
+                            {state.name + " | " + state.label}
                           </option>
                         );
                       })}
@@ -285,21 +295,17 @@ function StateConfig(props) {
                   </select>
                 </div>
               </div>
-
-              {props.conf.type === "select" && (
-                <div className="label-n-text">
-                  <div className="label">Values</div>
-                  <div className="text">
-                    <input
-                      type="text"
-                      value={conf.selectValues}
-                      onChange={(e) =>
-                        confChanged("selectValues", e.target.value)
-                      }
-                    ></input>
-                  </div>
+              <div className="label-n-text">
+                <div className="label">Condition</div>
+                <div className="text">
+                  <textarea
+                    value={conf.stateCondition}
+                    onChange={(e) =>
+                      confChanged("stateCondition", e.target.value)
+                    }
+                  ></textarea>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>

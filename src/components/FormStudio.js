@@ -120,6 +120,8 @@ function FormStudio(props) {
                 isFirstState: st.firstState,
                 viewableColumns: st.visibleColumns.split(","),
                 writableColumns: st.disabledColumns.split(","),
+                name: st.name,
+                stateCondition: st.stateCondition,
               };
             })
           : []
@@ -475,12 +477,13 @@ function FormStudio(props) {
         return {
           stateId: st.id,
           workflowId: workflowConf.id,
-          name: st.label,
+          name: st.name,
           label: st.label,
           visibleColumns: st.viewableColumns.join(","),
           disabledColumns: st.writableColumns.join(","),
           endState: st.isLastState,
           firstState: st.isFirstState,
+          stateCondition: st.stateCondition,
           roles: st.selectedRoles.map((r) => {
             return { id: r };
           }),

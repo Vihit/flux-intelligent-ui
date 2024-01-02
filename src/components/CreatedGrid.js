@@ -124,6 +124,7 @@ function CreatedGrid(props) {
                     gridKey={props.conf.key}
                     dataUpdated={props.dataUpdated}
                     formId={props.formId}
+                    raiseAlert={props.raiseAlert}
                   ></CreatedCell>
                 );
               })}

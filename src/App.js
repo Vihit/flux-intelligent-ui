@@ -35,14 +35,17 @@ function App() {
     // }, 500000);
   }, []);
 
-  function raiseAlert(type, message) {
+  function raiseAlert(type, message, time) {
     setAlert(true);
     setAlertContent(message);
     setColor("var(--" + type + ")");
-    const timeId = setTimeout(() => {
-      setAlert(false);
-      setAlertContent("");
-    }, 500);
+    const timeId = setTimeout(
+      () => {
+        setAlert(false);
+        setAlertContent("");
+      },
+      time == undefined ? 500 : time
+    );
   }
 
   function loginHandler() {

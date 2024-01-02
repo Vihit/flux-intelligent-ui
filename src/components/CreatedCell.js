@@ -5,7 +5,27 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
-  // console.log(props.values);
+  const now = new Date();
+  const dateMax =
+    props.conf.dateMaxValue != undefined &&
+    props.conf.dateMaxValue != null &&
+    props.conf.dateMaxValue != ""
+      ? new Date(
+          now.getTime() +
+            props.conf.dateMaxValue * 24 * 60 * 60 * 1000 -
+            now.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .substring(0, 19)
+      : null;
+  const dateMin =
+    props.conf.dateMinValue != undefined &&
+    props.conf.dateMinValue != null &&
+    props.conf.dateMinValue != ""
+      ? new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .substring(0, 19)
+      : null;
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -35,7 +55,22 @@ function CreatedCell(props) {
             props.dataChanged(what, arr.join(","));
           }
         } else {
-          props.dataChanged(what, value);
+          if (props.conf.type === "datetime") {
+            const cVal = value;
+            var fVal = "";
+            if (cVal >= dateMin && cVal <= dateMax) {
+              fVal = cVal;
+            } else if (cVal < dateMin) {
+              props.raiseAlert("red", "Minimum date could be " + dateMin, 3000);
+              fVal = dateMin;
+            } else {
+              props.raiseAlert("red", "Maximum date could be " + dateMax, 3000);
+              fVal = dateMax;
+            }
+            props.dataChanged(what, fVal);
+          } else {
+            props.dataChanged(what, value);
+          }
         }
       }
     }
@@ -467,9 +502,20 @@ function CreatedCell(props) {
         )}
         {props.conf.type === "datetime" && (
           <input
+            id={props.conf.key}
             type="datetime-local"
-            placeholder={props.conf.placeholder}
-            value={props.values}
+            value={
+              (props.values == undefined || props.values == null) &&
+              props.conf.dateDefaultValue != ""
+                ? props.conf.dateDefaultValue === "sysdate"
+                  ? new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .substring(0, 19)
+                  : new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .substring(0, 19)
+                : props.values
+            }
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
@@ -597,11 +643,13 @@ function CreatedCell(props) {
         )}
         {props.conf.type === "attachment" && props.disabled && (
           <div className="attachment-disabled">
-            <i
-              className="fa-solid fa-download a-download-icon"
-              onClick={downloadAttachment}
-            ></i>
-            <div className="attchment-name">{props.values}</div>
+            {props.values != undefined && (
+              <i
+                className="fa-solid fa-download a-download-icon"
+                onClick={downloadAttachment}
+              ></i>
+            )}
+            <div className="disabled-attachment-name">{props.values}</div>
           </div>
         )}
       </div>

@@ -21,21 +21,19 @@ function Form(props) {
   const currState =
     props.entry.id == -1 ||
     (props.entry.state ===
-      props.form.workflow.states.filter((st) => st.endState)[0].label &&
+      props.form.workflow.states.filter((st) => st.endState)[0].name &&
       props.form.app.name === "Master Data Management")
-      ? props.form.workflow.states.filter((st) => st.firstState)[0].label
+      ? props.form.workflow.states.filter((st) => st.firstState)[0].name
       : props.entry.state.split("-INPA")[0];
   const [sortedEntries, setSortedEntries] = useState([]);
-  const toStates = props.form.workflow.transitions
-    .filter(
-      (t) =>
-        t.fromState.id ==
-        props.form.workflow.states.filter((st) => st.label === currState)[0].id
-    )
-    .map((t) => t.toState.label);
+  const toStates = props.form.workflow.transitions.filter(
+    (t) =>
+      t.fromState.id ==
+      props.form.workflow.states.filter((st) => st.name === currState)[0].id
+  );
 
   const stateConfig = props.form.workflow.states.filter(
-    (st) => st.label === currState
+    (st) => st.name === currState
   )[0];
   const disabledColumns = stateConfig.disabledColumns.split(",");
   const viewableColumns = stateConfig.visibleColumns.split(",");
@@ -44,7 +42,6 @@ function Form(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
-  console.log(props);
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
@@ -185,8 +182,7 @@ function Form(props) {
       state: to,
       endState: to.endsWith("-INPA")
         ? false
-        : props.form.workflow.states.filter((st) => st.label === to)[0]
-            .endState,
+        : props.form.workflow.states.filter((st) => st.name === to)[0].endState,
       data: dataWithoutGrids,
       gridData: gridData,
       initiator: props.entry.id == -1 ? null : props.entry.created_by,
@@ -445,6 +441,7 @@ function Form(props) {
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
+                      raiseAlert={props.raiseAlert}
                     ></CreatedCell>
                   ) : (
                     <CreatedGrid
@@ -474,6 +471,7 @@ function Form(props) {
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
+                      raiseAlert={props.raiseAlert}
                     ></CreatedGrid>
                   );
                 })}
@@ -482,15 +480,24 @@ function Form(props) {
           })}
         <div className="btn-controls">
           {(props.type !== "view" || props.form.type === "master") &&
-            toStates.map((ts, ind) => (
-              <div
-                key={ind}
-                onClick={() => submitEntry(ts)}
-                className="create-btn"
-              >
-                {ts}
-              </div>
-            ))}
+            toStates
+              .filter(
+                (t) =>
+                  t.toState.stateCondition == undefined ||
+                  t.toState.stateCondition == null ||
+                  t.toState.stateCondition === "" ||
+                  eval(t.toState.stateCondition)
+              )
+              // .map((t) => t.toState.label)
+              .map((ts, ind) => (
+                <div
+                  key={ind}
+                  onClick={() => submitEntry(ts.toState.name)}
+                  className="create-btn"
+                >
+                  {ts.toState.label}
+                </div>
+              ))}
           <div className="cancel-btn" onClick={() => props.cancel(false)}>
             Cancel
           </div>

@@ -3,9 +3,11 @@ import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { Box, Typography } from "@mui/material";
-import { Fullscreen } from "@mui/icons-material";
+import { Box, Typography, Button } from "@mui/material";
+import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Reports(props) {
   const [reports, setReports] = useState([]);
@@ -88,6 +90,28 @@ function Reports(props) {
     });
   }
 
+  const handleExportRows = (rows) => {
+    const doc = new jsPDF("p", "pt");
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = reportData.header.map((c) => c.header);
+
+    var header = function (data) {
+      console.log(doc);
+      doc.setFontSize(18);
+      doc.setTextColor(40);
+      // doc.setFontStyle("normal");
+      //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
+      doc.text(activeReport.name, data.settings.margin.left, 50);
+    };
+
+    doc.autoTable(tableHeaders, tableData, {
+      margin: { top: 80 },
+      beforePageContent: header,
+    });
+
+    doc.save("mrt-pdf-example.pdf");
+  };
+
   function closeWindow() {
     setNewReport(false);
     setReportEdit(false);
@@ -157,6 +181,25 @@ function Reports(props) {
                     >
                       {activeReport.name}
                     </Typography>
+                    <Button
+                      disabled={
+                        table.getPrePaginationRowModel().rows.length === 0
+                      }
+                      //export all rows, including from the next page, (still respects filtering and sorting)
+                      onClick={() =>
+                        handleExportRows(table.getPrePaginationRowModel().rows)
+                      }
+                      style={{
+                        background: "var(--green)",
+                        color: "white",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        fontFamily: "Poppins",
+                        boxShadow: "2px 2px 2px #00000055",
+                      }}
+                    >
+                      {<GetApp />} &nbsp;Download Report
+                    </Button>
                   </Box>
                 )}
                 muiTableContainerProps={{
