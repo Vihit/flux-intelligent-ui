@@ -112,8 +112,6 @@
 
 .cell-control > input[type="file"] {
   text-align-last: left;
-  /* padding-left: 10px; */
-  /* border: 1px solid red; */
   direction: ltr;
   display: inline-block;
   content: "Attach";
@@ -129,6 +127,9 @@ input::file-selector-button {
   float: left;
   font-family: "Poppins";
   cursor: pointer;
+  border-radius: 12px 0px 0px 12px;
+  outline: 3px outset dodgerblue;
+  outline-offset: -3px;
 }
 
 .cell-control > select {
