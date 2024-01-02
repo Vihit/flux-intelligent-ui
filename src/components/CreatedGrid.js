@@ -5,7 +5,6 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  // console.log(props);
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);

@@ -227,7 +227,6 @@ function Form(props) {
             delete obj[ctrl.key];
           }
         });
-      // console.log(currData);
       return currData;
     });
     setUpdateCount((prev) => prev + 1);
@@ -246,13 +245,10 @@ function Form(props) {
         return matches.map((match) => match.split(/{|}/)[1]).includes(on);
       }
     } else if (of.referApi != undefined && JSON.parse(of.referApi)) {
-      // console.log(of);
       var apiDetail = of.apiUrl + " " + of.apiBody;
       var reg = /\${(\w+)}/g;
       var matches = apiDetail.match(reg);
-      // console.log(matches);
       if (matches != null) {
-        // console.log(matches.map((match) => match.split(/{|}/)[1]).includes(on));
         return matches.map((match) => match.split(/{|}/)[1]).includes(on);
       }
     }

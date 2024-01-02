@@ -79,9 +79,7 @@ function FormStudio(props) {
   const [transitions, setTransitions] = useState([]);
 
   useEffect(() => {
-    // console.log(location);
     if (location.state != null) {
-      console.log(location.state);
       const template = JSON.parse(location.state.template);
       setLayout((prev) => {
         return template.layout;
@@ -247,7 +245,6 @@ function FormStudio(props) {
       let rowToBeUpdated = prev[row];
       rowToBeUpdated.push(0);
       currLayout.splice(row, rowToBeUpdated);
-      console.log(currLayout);
       return currLayout;
     });
     setConf((prev) => {
@@ -266,7 +263,6 @@ function FormStudio(props) {
       rowToBeUpdated.pop();
       if (rowToBeUpdated.length === 0) currLayout.splice(row, 1);
       else currLayout.splice(row, rowToBeUpdated);
-      console.log(currLayout);
       return currLayout;
     });
     setConf((prev) => {
@@ -294,7 +290,6 @@ function FormStudio(props) {
         confToBeUpdated.pop();
         confToBeUpdated.push(emptyGridConf);
         currConf.splice(row, confToBeUpdated);
-        console.log(currConf);
         return currConf;
       });
     }
@@ -322,7 +317,6 @@ function FormStudio(props) {
   }
 
   function saveConfFor(cell, updatedConf) {
-    console.log(updatedConf);
     setConf((prev) => {
       let currConf = [...prev];
       let confToBeUpdated = prev[cell.row];
@@ -331,15 +325,12 @@ function FormStudio(props) {
     });
     setConfVisible(false);
     setCurrCell({ row: -1, col: -1 });
-    console.log(conf);
   }
   function saveStateConfFor(cell, updatedConf) {
-    console.log("saving");
     setStates((prev) => {
       let currStates = [...prev];
       let confToBeUpdated = currStates.filter((st) => st.id !== cell);
       confToBeUpdated.push(updatedConf);
-      console.log(confToBeUpdated);
       return confToBeUpdated;
     });
     setStateConfVisible(false);
@@ -399,7 +390,6 @@ function FormStudio(props) {
   }
 
   function openConfForState(event) {
-    console.log(event);
     setCurrStateId(event.original.id);
     setStateConfVisible(!stateConfVisible);
   }
@@ -462,10 +452,6 @@ function FormStudio(props) {
   function removeTransition(from, to) {
     setTransitions((prev) => {
       let toBeUpdated = [...prev];
-      console.log(from + "-" + to);
-      console.log(
-        toBeUpdated.filter((t) => !(t.source == from && t.target == to))
-      );
       return toBeUpdated.filter((t) => !(t.source == from && t.target == to));
     });
   }
@@ -499,7 +485,6 @@ function FormStudio(props) {
         };
       }),
     };
-    console.log(transitions);
     fetch(config.apiUrl + "states/", {
       method: "PUT",
       headers: {

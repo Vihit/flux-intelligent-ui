@@ -29,7 +29,6 @@ function AuditMgmt(props) {
 
   useEffect(() => {
     getAuditLogs();
-    console.log(pagination);
   }, [pagination.pageIndex]);
 
   function getAuditLogs() {

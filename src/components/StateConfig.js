@@ -59,7 +59,6 @@ function StateConfig(props) {
         let finalProp = splitWhat[i];
         obj[finalProp] = value;
       }
-      console.log(currConf);
       return currConf;
     });
     if (what === "final") {
@@ -217,7 +216,6 @@ function StateConfig(props) {
                       if (e.target.value != -1) {
                         props.addTransition(e.target.value, props.currCell);
                         setPrevStates((prev) => {
-                          console.log(props.states);
                           let toBeUpdated = [...prev];
                           toBeUpdated.push(
                             props.states.filter(

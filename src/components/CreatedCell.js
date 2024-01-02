@@ -40,7 +40,6 @@ function CreatedCell(props) {
   );
   const [usersData, setUsersData] = useState([]);
   function changed(what, value) {
-    // console.log("Changed:" + what + " Value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -171,7 +170,6 @@ function CreatedCell(props) {
         }
       })
       .then((actualData) => {
-        console.log(actualData);
         setUsersData((prev) => {
           return actualData
             .filter((aD) => aD["username"] !== "admin")
@@ -260,11 +258,6 @@ function CreatedCell(props) {
         .then((actualData) => {
           if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-            // console.log(
-            //   props.values == undefined
-            //     ? refMulData.selected
-            //     : props.values.split(",").concat(refMulData.selected)
-            // );
           } else if (props.conf.type === "text") {
             const arr = [];
             arr.push(actualData.value);
@@ -279,7 +272,6 @@ function CreatedCell(props) {
         });
     }
     if (props.conf.type === "user" && !props.disabled) {
-      // console.log(props);
       changed(
         props.conf.key,
         JSON.parse(localStorage.getItem("user"))[

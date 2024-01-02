@@ -53,7 +53,6 @@ function AppCard(props) {
   }
 
   const openInNewTab = () => {
-    console.log(localStorage.getItem("access"));
     let windowName = localStorage.getItem("access");
     window.open(props.app.url, windowName);
   };

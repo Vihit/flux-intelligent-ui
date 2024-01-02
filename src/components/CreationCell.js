@@ -7,7 +7,7 @@ import { config } from "./config";
 function CreationCell(props) {
   const [isGrid, setIsGrid] = useState(props.gridControl);
   const [viz, setViz] = useState(props.conf.type);
-  // console.log(props);
+
   const [{ isOver }, drop] = useDrop({
     accept: "control-option",
     drop: (item, monitor) => {
@@ -19,7 +19,6 @@ function CreationCell(props) {
   });
 
   function vizDropped(item) {
-    console.log("viz dropped");
     setViz(item.name);
     props.vizChosen(item.name, props.rowId, props.colId);
   }

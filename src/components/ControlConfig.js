@@ -42,9 +42,7 @@ function ControlConfig(props) {
     allUserKey: "",
   };
 
-  useEffect(() => {
-    console.log(props);
-  }, []);
+  useEffect(() => {}, []);
 
   function toggle(what) {
     if (what === "basic-details") setToggleBasicDetails(!toggleBasicDetails);
@@ -59,12 +57,9 @@ function ControlConfig(props) {
 
   function confChanged(what, value) {
     let currConf = { ...conf };
-    console.log(currConf);
-    console.log(props);
+
     setConf((prev) => {
-      console.log(what);
       if (what === "final") {
-        console.log(props);
         if (
           currConf.type === "grid" &&
           parseInt(currConf.numCols) != currConf.controls.length
@@ -74,14 +69,11 @@ function ControlConfig(props) {
             currConf.controls.push(emptyControlConf)
           );
         }
-        console.log(props);
         if (JSON.parse(props.gridConf)) {
           let gridConf = [...props.fullConf[props.currCell.row][0].controls];
           gridConf.splice(props.currCell.col, 1, currConf);
-          console.log(gridConf);
           props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
         } else {
-          console.log(props);
           props.saveConf(props.currCell, currConf);
         }
       } else {
@@ -109,15 +101,12 @@ function ControlConfig(props) {
           currConf.controls.push(emptyControlConf)
         );
       }
-      console.log(props);
       if (props.gridConf) {
         let gridConf = { ...props.fullConf[props.currCell.row][0] };
         let gridControls = gridConf.controls;
         gridControls.splice(props.currCell.col, 1, currConf);
-        console.log(gridConf);
         props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
       } else {
-        console.log(props);
         props.saveConf(props.currCell, currConf);
       }
     } else {

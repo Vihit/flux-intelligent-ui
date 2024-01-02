@@ -67,7 +67,6 @@ function Reports(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Reports!");
-        console.log(cReport.columns);
         setReportData((prev) => {
           return {
             header: cReport.columns.split(",").map((col) => {
@@ -96,7 +95,6 @@ function Reports(props) {
     const tableHeaders = reportData.header.map((c) => c.header);
 
     var header = function (data) {
-      console.log(doc);
       doc.setFontSize(18);
       doc.setTextColor(40);
       // doc.setFontStyle("normal");

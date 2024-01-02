@@ -152,7 +152,6 @@ function UserDashboard(props) {
           "id," +
           f.columns +
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
-        console.log(f);
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
           .filter((ctrl) => ctrl.type !== "grid")
@@ -196,7 +195,6 @@ function UserDashboard(props) {
         setTableData({ rows: rows, header: matCols });
         setSelectedForm(f);
         setSelectionUpdate((prev) => prev + 1);
-        console.log(rows);
       });
   }
 
@@ -268,7 +266,6 @@ function UserDashboard(props) {
   }
 
   function handleFormClick(type, f) {
-    console.log("Handling form click");
     setSelectedType(type);
     if (type === "initiate" || type === "view") {
       getLogEntries(f);
