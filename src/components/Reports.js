@@ -107,7 +107,7 @@ function Reports(props) {
       beforePageContent: header,
     });
 
-    doc.save("mrt-pdf-example.pdf");
+    doc.save(activeReport.name.toLowerCase().replaceAll(" ", "_") + ".pdf");
   };
 
   function closeWindow() {
