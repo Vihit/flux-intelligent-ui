@@ -388,11 +388,13 @@ function Form(props) {
   return (
     <div className="analytics-preview">
       <div className="viz-preview-details">
-        <div className="viz-name">{props.form.name}</div>
+        <div className="viz-name big-font">{props.form.name}</div>
         <div className="grow"></div>
-        <div className="download-btn" onClick={exportToPDF}>
-          Download
-        </div>
+        {props.type === "view" && (
+          <div className="download-btn" onClick={exportToPDF}>
+            Download
+          </div>
+        )}
         <div className="close-icon">
           <i
             className="fa-solid fa-close"
@@ -405,7 +407,17 @@ function Form(props) {
           layout.map((rows, idx) => {
             return (
               <div
-                className="created-row"
+                className={
+                  rows.filter(
+                    (row, inx) =>
+                      !(
+                        viewableColumns.includes(conf[idx][inx].key) &&
+                        checkConditionalVisibility(conf[idx][inx])
+                      )
+                  ).length > 0
+                    ? "close-flex"
+                    : "created-row"
+                }
                 // style={{ height: "calc(100%/" + layout.length + ")" }}
               >
                 {rows.map((row, inx) => {
