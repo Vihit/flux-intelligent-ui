@@ -159,6 +159,13 @@
   align-items: center;
 }
 
+.big-font {
+  font-size: 28px !important;
+  font-weight: bold;
+  font-family: "Poppins";
+  /* color: white; */
+}
+
 .form-viz-name {
   width: 50%;
   display: flex;
