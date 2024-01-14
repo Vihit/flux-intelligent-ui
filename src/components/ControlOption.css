@@ -72,6 +72,10 @@
   background-image: url("../../public/attachment.png");
 }
 
+.section-heading-png {
+  background-image: url("../../public/section-heading.png");
+}
+
 .control-name {
   font-size: 14px;
   width: 50%;

@@ -235,21 +235,25 @@ function ControlConfig(props) {
             </div>
             {toggleDataDetails && (
               <div className="dtls">
-                <div className="label-n-text">
-                  <div className="label">Required</div>
-                  <div className="text">
-                    <select
-                      value={conf.isRequired}
-                      onChange={(e) =>
-                        confChanged("isRequired", JSON.parse(e.target.value))
-                      }
-                    >
-                      <option value={false}>No</option>
-                      <option value={true}>Yes</option>
-                    </select>
+                {!["section-heading"].includes(props.conf.type) && (
+                  <div className="label-n-text">
+                    <div className="label">Required</div>
+                    <div className="text">
+                      <select
+                        value={conf.isRequired}
+                        onChange={(e) =>
+                          confChanged("isRequired", JSON.parse(e.target.value))
+                        }
+                      >
+                        <option value={false}>No</option>
+                        <option value={true}>Yes</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-                {!["attachment", "datetime"].includes(props.conf.type) && (
+                )}
+                {!["attachment", "datetime", "section-heading"].includes(
+                  props.conf.type
+                ) && (
                   <div className="label-n-text">
                     <div className="label">Placeholder</div>
                     <div className="text">
@@ -473,9 +477,14 @@ function ControlConfig(props) {
             )}
           </div>
         )}
-        {!["grid", "button", "all-users", "attachment", "datetime"].includes(
-          conf.type
-        ) && (
+        {![
+          "grid",
+          "button",
+          "all-users",
+          "attachment",
+          "datetime",
+          "section-heading",
+        ].includes(conf.type) && (
           <div className="dtl">
             <div
               className="dtl-head"
@@ -559,9 +568,14 @@ function ControlConfig(props) {
             )}
           </div>
         )}
-        {!["grid", "button", "all-users", "attachment", "datetime"].includes(
-          conf.type
-        ) && (
+        {![
+          "grid",
+          "button",
+          "all-users",
+          "attachment",
+          "datetime",
+          "section-heading",
+        ].includes(conf.type) && (
           <div className="dtl">
             <div className="dtl-head" onClick={() => toggle("api-details")}>
               <div>API Call Details</div>

@@ -354,20 +354,33 @@ function CreatedCell(props) {
       <div
         className={
           (props.gridControl
-            ? props.conf.type === "button" && props.rowNum > 0
+            ? (props.conf.type === "button" ||
+                props.conf.type === "section-heading") &&
+              props.rowNum > 0
               ? "close-flex "
               : "cell-name-grid "
-            : "cell-name ") + (props.rowNum > 0 ? "" : "")
+            : "cell-name ") +
+          (props.rowNum > 0 ? "" : "") +
+          (props.conf.type === "section-heading" ? "close-flex" : "")
         }
       >
-        {props.conf.type !== "button" && (
-          <div className={props.rowNum > 0 ? "hidden-header" : ""}>
-            {props.conf.label}
-            {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
-          </div>
-        )}
+        {props.conf.type !== "button" &&
+          props.conf.type !== "section-heading" && (
+            <div className={props.rowNum > 0 ? "hidden-header" : ""}>
+              {props.conf.label}
+              {props.conf.isRequired && (
+                <span style={{ color: "red" }}> *</span>
+              )}
+            </div>
+          )}
       </div>
-      <div className="cell-control">
+      <div
+        className={
+          props.conf.type === "button" || props.conf.type === "section-heading"
+            ? "btn-cell-control"
+            : "cell-control"
+        }
+      >
         {props.conf.type === "text" && (
           <input
             type="text"
@@ -643,6 +656,9 @@ function CreatedCell(props) {
             )}
             <div className="disabled-attachment-name">{props.values}</div>
           </div>
+        )}
+        {props.conf.type === "section-heading" && (
+          <div className="section-heading-ctrl">{props.conf.label}</div>
         )}
       </div>
     </div>

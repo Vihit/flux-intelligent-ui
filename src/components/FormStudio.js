@@ -404,7 +404,7 @@ function FormStudio(props) {
       workflow: {},
       columns: conf
         .flatMap((f) => f)
-        .filter((c) => c.label !== "")
+        .filter((c) => c.label !== "" && c.type !== "section-heading")
         .map((c) => c.label.toLowerCase().replaceAll(" ", "_"))
         .reduce((a, b) => a + "," + b),
       type:
@@ -653,6 +653,7 @@ function FormStudio(props) {
                 <div className="viz-option-container">
                   <ControlOption type="multiselect"></ControlOption>
                   <ControlOption type="attachment"></ControlOption>
+                  <ControlOption type="section-heading"></ControlOption>
                 </div>
               </div>
             )}

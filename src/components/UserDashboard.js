@@ -154,7 +154,7 @@ function UserDashboard(props) {
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => ctrl.type !== "grid")
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
           .map((c) => c.label)
           .concat([
             "ID",

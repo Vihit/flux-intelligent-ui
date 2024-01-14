@@ -46,7 +46,9 @@ function CreationCell(props) {
       <div
         className={
           (props.gridControl ? "cell-name-grid " : "cell-name ") +
-          (props.conf.type === "button" ? " close-flex" : "")
+          (props.conf.type === "button" || props.conf.type === "section-heading"
+            ? " close-flex"
+            : "")
         }
       >
         <div>
@@ -56,7 +58,9 @@ function CreationCell(props) {
       </div>
       <div
         className={
-          props.conf.type === "button" ? "btn-cell-control" : "cell-control"
+          props.conf.type === "button" || props.conf.type === "section-heading"
+            ? "btn-cell-control"
+            : "cell-control"
         }
       >
         {props.conf.type === "text" && (
@@ -173,6 +177,9 @@ function CreationCell(props) {
         )}
         {props.conf.type === "attachment" && (
           <input type="file" value={null} disabled></input>
+        )}
+        {props.conf.type === "section-heading" && (
+          <div className="section-heading-ctrl">{props.conf.label}</div>
         )}
       </div>
     </div>

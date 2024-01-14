@@ -182,3 +182,18 @@ input::file-selector-button {
   color: #ffffff00;
   height: 0px;
 }
+
+.section-heading-ctrl {
+  /* border-top: 2px double red;
+  border-bottom: 2px double red; */
+  background-color: var(--main);
+  color: var(--white);
+  /* border: none; */
+  padding: 5px 0px;
+  font-size: 16px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

@@ -10,7 +10,7 @@ function LogAudit(props) {
   const parsedForm = JSON.parse(props.form.template);
   const fLabels = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
-    .filter((ctrl) => ctrl.type !== "grid")
+    .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
     .map((c) => c.label);
   const gridControls = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
