@@ -120,6 +120,7 @@ function FormStudio(props) {
                 writableColumns: st.disabledColumns.split(","),
                 name: st.name,
                 stateCondition: st.stateCondition,
+                sendNotification: st.sendNotification,
               };
             })
           : []
@@ -384,6 +385,7 @@ function FormStudio(props) {
         selectedDepartments: [],
         isLastState: false,
         isFirstState: false,
+        sendNotification: false,
       });
       return toBeUpdated;
     });
@@ -476,6 +478,7 @@ function FormStudio(props) {
           departments: st.selectedDepartments.map((r) => {
             return { id: r };
           }),
+          sendNotification: st.sendNotification,
         };
       }),
       transitions: transitions.map((t) => {

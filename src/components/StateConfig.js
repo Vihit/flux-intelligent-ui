@@ -47,6 +47,11 @@ function StateConfig(props) {
         currConf["selectedDepartments"] = selectedDepartments;
         currConf["viewableColumns"] = viewableColumns;
         currConf["writableColumns"] = writableColumns;
+        currConf["class"] = currConf.isFirstState
+          ? "start-node"
+          : currConf.isLastState
+          ? "end-node"
+          : "success-node";
         props.saveConf(props.currCell, currConf);
       } else {
         let currConf = { ...conf };
@@ -302,6 +307,23 @@ function StateConfig(props) {
                       confChanged("stateCondition", e.target.value)
                     }
                   ></textarea>
+                </div>
+              </div>
+              <div className="label-n-text">
+                <div className="label">Send Notification</div>
+                <div className="text">
+                  <select
+                    value={conf.sendNotification}
+                    onChange={(e) =>
+                      confChanged(
+                        "sendNotification",
+                        JSON.parse(e.target.value)
+                      )
+                    }
+                  >
+                    <option value={false}>No</option>
+                    <option value={true}>Yes</option>
+                  </select>
                 </div>
               </div>
             </div>
