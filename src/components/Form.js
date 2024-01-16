@@ -26,11 +26,13 @@ function Form(props) {
       ? props.form.workflow.states.filter((st) => st.firstState)[0].name
       : props.entry.state.split("-INPA")[0];
   const [sortedEntries, setSortedEntries] = useState([]);
-  const toStates = props.form.workflow.transitions.filter(
-    (t) =>
-      t.fromState.id ==
-      props.form.workflow.states.filter((st) => st.name === currState)[0].id
-  );
+  const toStates = props.form.workflow.transitions
+    .filter(
+      (t) =>
+        t.fromState.id ==
+        props.form.workflow.states.filter((st) => st.name === currState)[0].id
+    )
+    .sort((a, b) => a.toState.id - b.toState.id);
 
   const stateConfig = props.form.workflow.states.filter(
     (st) => st.name === currState
