@@ -118,7 +118,12 @@ function StateConfig(props) {
     setViewableColumns((prev) => {
       let toBeUpdated = [...prev];
       if (value) toBeUpdated.push(column);
-      else toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
+      else {
+        toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
+        if (column === conf["userAccessField"]) {
+          confChanged("userAccessField", "");
+        }
+      }
       return toBeUpdated;
     });
   }
@@ -414,6 +419,31 @@ function StateConfig(props) {
                     </div>
                   );
                 })}
+              </div>
+              <div className="label-n-text">
+                <div className="label">User Access Field</div>
+                <div className="text">
+                  <select
+                    value={conf.userAccessField}
+                    onChange={(e) =>
+                      confChanged("userAccessField", e.target.value)
+                    }
+                  >
+                    <option value={""}>Choose a Field</option>
+                    {viewableColumns.map((col, idx) => {
+                      return (
+                        <option key={idx} value={col}>
+                          {
+                            props.formColumns.filter(
+                              (fcol) =>
+                                fcol.toLowerCase().replaceAll(" ", "_") === col
+                            )[0]
+                          }
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
             </div>
           )}

@@ -472,6 +472,7 @@ function FormStudio(props) {
           endState: st.isLastState,
           firstState: st.isFirstState,
           stateCondition: st.stateCondition,
+          userAccessField: st.userAccessField,
           roles: st.selectedRoles.map((r) => {
             return { id: r };
           }),
