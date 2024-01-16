@@ -53,6 +53,8 @@ function Navbar(props) {
           .then((response) => {
             if (response.ok) {
               return response.json();
+            } else {
+              props.onLogout();
             }
           })
           .then((actualData) => {

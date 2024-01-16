@@ -12,6 +12,7 @@ import AppDashboard from "./components/AppDashboard";
 import PlatformSetup from "./components/platform/PlatformSetup";
 import jwt from "jwt-decode";
 import Reports from "./components/Reports";
+import IdleTimer from "./components/IdleTimer";
 
 function App() {
   const [alert, setAlert] = useState(false);
@@ -27,7 +28,6 @@ function App() {
         : false
       : false
   );
-
   let history = useHistory();
   useEffect(() => {
     // setInterval(() => {
@@ -58,6 +58,11 @@ function App() {
     setLoggedIn(false);
   }
 
+  const handleTimeout = () => {
+    logoutHandler();
+    raiseAlert("red", "User has been logged out due to inactivity", 5000);
+  };
+
   return (
     <div>
       <div
@@ -87,6 +92,7 @@ function App() {
       {loggedIn && (
         <div>
           <div>
+            <IdleTimer onTimeout={handleTimeout} />
             <Route exact path="/">
               <Dashboard raiseAlert={raiseAlert}></Dashboard>
             </Route>
