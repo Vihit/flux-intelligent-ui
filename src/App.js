@@ -16,8 +16,10 @@ import IdleTimer from "./components/IdleTimer";
 
 function App() {
   const [alert, setAlert] = useState(false);
+  const [alertTime, setAlertTime] = useState(500);
   const [alertContent, setAlertContent] = useState("");
   const [color, setColor] = useState("");
+  const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("access") != "undefined" &&
       localStorage.getItem("access") != null
@@ -29,6 +31,7 @@ function App() {
       : false
   );
   let history = useHistory();
+  let timeId = null;
   useEffect(() => {
     // setInterval(() => {
     //   renewToken();
@@ -36,16 +39,26 @@ function App() {
   }, []);
 
   function raiseAlert(type, message, time) {
-    setAlert(true);
-    setAlertContent(message);
-    setColor("var(--" + type + ")");
-    const timeId = setTimeout(
-      () => {
-        setAlert(false);
-        setAlertContent("");
-      },
-      time == undefined ? 500 : time
-    );
+    if (type !== "loading") {
+      setAlert(true);
+      setAlertContent(message);
+      setColor("var(--" + type + ")");
+      if (timeId != null) {
+        clearTimeout(timeId);
+      }
+      if (time == undefined || time <= 500) {
+        setAlertTime(500);
+        timeId = setTimeout(() => {
+          setAlert(false);
+          setAlertContent("");
+        }, 500);
+      } else {
+        setAlertTime(time);
+      }
+    } else {
+      if (message === "start") setLoading(true);
+      else setLoading(false);
+    }
   }
 
   function loginHandler() {
@@ -65,11 +78,18 @@ function App() {
 
   return (
     <div>
+      <div className={loading ? "loading " : "close-flex "}>
+        <div className="loading-inner">
+          <div className="small-e-line"></div>
+        </div>
+      </div>
       <div
-        style={{ backgroundColor: color }}
-        className={"notification " + (alert ? "" : " notification-hidden")}
+        className={
+          "notification " +
+          (alert || alertTime > 500 ? "" : " notification-hidden")
+        }
       >
-        <div className="notif-icon">
+        <div style={{ backgroundColor: color }} className="notif-icon">
           {color === "var(--green)" && (
             <i className="fa-solid fa-circle-check"></i>
           )}
@@ -77,9 +97,22 @@ function App() {
             <i className="fa-solid fa-circle-exclamation"></i>
           )}
         </div>
-        <div className="not-msg">
+        <div style={{ backgroundColor: color }} className="not-msg">
           <div>{alertContent}</div>
         </div>
+        {alertTime > 500 && (
+          <div
+            style={{ color: color, borderColor: color }}
+            className="ok-btn"
+            onClick={() => {
+              setAlert(false);
+              setAlertContent("");
+              setAlertTime(500);
+            }}
+          >
+            Ok
+          </div>
+        )}
       </div>
       <Navbar
         raiseAlert={raiseAlert}
@@ -90,7 +123,7 @@ function App() {
         <Login raiseAlert={raiseAlert} onLogin={loginHandler}></Login>
       ) : null}
       {loggedIn && (
-        <div>
+        <div className={loading ? "inactive " : ""}>
           <div>
             <IdleTimer onTimeout={handleTimeout} />
             <Route exact path="/">

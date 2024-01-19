@@ -641,8 +641,14 @@ function CreatedCell(props) {
           <input
             type="file"
             onChange={(e) => {
-              changed(props.conf.key, e.target.files[0].name);
-              changed("_files_" + props.conf.key, e.target.files[0]);
+              changed(
+                props.conf.key,
+                e.target.files.length > 0 ? e.target.files[0].name : ""
+              );
+              changed(
+                "_files_" + props.conf.key,
+                e.target.files.length > 0 ? e.target.files[0] : null
+              );
             }}
           ></input>
         )}

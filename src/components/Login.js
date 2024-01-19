@@ -29,7 +29,7 @@ function Login(props) {
       .then((response) => {
         if (response.ok) return response.json();
         else {
-          props.raiseAlert("red", "Username or Password incorrect!");
+          props.raiseAlert("red", "Username or Password incorrect!", 3000);
           throw new Error("Login unsuccessful!");
         }
       })

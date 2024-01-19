@@ -130,6 +130,7 @@ input::file-selector-button {
   border-radius: 12px 0px 0px 12px;
   outline: 3px outset dodgerblue;
   outline-offset: -3px;
+  margin: auto 5px;
 }
 
 .cell-control > select {

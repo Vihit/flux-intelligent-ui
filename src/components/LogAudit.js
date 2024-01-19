@@ -69,6 +69,11 @@ function LogAudit(props) {
         "_" +
         props.entries[0].data.log_entry_id +
         ".pdf";
+      const pageCount = pdf.internal.getNumberOfPages();
+      console.log("pagecount is " + pageCount);
+      for (var i = 1; i <= pageCount; i++) {
+        pdf.text(String(i), 196, 285);
+      }
       pdf.save(file);
     });
     for (let download of downloads) {
@@ -134,6 +139,29 @@ function LogAudit(props) {
       });
       finalY = doc.lastAutoTable.finalY;
     });
+    const pageCount = doc.internal.getNumberOfPages();
+    console.log("pagecount is " + pageCount);
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))["fullName"];
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var pageWidth =
+        doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString(),
+        200
+      );
+      doc.text(splits, pageWidth / 2, 295, { align: "center" });
+      doc.setFont(undefined, "normal", "normal");
+      doc.text(String(i), 196, 285);
+    }
     var file_name =
       "Audit_trail_" +
       props.form.name.replaceAll(" ", "_") +

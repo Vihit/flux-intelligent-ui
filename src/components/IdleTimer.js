@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 const IdleTimer = ({ onTimeout }) => {
   const sessionTimeout =
-    localStorage.getItem("user") != "undefined" &&
+    localStorage.getItem("user") != undefined &&
     localStorage.getItem("user") != null
-      ? JSON.parse(localStorage.getItem("user"))["sessionTimeout"] * 60 * 1000
+      ? JSON.parse(localStorage.getItem("user"))["sessionTimeout"] != undefined
+        ? JSON.parse(localStorage.getItem("user"))["sessionTimeout"] * 60 * 1000
+        : 10 * 60 * 1000
       : 10 * 60 * 1000;
   const [idle, setIdle] = useState(false);
   let timeoutId;
@@ -17,7 +19,6 @@ const IdleTimer = ({ onTimeout }) => {
   };
 
   useEffect(() => {
-    console.log(sessionTimeout);
     resetTimeout();
     window.addEventListener("click", resetTimeout);
     window.addEventListener("mousemove", resetTimeout);

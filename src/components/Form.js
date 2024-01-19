@@ -99,7 +99,7 @@ function Form(props) {
               checkConditionalVisibility(ctrl) &&
               check == false
             ) {
-              props.raiseAlert("red", "Please fill up " + ctrl.label);
+              props.raiseAlert("red", "Please fill up " + ctrl.label, 3000);
               check = true;
             }
           });
@@ -121,7 +121,7 @@ function Form(props) {
         else console.log("Check true");
         return true;
       } else {
-        props.raiseAlert("red", "Error while authenticating!");
+        props.raiseAlert("red", "Error while authenticating!", 3000);
         return false;
       }
     });
@@ -140,7 +140,7 @@ function Form(props) {
           checkConditionalVisibility(ctrl) &&
           check == false
         ) {
-          props.raiseAlert("red", "Please fill up " + ctrl.label);
+          props.raiseAlert("red", "Please fill up " + ctrl.label, 3000);
           check = true;
         }
       });
@@ -166,6 +166,7 @@ function Form(props) {
   }
 
   function sendEntry(finalData, to) {
+    props.raiseAlert("loading", "start");
     let formData = new FormData();
     finalData["_files"].forEach((f) => formData.append("files", f));
     delete finalData["_files"];
@@ -204,8 +205,12 @@ function Form(props) {
       body: formData,
     }).then((response) => {
       if (response.ok) {
+        props.raiseAlert("loading", "end");
         props.closeInit(props.form);
         props.raiseAlert("green", "Entry submitted!");
+      } else {
+        props.raiseAlert("red", "Some error occurred!", 3000);
+        props.raiseAlert("loading", "end");
       }
     });
   }
