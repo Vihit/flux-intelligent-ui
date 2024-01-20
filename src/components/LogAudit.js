@@ -140,7 +140,6 @@ function LogAudit(props) {
       finalY = doc.lastAutoTable.finalY;
     });
     const pageCount = doc.internal.getNumberOfPages();
-    console.log("pagecount is " + pageCount);
     var now = new Date();
     const user = JSON.parse(localStorage.getItem("user"))["fullName"];
     for (var i = 1; i <= pageCount; i++) {

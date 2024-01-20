@@ -93,19 +93,56 @@ function Reports(props) {
     const doc = new jsPDF("p", "pt");
     const tableData = rows.map((row) => Object.values(row.original));
     const tableHeaders = reportData.header.map((c) => c.header);
-
+    var pageWidth =
+      doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+    var pageHeight =
+      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
     var header = function (data) {
+      doc.rect(0, 0, pageWidth, 40, "F", [204, 204, 204]);
+      var img = new Image();
+      img.src = "delogo1.png";
+      doc.addImage(img, "png", 10, 5, pageWidth / 12, 30);
+      doc.setFontSize(18);
+      doc.setTextColor("white");
+      doc.text(activeReport.name, pageWidth / 2, 25, { align: "center" });
+      var client_logo = new Image();
+      client_logo.src = "client-logo.png";
+      doc.rect(pageWidth * 0.9, 1, pageWidth * 0.1, 38, "F", "#fff");
+      doc.addImage(client_logo, "png", pageWidth * 0.9, 2, pageWidth * 0.1, 35);
+      doc.setTextColor(0, 0, 0);
       doc.setFontSize(18);
       doc.setTextColor(40);
       // doc.setFontStyle("normal");
       //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
-      doc.text(activeReport.name, data.settings.margin.left, 50);
     };
 
     doc.autoTable(tableHeaders, tableData, {
-      margin: { top: 80 },
+      margin: { top: 50, left: 14, right: 14 },
       beforePageContent: header,
     });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))[
+      "fullName"
+    ].replaceAll("null", "");
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString(),
+        pageWidth - 28
+      );
+      doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
+      doc.setFont(undefined, "normal", "normal");
+      doc.text(String(i), pageWidth - 15, pageHeight - 10);
+    }
 
     doc.save(activeReport.name.toLowerCase().replaceAll(" ", "_") + ".pdf");
   };
