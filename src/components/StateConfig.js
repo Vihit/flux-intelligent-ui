@@ -28,12 +28,7 @@ function StateConfig(props) {
       ? props.conf.viewableColumns
       : props.formColumns.map((col) => col.toLowerCase().replaceAll(" ", "_"))
   );
-  useEffect(() => {
-    console.log(props);
-    console.log();
-    //
-    //
-  }, []);
+  useEffect(() => {}, []);
 
   function toggle(what) {
     if (what === "basic-details") setToggleBasicDetails(!toggleBasicDetails);
@@ -52,6 +47,11 @@ function StateConfig(props) {
         currConf["selectedDepartments"] = selectedDepartments;
         currConf["viewableColumns"] = viewableColumns;
         currConf["writableColumns"] = writableColumns;
+        currConf["class"] = currConf.isFirstState
+          ? "start-node"
+          : currConf.isLastState
+          ? "end-node"
+          : "success-node";
         props.saveConf(props.currCell, currConf);
       } else {
         let currConf = { ...conf };
@@ -118,7 +118,12 @@ function StateConfig(props) {
     setViewableColumns((prev) => {
       let toBeUpdated = [...prev];
       if (value) toBeUpdated.push(column);
-      else toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
+      else {
+        toBeUpdated.splice(toBeUpdated.indexOf(column), 1);
+        if (column === conf["userAccessField"]) {
+          confChanged("userAccessField", "");
+        }
+      }
       return toBeUpdated;
     });
   }
@@ -170,6 +175,20 @@ function StateConfig(props) {
           {toggleBasicDetails && (
             <div className="dtls">
               <div className="label-n-text">
+                <div className="label">Name</div>
+                <div className="text">
+                  <input
+                    type="text"
+                    value={conf.name}
+                    onChange={(e) => confChanged("name", e.target.value)}
+                  ></input>
+                </div>
+              </div>
+            </div>
+          )}
+          {toggleBasicDetails && (
+            <div className="dtls">
+              <div className="label-n-text">
                 <div className="label">Label</div>
                 <div className="text">
                   <input
@@ -207,7 +226,6 @@ function StateConfig(props) {
                       if (e.target.value != -1) {
                         props.addTransition(e.target.value, props.currCell);
                         setPrevStates((prev) => {
-                          console.log(props.states);
                           let toBeUpdated = [...prev];
                           toBeUpdated.push(
                             props.states.filter(
@@ -225,12 +243,12 @@ function StateConfig(props) {
                       .filter(
                         (st) =>
                           st.id !== props.currCell &&
-                          !prevStates.includes(st.label)
+                          !prevStates.includes(st.name)
                       )
                       .map((state, idx) => {
                         return (
                           <option key={idx} value={state.id}>
-                            {state.label}
+                            {state.name + " | " + state.label}
                           </option>
                         );
                       })}
@@ -285,21 +303,34 @@ function StateConfig(props) {
                   </select>
                 </div>
               </div>
-
-              {props.conf.type === "select" && (
-                <div className="label-n-text">
-                  <div className="label">Values</div>
-                  <div className="text">
-                    <input
-                      type="text"
-                      value={conf.selectValues}
-                      onChange={(e) =>
-                        confChanged("selectValues", e.target.value)
-                      }
-                    ></input>
-                  </div>
+              <div className="label-n-text">
+                <div className="label">Condition</div>
+                <div className="text">
+                  <textarea
+                    value={conf.stateCondition}
+                    onChange={(e) =>
+                      confChanged("stateCondition", e.target.value)
+                    }
+                  ></textarea>
                 </div>
-              )}
+              </div>
+              <div className="label-n-text">
+                <div className="label">Send Notification</div>
+                <div className="text">
+                  <select
+                    value={conf.sendNotification}
+                    onChange={(e) =>
+                      confChanged(
+                        "sendNotification",
+                        JSON.parse(e.target.value)
+                      )
+                    }
+                  >
+                    <option value={false}>No</option>
+                    <option value={true}>Yes</option>
+                  </select>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -388,6 +419,31 @@ function StateConfig(props) {
                     </div>
                   );
                 })}
+              </div>
+              <div className="label-n-text">
+                <div className="label">User Access Field</div>
+                <div className="text">
+                  <select
+                    value={conf.userAccessField}
+                    onChange={(e) =>
+                      confChanged("userAccessField", e.target.value)
+                    }
+                  >
+                    <option value={""}>Choose a Field</option>
+                    {viewableColumns.map((col, idx) => {
+                      return (
+                        <option key={idx} value={col}>
+                          {
+                            props.formColumns.filter(
+                              (fcol) =>
+                                fcol.toLowerCase().replaceAll(" ", "_") === col
+                            )[0]
+                          }
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
             </div>
           )}

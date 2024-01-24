@@ -42,9 +42,7 @@ function ControlConfig(props) {
     allUserKey: "",
   };
 
-  useEffect(() => {
-    console.log(props);
-  }, []);
+  useEffect(() => {}, []);
 
   function toggle(what) {
     if (what === "basic-details") setToggleBasicDetails(!toggleBasicDetails);
@@ -59,12 +57,9 @@ function ControlConfig(props) {
 
   function confChanged(what, value) {
     let currConf = { ...conf };
-    console.log(currConf);
-    console.log(props);
+
     setConf((prev) => {
-      console.log(what);
       if (what === "final") {
-        console.log(props);
         if (
           currConf.type === "grid" &&
           parseInt(currConf.numCols) != currConf.controls.length
@@ -74,14 +69,11 @@ function ControlConfig(props) {
             currConf.controls.push(emptyControlConf)
           );
         }
-        console.log(props);
         if (JSON.parse(props.gridConf)) {
           let gridConf = [...props.fullConf[props.currCell.row][0].controls];
           gridConf.splice(props.currCell.col, 1, currConf);
-          console.log(gridConf);
           props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
         } else {
-          console.log(props);
           props.saveConf(props.currCell, currConf);
         }
       } else {
@@ -109,15 +101,12 @@ function ControlConfig(props) {
           currConf.controls.push(emptyControlConf)
         );
       }
-      console.log(props);
       if (props.gridConf) {
         let gridConf = { ...props.fullConf[props.currCell.row][0] };
         let gridControls = gridConf.controls;
         gridControls.splice(props.currCell.col, 1, currConf);
-        console.log(gridConf);
         props.saveConf({ row: props.currCell.row, col: 0 }, gridConf);
       } else {
-        console.log(props);
         props.saveConf(props.currCell, currConf);
       }
     } else {
@@ -246,32 +235,38 @@ function ControlConfig(props) {
             </div>
             {toggleDataDetails && (
               <div className="dtls">
-                <div className="label-n-text">
-                  <div className="label">Required</div>
-                  <div className="text">
-                    <select
-                      value={conf.isRequired}
-                      onChange={(e) =>
-                        confChanged("isRequired", JSON.parse(e.target.value))
-                      }
-                    >
-                      <option value={false}>No</option>
-                      <option value={true}>Yes</option>
-                    </select>
+                {!["section-heading"].includes(props.conf.type) && (
+                  <div className="label-n-text">
+                    <div className="label">Required</div>
+                    <div className="text">
+                      <select
+                        value={conf.isRequired}
+                        onChange={(e) =>
+                          confChanged("isRequired", JSON.parse(e.target.value))
+                        }
+                      >
+                        <option value={false}>No</option>
+                        <option value={true}>Yes</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <div className="label-n-text">
-                  <div className="label">Placeholder</div>
-                  <div className="text">
-                    <input
-                      type="text"
-                      value={conf.placeholder}
-                      onChange={(e) =>
-                        confChanged("placeholder", e.target.value)
-                      }
-                    ></input>
+                )}
+                {!["attachment", "datetime", "section-heading"].includes(
+                  props.conf.type
+                ) && (
+                  <div className="label-n-text">
+                    <div className="label">Placeholder</div>
+                    <div className="text">
+                      <input
+                        type="text"
+                        value={conf.placeholder}
+                        onChange={(e) =>
+                          confChanged("placeholder", e.target.value)
+                        }
+                      ></input>
+                    </div>
                   </div>
-                </div>
+                )}
                 {props.conf.type === "button" && (
                   <div className="label-n-text">
                     <div className="label">Button Color</div>
@@ -328,10 +323,9 @@ function ControlConfig(props) {
                     </div>
                   </div>
                 )}
-                {(props.conf.type === "select" ||
-                  props.conf.type === "radio" ||
-                  props.conf.type === "checkbox" ||
-                  props.conf.type === "multiselect") && (
+                {["select", "radio", "checkbox", "multiselect"].includes(
+                  props.conf.type
+                ) && (
                   <div className="label-n-text">
                     <div className="label">Values</div>
                     <div className="text">
@@ -439,170 +433,220 @@ function ControlConfig(props) {
                 </div>
               </div>
             )}
+            {conf.type === "datetime" && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">Default Value</div>
+                  <div className="text">
+                    <select
+                      value={conf.dateDefaultValue}
+                      onChange={(e) =>
+                        confChanged("dateDefaultValue", e.target.value)
+                      }
+                    >
+                      <option value="">None</option>
+                      <option value="sysdate">Current Timestamp</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="label-n-text">
+                  <div className="label">Max Value (+days)</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={conf.dateMaxValue}
+                      onChange={(e) =>
+                        confChanged("dateMaxValue", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
+                <div className="label-n-text">
+                  <div className="label">Min Value (-days)</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={conf.dateMinValue}
+                      onChange={(e) =>
+                        confChanged("dateMinValue", e.target.value)
+                      }
+                    ></input>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
-        {conf.type !== "grid" &&
-          conf.type !== "button" &&
-          conf.type !== "all-users" && (
-            <div className="dtl">
-              <div
-                className="dtl-head"
-                onClick={() => toggle("reference-data-details")}
-              >
-                <div>Reference Data Details</div>
-                {toggleReferenceDataDetails && (
-                  <div>
-                    <i className="fa-solid fa-minus"></i>
-                  </div>
-                )}
-                {!toggleReferenceDataDetails && (
-                  <div>
-                    <i className="fa-solid fa-plus"></i>
-                  </div>
-                )}
-              </div>
+        {![
+          "grid",
+          "button",
+          "all-users",
+          "attachment",
+          "datetime",
+          "section-heading",
+        ].includes(conf.type) && (
+          <div className="dtl">
+            <div
+              className="dtl-head"
+              onClick={() => toggle("reference-data-details")}
+            >
+              <div>Reference Data Details</div>
               {toggleReferenceDataDetails && (
-                <div className="dtls">
-                  <div className="label-n-text">
-                    <div className="label">Reference Data</div>
-                    <div className="text">
-                      <select
-                        value={conf.referData}
-                        onChange={(e) =>
-                          confChanged("referData", JSON.parse(e.target.value))
-                        }
-                      >
-                        <option value={false}>No</option>
-                        <option value={true}>Yes</option>
-                      </select>
-                    </div>
-                  </div>
-                  {conf.referData && (
-                    <div className="label-n-text">
-                      <div className="label">Master</div>
-                      <div className="text">
-                        <select
-                          value={conf.referenceMaster}
-                          onChange={(e) =>
-                            confChanged("referenceMaster", e.target.value)
-                          }
-                        >
-                          <option value="">Select Master</option>
-                          {props.masters.map((mstr, inx) => {
-                            return (
-                              <option key={inx} value={mstr.name}>
-                                {mstr.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <select
-                          value={conf.referenceColumn}
-                          onChange={(e) =>
-                            confChanged("referenceColumn", e.target.value)
-                          }
-                        >
-                          <option value="">Select Master Column</option>
-                          {conf.referenceMaster !== "" &&
-                            props.masters
-                              .filter((f) => f.name === conf.referenceMaster)[0]
-                              .columns.split(",")
-                              .concat("id")
-                              .map((col, inx) => {
-                                return <option value={col}>{col}</option>;
-                              })}
-                        </select>
-                        <input
-                          type="text"
-                          value={conf.referenceFilterQuery}
-                          placeholder="API Filter Query"
-                          onChange={(e) =>
-                            confChanged("referenceFilterQuery", e.target.value)
-                          }
-                        ></input>
-                      </div>
-                    </div>
-                  )}
+                <div>
+                  <i className="fa-solid fa-minus"></i>
+                </div>
+              )}
+              {!toggleReferenceDataDetails && (
+                <div>
+                  <i className="fa-solid fa-plus"></i>
                 </div>
               )}
             </div>
-          )}
-        {conf.type !== "grid" &&
-          conf.type !== "button" &&
-          conf.type !== "all-users" && (
-            <div className="dtl">
-              <div className="dtl-head" onClick={() => toggle("api-details")}>
-                <div>API Call Details</div>
-                {toggleApiCallDetails && (
-                  <div>
-                    <i className="fa-solid fa-minus"></i>
+            {toggleReferenceDataDetails && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">Reference Data</div>
+                  <div className="text">
+                    <select
+                      value={conf.referData}
+                      onChange={(e) =>
+                        confChanged("referData", JSON.parse(e.target.value))
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
                   </div>
-                )}
-                {!toggleApiCallDetails && (
-                  <div>
-                    <i className="fa-solid fa-plus"></i>
+                </div>
+                {conf.referData && (
+                  <div className="label-n-text">
+                    <div className="label">Master</div>
+                    <div className="text">
+                      <select
+                        value={conf.referenceMaster}
+                        onChange={(e) =>
+                          confChanged("referenceMaster", e.target.value)
+                        }
+                      >
+                        <option value="">Select Master</option>
+                        {props.masters.map((mstr, inx) => {
+                          return (
+                            <option key={inx} value={mstr.name}>
+                              {mstr.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <select
+                        value={conf.referenceColumn}
+                        onChange={(e) =>
+                          confChanged("referenceColumn", e.target.value)
+                        }
+                      >
+                        <option value="">Select Master Column</option>
+                        {conf.referenceMaster !== "" &&
+                          props.masters
+                            .filter((f) => f.name === conf.referenceMaster)[0]
+                            .columns.split(",")
+                            .concat("id")
+                            .map((col, inx) => {
+                              return <option value={col}>{col}</option>;
+                            })}
+                      </select>
+                      <input
+                        type="text"
+                        value={conf.referenceFilterQuery}
+                        placeholder="API Filter Query"
+                        onChange={(e) =>
+                          confChanged("referenceFilterQuery", e.target.value)
+                        }
+                      ></input>
+                    </div>
                   </div>
                 )}
               </div>
+            )}
+          </div>
+        )}
+        {![
+          "grid",
+          "button",
+          "all-users",
+          "attachment",
+          "datetime",
+          "section-heading",
+        ].includes(conf.type) && (
+          <div className="dtl">
+            <div className="dtl-head" onClick={() => toggle("api-details")}>
+              <div>API Call Details</div>
               {toggleApiCallDetails && (
-                <div className="dtls">
-                  <div className="label-n-text">
-                    <div className="label">API Call</div>
-                    <div className="text">
-                      <select
-                        value={conf.referApi}
-                        onChange={(e) =>
-                          confChanged("referApi", JSON.parse(e.target.value))
-                        }
-                      >
-                        <option value={false}>No</option>
-                        <option value={true}>Yes</option>
-                      </select>
-                    </div>
-                  </div>
-                  {conf.referApi && (
-                    <div className="label-n-text">
-                      <div className="label">API</div>
-                      <div className="text">
-                        <input
-                          type="text"
-                          value={conf.apiUrl}
-                          placeholder="URL"
-                          onChange={(e) =>
-                            confChanged("apiUrl", e.target.value)
-                          }
-                        ></input>
-                        <select
-                          value={conf.apiMethod}
-                          onChange={(e) =>
-                            confChanged("apiMethod", e.target.value)
-                          }
-                        >
-                          <option value="">Select API Method</option>
-                          <option value="GET">GET</option>
-                          <option value="POST">POST</option>
-                          <option value="PUT">PUT</option>
-                        </select>
-                        {(conf.apiMethod === "PUT" ||
-                          conf.apiMethod === "POST") && (
-                          <textarea
-                            className="normal-height"
-                            type="text"
-                            rows="1"
-                            value={conf.apiBody}
-                            placeholder="Body"
-                            onChange={(e) =>
-                              confChanged("apiBody", e.target.value)
-                            }
-                          ></textarea>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                <div>
+                  <i className="fa-solid fa-minus"></i>
+                </div>
+              )}
+              {!toggleApiCallDetails && (
+                <div>
+                  <i className="fa-solid fa-plus"></i>
                 </div>
               )}
             </div>
-          )}
+            {toggleApiCallDetails && (
+              <div className="dtls">
+                <div className="label-n-text">
+                  <div className="label">API Call</div>
+                  <div className="text">
+                    <select
+                      value={conf.referApi}
+                      onChange={(e) =>
+                        confChanged("referApi", JSON.parse(e.target.value))
+                      }
+                    >
+                      <option value={false}>No</option>
+                      <option value={true}>Yes</option>
+                    </select>
+                  </div>
+                </div>
+                {conf.referApi && (
+                  <div className="label-n-text">
+                    <div className="label">API</div>
+                    <div className="text">
+                      <input
+                        type="text"
+                        value={conf.apiUrl}
+                        placeholder="URL"
+                        onChange={(e) => confChanged("apiUrl", e.target.value)}
+                      ></input>
+                      <select
+                        value={conf.apiMethod}
+                        onChange={(e) =>
+                          confChanged("apiMethod", e.target.value)
+                        }
+                      >
+                        <option value="">Select API Method</option>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                      </select>
+                      {(conf.apiMethod === "PUT" ||
+                        conf.apiMethod === "POST") && (
+                        <textarea
+                          className="normal-height"
+                          type="text"
+                          rows="1"
+                          value={conf.apiBody}
+                          placeholder="Body"
+                          onChange={(e) =>
+                            confChanged("apiBody", e.target.value)
+                          }
+                        ></textarea>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         {conf.type === "button" && (
           <div className="dtl">
             <div

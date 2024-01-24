@@ -7,7 +7,6 @@ function UserEdit(props) {
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
 
-  console.log(props.user);
   useEffect(() => {
     getDepartments();
     getRoles();

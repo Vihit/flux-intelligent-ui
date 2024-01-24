@@ -152,10 +152,9 @@ function UserDashboard(props) {
           "id," +
           f.columns +
           ",state,created_by,log_create_dt,updated_by,log_update_dt";
-        console.log(f);
         var fLabels = JSON.parse(f.template)
           ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => ctrl.type !== "grid")
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
           .map((c) => c.label)
           .concat([
             "ID",
@@ -196,7 +195,6 @@ function UserDashboard(props) {
         setTableData({ rows: rows, header: matCols });
         setSelectedForm(f);
         setSelectionUpdate((prev) => prev + 1);
-        console.log(rows);
       });
   }
 
@@ -268,7 +266,6 @@ function UserDashboard(props) {
   }
 
   function handleFormClick(type, f) {
-    console.log("Handling form click");
     setSelectedType(type);
     if (type === "initiate" || type === "view") {
       getLogEntries(f);
@@ -300,7 +297,7 @@ function UserDashboard(props) {
           className="u-menu-head"
           onClick={() => handleTypeClicked("initiate")}
         >
-          Initiate Actions
+          Initiate Request
         </div>
         <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
           {iApps.map((a, inx) => {
@@ -328,7 +325,7 @@ function UserDashboard(props) {
           className="u-menu-head"
           onClick={() => handleTypeClicked("pending")}
         >
-          Pending Actions {pApps.length > 0 && <div className="p-not"></div>}
+          Pending Requests {pApps.length > 0 && <div className="p-not"></div>}
         </div>
         <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
           {pApps.map((a, inx) => {
@@ -359,7 +356,7 @@ function UserDashboard(props) {
           })}
         </div>
         <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
-          My Actions
+          My Requests
         </div>
         <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
           {aApps.map((a, inx) => {

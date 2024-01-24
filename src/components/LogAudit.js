@@ -1,17 +1,16 @@
 import "./LogAudit.css";
 import html2canvas from "html2canvas";
-import jsPDF from 'jspdf';
-import  autoTable   from "jspdf-autotable";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import delogo from "../delogo1.png";
 import { useEffect, useState } from "react";
 import { config } from "./config.js";
 
 function LogAudit(props) {
-  console.log(props);
   const parsedForm = JSON.parse(props.form.template);
   const fLabels = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
-    .filter((ctrl) => ctrl.type !== "grid")
+    .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
     .map((c) => c.label);
   const gridControls = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
@@ -46,15 +45,12 @@ function LogAudit(props) {
       const imgData = canvas.toDataURL("image/svg", 1.0);
       const htmlHeight = canvas.height;
       let pdf = new jsPDF("p", "px", "a4");
-      console.log(pdf.internal.pageSize.getWidth());
-      console.log(pdf.internal.pageSize.getHeight());
+
       var pdfHeight = pdf.internal.pageSize.getHeight();
       var pdfWidth = pdf.internal.pageSize.getWidth();
       canvas.setAttribute("width", pdfWidth);
       var totalPDFPages = Math.ceil(htmlHeight / pdfHeight);
-      console.log("img height " + htmlHeight);
-      console.log("Page height " + pdfHeight);
-      console.log("Total pages " + totalPDFPages);
+
       for (var i = 0; i < totalPDFPages; i++) {
         pdf.addImage(
           imgData,
@@ -73,6 +69,11 @@ function LogAudit(props) {
         "_" +
         props.entries[0].data.log_entry_id +
         ".pdf";
+      const pageCount = pdf.internal.getNumberOfPages();
+      console.log("pagecount is " + pageCount);
+      for (var i = 1; i <= pageCount; i++) {
+        pdf.text(String(i), 196, 285);
+      }
       pdf.save(file);
     });
     for (let download of downloads) {
@@ -87,57 +88,86 @@ function LogAudit(props) {
     input.classList.add("height-limit");
   }
 
-  function newAuditReportDownload(){
+  function newAuditReportDownload() {
+    const doc = new jsPDF();
 
-      const doc = new jsPDF();
-      
-      doc.rect(0, 0, 210, 20, 'F', [204, 204, 204]);
-      var img = new Image()
-      img.src = "delogo1.png"
-      doc.addImage(img, 'png', 10, 2, 20, 15);
-      doc.setFontSize(12)
-      doc.setTextColor("#00ADB5");
-      doc.text(`Audit for ${props.form.name} Entry #${props.entries[0].data.log_entry_id}`, 100, 12);
-      var client_logo = new Image()
-      client_logo.src = "client-logo.png"
-      doc.rect(189, 0, 25, 20, 'F', "#fff");
-      doc.addImage(client_logo, 'png', 190, 2, 20, 15);
-      doc.setTextColor(0, 0, 0);
-      var finalY = doc.lastAutoTable.finalY || 30;
-      doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
-      doc.text(`Request Id  : ${props.entries[0].data.log_entry_id}`, 14, finalY+10);
-  
-      sortedEntries.forEach((element,index) => {
-        let currentData=element["data"]
-        finalY = finalY + 20;
-        doc.text(`Target State : ${currentData["state"]}`, 14, finalY);
-        finalY = finalY + 5;
-        doc.setFontSize(10)
-        doc.text(`Performed by  : ${currentData["created_by"]}`, 14, finalY);
-        finalY = finalY + 5;
-        doc.setFontSize(12)
-        let oldData={}
-        if(index>0){
-          oldData=sortedEntries[index-1]['data']
-        }
-        const keyValueArray = fLabels.map((key) =>{ 
-          let actual_key=key.toLowerCase().replaceAll(" ", "_")
-           return  [key,oldData[actual_key] ,currentData[actual_key]]
-        });
-        autoTable(doc, {
-          head: [['Reference', 'Old Value', 'New Value']],
-          body: keyValueArray,
-          startY: finalY
-        });
-        finalY = doc.lastAutoTable.finalY
+    doc.rect(0, 0, 210, 20, "F", [204, 204, 204]);
+    var img = new Image();
+    img.src = "delogo1.png";
+    doc.addImage(img, "png", 10, 2, 20, 15);
+    doc.setFontSize(12);
+    doc.setTextColor("#00ADB5");
+    doc.text(
+      `Audit for ${props.form.name} Entry #${props.entries[0].data.log_entry_id}`,
+      100,
+      12
+    );
+    var client_logo = new Image();
+    client_logo.src = "client-logo.png";
+    doc.rect(189, 0, 25, 20, "F", "#fff");
+    doc.addImage(client_logo, "png", 190, 2, 20, 15);
+    doc.setTextColor(0, 0, 0);
+    var finalY = doc.lastAutoTable.finalY || 30;
+    doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
+    doc.text(
+      `Request Id  : ${props.entries[0].data.log_entry_id}`,
+      14,
+      finalY + 10
+    );
+
+    sortedEntries.forEach((element, index) => {
+      let currentData = element["data"];
+      finalY = finalY + 20;
+      doc.text(`Target State : ${currentData["state"]}`, 14, finalY);
+      finalY = finalY + 5;
+      doc.setFontSize(10);
+      doc.text(`Performed by  : ${currentData["created_by"]}`, 14, finalY);
+      finalY = finalY + 5;
+      doc.setFontSize(12);
+      let oldData = {};
+      if (index > 0) {
+        oldData = sortedEntries[index - 1]["data"];
+      }
+      const keyValueArray = fLabels.map((key) => {
+        let actual_key = key.toLowerCase().replaceAll(" ", "_");
+        return [key, oldData[actual_key], currentData[actual_key]];
       });
-      var file_name =
+      autoTable(doc, {
+        head: [["Reference", "Old Value", "New Value"]],
+        body: keyValueArray,
+        startY: finalY,
+      });
+      finalY = doc.lastAutoTable.finalY;
+    });
+    const pageCount = doc.internal.getNumberOfPages();
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))["fullName"];
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var pageWidth =
+        doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString(),
+        200
+      );
+      doc.text(splits, pageWidth / 2, 295, { align: "center" });
+      doc.setFont(undefined, "normal", "normal");
+      doc.text(String(i), 196, 285);
+    }
+    var file_name =
       "Audit_trail_" +
       props.form.name.replaceAll(" ", "_") +
       "_" +
       props.entries[0].data.log_entry_id +
       ".pdf";
-      doc.save(file_name);
+    doc.save(file_name);
   }
 
   useEffect(() => {
@@ -172,7 +202,6 @@ function LogAudit(props) {
         }
       })
       .then((actualData) => {
-        // eval('(function() { console.log("foo");a=a+1;console.log(a); })()');
         setNormalGridLogs(
           actualData
             .filter(
@@ -234,32 +263,7 @@ function LogAudit(props) {
             );
           }
         });
-        console.log(
-          actualData
-            .filter(
-              (aD) =>
-                !gridControls
-                  .filter((c) => c.customAuditLog)
-                  .map((c) => c.key)
-                  .includes(aD.grid)
-            )
-            .map((aD, inx) =>
-              aD.data
-                .map((d) => {
-                  return {
-                    ...d.data,
-                    grid: aD.grid,
-                    state: props.entries.filter(
-                      (e) => e.data.id === d.data.history_log_entry_id
-                    )[0].data.state,
-                  };
-                })
-                .reduce((x, y) => {
-                  (x[y.state] = x[y.state] || []).push(y);
-                  return x;
-                }, {})
-            )
-        );
+
         //stateGroups.flatMap((a) =>Object.keys(a).map((key) => {let groups = a[key].reduce((x, y) => {(x[y.equipment_name] = x[y.equipment_name] || []).push(y);return x;}, {});return {state: key,logs: Object.keys(groups).map((key) => {return {name: key,logs: groups[key].map((val, inx) => {if (inx == 0) {if (val.start === "1") {return {grid: val.grid,msg: "Started at " + val.log_create_dt,};} else if (val.stop === "1") {return {grid: val.grid,msg: "Stopped at " + val.log_create_dt,};} else {return {grid: val.grid,msg: "",};}} else {if (val.start !== groups[key][inx - 1].start && val.start !== "null" && val.start !== "") {return {grid: val.grid,msg: "Started at " + val.log_create_dt,};} else if (val.stop !== groups[key][inx - 1].stop && val.stop !== "null" && val.stop !== "") {return {grid: val.grid,msg: "Stopped at " + val.log_create_dt,};} else {return {grid: val.grid,msg: "",};}}}),};}),};}))
         setGridLogs(customLogs);
         // eval("(function() { setGridLogs([])})()");

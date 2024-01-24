@@ -3,9 +3,11 @@ import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { Box, Typography } from "@mui/material";
-import { Fullscreen } from "@mui/icons-material";
+import { Box, Typography, Button } from "@mui/material";
+import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Reports(props) {
   const [reports, setReports] = useState([]);
@@ -65,7 +67,6 @@ function Reports(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Reports!");
-        console.log(cReport.columns);
         setReportData((prev) => {
           return {
             header: cReport.columns.split(",").map((col) => {
@@ -87,6 +88,64 @@ function Reports(props) {
       };
     });
   }
+
+  const handleExportRows = (rows) => {
+    const doc = new jsPDF("p", "pt");
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = reportData.header.map((c) => c.header);
+    var pageWidth =
+      doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+    var pageHeight =
+      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+    var header = function (data) {
+      doc.rect(0, 0, pageWidth, 40, "F", [204, 204, 204]);
+      var img = new Image();
+      img.src = "delogo1.png";
+      doc.addImage(img, "png", 10, 5, pageWidth / 12, 30);
+      doc.setFontSize(18);
+      doc.setTextColor("white");
+      doc.text(activeReport.name, pageWidth / 2, 25, { align: "center" });
+      var client_logo = new Image();
+      client_logo.src = "client-logo.png";
+      doc.rect(pageWidth * 0.9, 1, pageWidth * 0.1, 38, "F", "#fff");
+      doc.addImage(client_logo, "png", pageWidth * 0.9, 2, pageWidth * 0.1, 35);
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(18);
+      doc.setTextColor(40);
+      // doc.setFontStyle("normal");
+      //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
+    };
+
+    doc.autoTable(tableHeaders, tableData, {
+      margin: { top: 50, left: 14, right: 14 },
+      beforePageContent: header,
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))[
+      "fullName"
+    ].replaceAll("null", "");
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString(),
+        pageWidth - 28
+      );
+      doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
+      doc.setFont(undefined, "normal", "normal");
+      doc.text(String(i), pageWidth - 15, pageHeight - 10);
+    }
+
+    doc.save(activeReport.name.toLowerCase().replaceAll(" ", "_") + ".pdf");
+  };
 
   function closeWindow() {
     setNewReport(false);
@@ -157,6 +216,25 @@ function Reports(props) {
                     >
                       {activeReport.name}
                     </Typography>
+                    <Button
+                      disabled={
+                        table.getPrePaginationRowModel().rows.length === 0
+                      }
+                      //export all rows, including from the next page, (still respects filtering and sorting)
+                      onClick={() =>
+                        handleExportRows(table.getPrePaginationRowModel().rows)
+                      }
+                      style={{
+                        background: "var(--green)",
+                        color: "white",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        fontFamily: "Poppins",
+                        boxShadow: "2px 2px 2px #00000055",
+                      }}
+                    >
+                      {<GetApp />} &nbsp;Download Report
+                    </Button>
                   </Box>
                 )}
                 muiTableContainerProps={{

@@ -6,8 +6,6 @@ import CreationCell from "./CreationCell";
 function CreationGrid(props) {
   const [viz, setViz] = useState(props.conf.type);
 
-  // console.log(props);
-
   const [{ isOver }, drop] = useDrop({
     accept: "control-option",
     drop: (item, monitor) => {
@@ -24,7 +22,6 @@ function CreationGrid(props) {
   }
 
   function cellClicked() {
-    console.log("grid clicked");
     props.showConf(props.rowId, props.colId, "grid");
   }
   return (

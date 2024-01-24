@@ -77,11 +77,10 @@ function FormStudio(props) {
   const [id, setId] = useState(null);
   const [states, setStates] = useState([]);
   const [transitions, setTransitions] = useState([]);
+  const [selectedLayoutRow, setSelectedLayoutRow] = useState(-1);
 
   useEffect(() => {
-    // console.log(location);
     if (location.state != null) {
-      console.log(location.state);
       const template = JSON.parse(location.state.template);
       setLayout((prev) => {
         return template.layout;
@@ -120,6 +119,9 @@ function FormStudio(props) {
                 isFirstState: st.firstState,
                 viewableColumns: st.visibleColumns.split(","),
                 writableColumns: st.disabledColumns.split(","),
+                name: st.name,
+                stateCondition: st.stateCondition,
+                sendNotification: st.sendNotification,
               };
             })
           : []
@@ -245,7 +247,6 @@ function FormStudio(props) {
       let rowToBeUpdated = prev[row];
       rowToBeUpdated.push(0);
       currLayout.splice(row, rowToBeUpdated);
-      console.log(currLayout);
       return currLayout;
     });
     setConf((prev) => {
@@ -264,7 +265,6 @@ function FormStudio(props) {
       rowToBeUpdated.pop();
       if (rowToBeUpdated.length === 0) currLayout.splice(row, 1);
       else currLayout.splice(row, rowToBeUpdated);
-      console.log(currLayout);
       return currLayout;
     });
     setConf((prev) => {
@@ -292,7 +292,6 @@ function FormStudio(props) {
         confToBeUpdated.pop();
         confToBeUpdated.push(emptyGridConf);
         currConf.splice(row, confToBeUpdated);
-        console.log(currConf);
         return currConf;
       });
     }
@@ -301,12 +300,17 @@ function FormStudio(props) {
   function addRow() {
     setLayout((prev) => {
       let currLayout = [...prev];
-      currLayout.push([0]);
+      if (selectedLayoutRow == -1) {
+        currLayout.push([0]);
+      } else {
+        currLayout.splice(selectedLayoutRow + 1, 0, [0]);
+      }
       return currLayout;
     });
     setConf((prev) => {
       let currConf = [...prev];
-      currConf.push([emptyConf]);
+      if (selectedLayoutRow == -1) currConf.push([emptyConf]);
+      else currConf.splice(selectedLayoutRow + 1, 0, [emptyConf]);
       return currConf;
     });
   }
@@ -320,7 +324,6 @@ function FormStudio(props) {
   }
 
   function saveConfFor(cell, updatedConf) {
-    console.log(updatedConf);
     setConf((prev) => {
       let currConf = [...prev];
       let confToBeUpdated = prev[cell.row];
@@ -329,36 +332,38 @@ function FormStudio(props) {
     });
     setConfVisible(false);
     setCurrCell({ row: -1, col: -1 });
-    console.log(conf);
   }
   function saveStateConfFor(cell, updatedConf) {
-    console.log("saving");
     setStates((prev) => {
       let currStates = [...prev];
       let confToBeUpdated = currStates.filter((st) => st.id !== cell);
       confToBeUpdated.push(updatedConf);
-      console.log(confToBeUpdated);
       return confToBeUpdated;
     });
     setStateConfVisible(false);
     setCurrStateId(0);
   }
 
-  function vizChosen(viz, row, col) {
+  function vizChosen(viz, row, col, prevViz) {
     setConf((prev) => {
       let currConf = [...prev];
       let confToBeUpdated = prev[row];
       if (confToBeUpdated[0]["type"] !== "grid") {
         let updatedConf = confToBeUpdated[col];
-        if (updatedConf["type"] !== viz) {
-          updatedConf = emptyConf;
+
+        if (prevViz == undefined) {
+          if (updatedConf["type"] !== viz) {
+            updatedConf = emptyConf;
+          }
+          updatedConf["type"] = viz;
+          confToBeUpdated.splice(parseInt(col), 1, updatedConf);
+        } else {
+          let oldConf = updatedConf;
+          updatedConf = prevViz.conf;
+          confToBeUpdated.splice(parseInt(col), 1, updatedConf);
+          let oldConfToBeUpdated = prev[prevViz.row];
+          oldConfToBeUpdated.splice(parseInt(prevViz.col), 1, oldConf);
         }
-        updatedConf["type"] = viz;
-        if (viz === "fa-font") {
-          updatedConf["statColor"] = "#ffffff";
-          updatedConf["statBgColor"] = "#000000";
-        }
-        confToBeUpdated.splice(parseInt(col), 1, updatedConf);
       } else {
         let updatedConf = confToBeUpdated[0];
         let updatedControlConf = updatedConf.controls[col];
@@ -366,10 +371,6 @@ function FormStudio(props) {
           updatedControlConf = emptyConf;
         }
         updatedControlConf["type"] = viz;
-        if (viz === "fa-font") {
-          updatedControlConf["statColor"] = "#ffffff";
-          updatedControlConf["statBgColor"] = "#000000";
-        }
         updatedConf.controls.splice(parseInt(col), 1, updatedControlConf);
         confToBeUpdated.splice(0, 1, updatedConf);
       }
@@ -391,13 +392,13 @@ function FormStudio(props) {
         selectedDepartments: [],
         isLastState: false,
         isFirstState: false,
+        sendNotification: false,
       });
       return toBeUpdated;
     });
   }
 
   function openConfForState(event) {
-    console.log(event);
     setCurrStateId(event.original.id);
     setStateConfVisible(!stateConfVisible);
   }
@@ -412,7 +413,7 @@ function FormStudio(props) {
       workflow: {},
       columns: conf
         .flatMap((f) => f)
-        .filter((c) => c.label !== "")
+        .filter((c) => c.label !== "" && c.type !== "section-heading")
         .map((c) => c.label.toLowerCase().replaceAll(" ", "_"))
         .reduce((a, b) => a + "," + b),
       type:
@@ -433,6 +434,10 @@ function FormStudio(props) {
       .then((response) => {
         if (response.ok) {
           return response.json();
+        } else {
+          console.log("Error");
+          props.raiseAlert("red", "Some error occurred!", 3000);
+          throw new Error("");
         }
       })
       .then((actualData) => {
@@ -460,10 +465,6 @@ function FormStudio(props) {
   function removeTransition(from, to) {
     setTransitions((prev) => {
       let toBeUpdated = [...prev];
-      console.log(from + "-" + to);
-      console.log(
-        toBeUpdated.filter((t) => !(t.source == from && t.target == to))
-      );
       return toBeUpdated.filter((t) => !(t.source == from && t.target == to));
     });
   }
@@ -475,18 +476,21 @@ function FormStudio(props) {
         return {
           stateId: st.id,
           workflowId: workflowConf.id,
-          name: st.label,
+          name: st.name,
           label: st.label,
           visibleColumns: st.viewableColumns.join(","),
           disabledColumns: st.writableColumns.join(","),
           endState: st.isLastState,
           firstState: st.isFirstState,
+          stateCondition: st.stateCondition,
+          userAccessField: st.userAccessField,
           roles: st.selectedRoles.map((r) => {
             return { id: r };
           }),
           departments: st.selectedDepartments.map((r) => {
             return { id: r };
           }),
+          sendNotification: st.sendNotification,
         };
       }),
       transitions: transitions.map((t) => {
@@ -496,7 +500,6 @@ function FormStudio(props) {
         };
       }),
     };
-    console.log(transitions);
     fetch(config.apiUrl + "states/", {
       method: "PUT",
       headers: {
@@ -537,6 +540,163 @@ function FormStudio(props) {
     });
     setStateConfVisible(false);
     setCurrStateId(0);
+  }
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const delayWith = (ms, fn) =>
+    new Promise((resolve, reject) =>
+      setTimeout(() => {
+        resolve(fn);
+      }, ms)
+    );
+
+  async function generateForm() {
+    setLayout([]);
+    setConf([]);
+    if (vizName != undefined && vizName != null && vizName.length > 0) {
+      props.raiseAlert("loading", "start");
+      fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer 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",
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "user",
+              content:
+                "give me proper html code for an elaborate " +
+                vizName +
+                " form with section headers as h3 and without css",
+            },
+          ],
+          temperature: 1.0,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+            // return config.chatGPTResponse;
+          } else {
+            props.raiseAlert("loading", "end");
+            props.raiseAlert(
+              "red",
+              "Some error occurred! Please try again later.",
+              3000
+            );
+            return config.chatGPTResponse;
+          }
+        })
+        .then((actualData) => {
+          parseResponse(actualData);
+        })
+        .catch((error) => {
+          console.log(error);
+          props.raiseAlert("loading", "end");
+          props.raiseAlert(
+            "red",
+            "Some error occurred! Please try again later.",
+            3000
+          );
+        });
+      // parseResponse(config.chatGPTResponse);
+    } else {
+      props.raiseAlert("red", "Please fill up Form Name", 3000);
+    }
+  }
+
+  async function parseResponse(chatGPTResponse) {
+    let response = chatGPTResponse["choices"][0]["message"]["content"];
+    let htmlCode = response.split("```")[1];
+    var controls = [];
+
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(htmlCode, "text/html");
+    var formElements = doc.body.children;
+    console.log(formElements);
+    var form = null;
+    for (var i = 0; i < formElements.length; i++) {
+      if (formElements[i].localName === "form") {
+        form = formElements[i];
+        break;
+      }
+    }
+    console.log(form);
+    if (form != null) {
+      // var labels = form.getElementsByTagName("label");
+      var children = form.children;
+      for (var l = 0; l < children.length; l++) {
+        var elem = children[l];
+        var control = {};
+        if (elem.tagName === "H3") {
+          control["type"] = "section-heading";
+          control["label"] = elem.innerHTML;
+          controls.push(control);
+        } else if (elem.tagName === "LABEL") {
+          // var label = labels[l];
+
+          var labelName = elem.innerHTML.replace(/[^\w\s]/gi, "");
+          control["label"] = labelName;
+          control["key"] = labelName.replaceAll(" ", "_");
+          var f = elem.htmlFor;
+          var input = doc.getElementById(f);
+          control["isRequired"] = input.required ? true : false;
+          if (input.tagName === "INPUT") {
+            if (input.type === "text") {
+              control["type"] = "text";
+            } else if (input.type === "date") {
+              control["type"] = "datetime";
+            } else if (input.type === "file") {
+              control["type"] = "attachment";
+            } else {
+              control["type"] = "text";
+            }
+          } else if (input.tagName === "TEXTAREA") {
+            control["type"] = "textarea";
+          } else if (input.tagName === "SELECT") {
+            control["type"] = "select";
+            var arrValues = [];
+            for (var i = 0; i < input.children.length; i++) {
+              if (
+                input.children[i].value != null &&
+                input.children[i].value !== ""
+              ) {
+                arrValues.push(input.children[i].innerHTML);
+              }
+            }
+            control["selectValues"] = arrValues.join(",");
+          }
+          controls.push(control);
+        }
+      }
+
+      for (var c = 0; c < controls.length; c++) {
+        delayWith(1000 * c, c).then((c) => {
+          let control = controls[c];
+          setLayout((prev) => {
+            let toBeUpdated = [...prev];
+            toBeUpdated.push([0]);
+            return toBeUpdated;
+          });
+          setConf((prev) => {
+            let toBeUpdated = [...prev];
+            toBeUpdated.push([control]);
+            return toBeUpdated;
+          });
+        });
+      }
+    } else {
+      props.raiseAlert(
+        "red",
+        "Some error occurred! Please try again later.",
+        3000
+      );
+    }
+    props.raiseAlert("loading", "end");
   }
 
   return (
@@ -605,19 +765,28 @@ function FormStudio(props) {
                         className="fa-solid fa-minus layout-add"
                         onClick={() => removeCell(idx)}
                       ></i>
-                      {rows.map((r, inx) => {
-                        return (
-                          <i
-                            key={inx}
-                            className={
-                              r == 0
-                                ? "fa-solid fa-square layout-cell"
-                                : "fa-solid fa-grip layout-cell"
-                            }
-                            onClick={() => convertToGrid(idx, inx)}
-                          ></i>
-                        );
-                      })}
+                      <div
+                        className={
+                          selectedLayoutRow == idx
+                            ? "selected-layout-row"
+                            : "layout-cells"
+                        }
+                        onClick={() => setSelectedLayoutRow(idx)}
+                      >
+                        {rows.map((r, inx) => {
+                          return (
+                            <i
+                              key={inx}
+                              className={
+                                r == 0
+                                  ? "fa-solid fa-square layout-cell"
+                                  : "fa-solid fa-grip layout-cell"
+                              }
+                              onClick={() => convertToGrid(idx, inx)}
+                            ></i>
+                          );
+                        })}
+                      </div>
                       <i
                         className="fa-solid fa-plus layout-add"
                         onClick={() => addCell(idx)}
@@ -664,6 +833,8 @@ function FormStudio(props) {
                 </div>
                 <div className="viz-option-container">
                   <ControlOption type="multiselect"></ControlOption>
+                  <ControlOption type="attachment"></ControlOption>
+                  <ControlOption type="section-heading"></ControlOption>
                 </div>
               </div>
             )}
@@ -700,6 +871,9 @@ function FormStudio(props) {
                   value={vizName}
                   onChange={(e) => setVizName(e.target.value)}
                 ></input>
+              </div>
+              <div className="ai-create-btn" onClick={generateForm}>
+                <i className="fa-solid fa-hat-wizard"></i>Generate with AI
               </div>
             </div>
             {layout.map((rows, idx) => {

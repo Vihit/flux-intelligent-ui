@@ -69,3 +69,51 @@
 .optionListContainer {
   position: relative !important;
 }
+
+.attachment-disabled {
+  height: 40px !important;
+  width: 100%;
+  display: flex;
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+}
+
+.attchment-name {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  height: 100%;
+  align-items: center;
+  opacity: 0.8;
+}
+
+.disabled-attachment-name {
+  /* width: 90%; */
+  display: flex;
+  justify-content: center;
+  background-color: var(--grey);
+  height: 100%;
+  align-items: center;
+  opacity: 0.8;
+  flex-grow: 1;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  margin-right: 5px;
+}
+
+.a-download-icon {
+  cursor: pointer;
+  background-color: dodgerblue;
+  color: white;
+  height: 100%;
+  width: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  font-size: 20px;
+  margin-left: 5px;
+}

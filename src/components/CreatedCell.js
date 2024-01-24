@@ -5,7 +5,27 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
-  // console.log(props.values);
+  const now = new Date();
+  const dateMax =
+    props.conf.dateMaxValue != undefined &&
+    props.conf.dateMaxValue != null &&
+    props.conf.dateMaxValue != ""
+      ? new Date(
+          now.getTime() +
+            props.conf.dateMaxValue * 24 * 60 * 60 * 1000 -
+            now.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .substring(0, 19)
+      : null;
+  const dateMin =
+    props.conf.dateMinValue != undefined &&
+    props.conf.dateMinValue != null &&
+    props.conf.dateMinValue != ""
+      ? new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .substring(0, 19)
+      : null;
   const [vals, setVals] = useState([]);
   var values = "";
   const [refData, setRefData] = useState([]);
@@ -20,7 +40,6 @@ function CreatedCell(props) {
   );
   const [usersData, setUsersData] = useState([]);
   function changed(what, value) {
-    // console.log("Changed:" + what + " Value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -35,10 +54,59 @@ function CreatedCell(props) {
             props.dataChanged(what, arr.join(","));
           }
         } else {
-          props.dataChanged(what, value);
+          if (props.conf.type === "datetime") {
+            const cVal = value;
+            var fVal = "";
+            if (cVal >= dateMin && cVal <= dateMax) {
+              fVal = cVal;
+            } else if (cVal < dateMin) {
+              props.raiseAlert("red", "Minimum date could be " + dateMin, 3000);
+              fVal = dateMin;
+            } else {
+              props.raiseAlert("red", "Maximum date could be " + dateMax, 3000);
+              fVal = dateMax;
+            }
+            props.dataChanged(what, fVal);
+          } else {
+            props.dataChanged(what, value);
+          }
         }
       }
     }
+  }
+
+  function downloadAttachment() {
+    fetch(
+      config.apiUrl +
+        "attachment/" +
+        props.formId +
+        "/" +
+        props.formData.id +
+        "/" +
+        props.values,
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+      }
+    )
+      .then((response) => {
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", props.values);
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.parentNode.removeChild(link);
+      });
   }
 
   function handleButtonClick(what) {
@@ -102,7 +170,6 @@ function CreatedCell(props) {
         }
       })
       .then((actualData) => {
-        console.log(actualData);
         setUsersData((prev) => {
           return actualData
             .filter((aD) => aD["username"] !== "admin")
@@ -191,11 +258,6 @@ function CreatedCell(props) {
         .then((actualData) => {
           if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-            // console.log(
-            //   props.values == undefined
-            //     ? refMulData.selected
-            //     : props.values.split(",").concat(refMulData.selected)
-            // );
           } else if (props.conf.type === "text") {
             const arr = [];
             arr.push(actualData.value);
@@ -210,7 +272,6 @@ function CreatedCell(props) {
         });
     }
     if (props.conf.type === "user" && !props.disabled) {
-      // console.log(props);
       changed(
         props.conf.key,
         JSON.parse(localStorage.getItem("user"))[
@@ -293,20 +354,33 @@ function CreatedCell(props) {
       <div
         className={
           (props.gridControl
-            ? props.conf.type === "button" && props.rowNum > 0
+            ? (props.conf.type === "button" ||
+                props.conf.type === "section-heading") &&
+              props.rowNum > 0
               ? "close-flex "
               : "cell-name-grid "
-            : "cell-name ") + (props.rowNum > 0 ? "" : "")
+            : "cell-name ") +
+          (props.rowNum > 0 ? "" : "") +
+          (props.conf.type === "section-heading" ? "close-flex" : "")
         }
       >
-        {props.conf.type !== "button" && (
-          <div className={props.rowNum > 0 ? "hidden-header" : ""}>
-            {props.conf.label}
-            {props.conf.isRequired && <span style={{ color: "red" }}> *</span>}
-          </div>
-        )}
+        {props.conf.type !== "button" &&
+          props.conf.type !== "section-heading" && (
+            <div className={props.rowNum > 0 ? "hidden-header" : ""}>
+              {props.conf.label}
+              {props.conf.isRequired && (
+                <span style={{ color: "red" }}> *</span>
+              )}
+            </div>
+          )}
       </div>
-      <div className="cell-control">
+      <div
+        className={
+          props.conf.type === "button" || props.conf.type === "section-heading"
+            ? "btn-cell-control"
+            : "cell-control"
+        }
+      >
         {props.conf.type === "text" && (
           <input
             type="text"
@@ -433,9 +507,20 @@ function CreatedCell(props) {
         )}
         {props.conf.type === "datetime" && (
           <input
+            id={props.conf.key}
             type="datetime-local"
-            placeholder={props.conf.placeholder}
-            value={props.values}
+            value={
+              (props.values == undefined || props.values == null) &&
+              props.conf.dateDefaultValue != ""
+                ? props.conf.dateDefaultValue === "sysdate"
+                  ? new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .substring(0, 19)
+                  : new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .substring(0, 19)
+                : props.values
+            }
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
@@ -551,6 +636,35 @@ function CreatedCell(props) {
             }
             isObject={false}
           ></Multiselect>
+        )}
+        {props.conf.type === "attachment" && !props.disabled && (
+          <input
+            type="file"
+            onChange={(e) => {
+              changed(
+                props.conf.key,
+                e.target.files.length > 0 ? e.target.files[0].name : ""
+              );
+              changed(
+                "_files_" + props.conf.key,
+                e.target.files.length > 0 ? e.target.files[0] : null
+              );
+            }}
+          ></input>
+        )}
+        {props.conf.type === "attachment" && props.disabled && (
+          <div className="attachment-disabled">
+            {props.values != undefined && (
+              <i
+                className="fa-solid fa-download a-download-icon"
+                onClick={downloadAttachment}
+              ></i>
+            )}
+            <div className="disabled-attachment-name">{props.values}</div>
+          </div>
+        )}
+        {props.conf.type === "section-heading" && (
+          <div className="section-heading-ctrl">{props.conf.label}</div>
         )}
       </div>
     </div>

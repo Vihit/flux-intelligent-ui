@@ -53,10 +53,11 @@ function Navbar(props) {
           .then((response) => {
             if (response.ok) {
               return response.json();
+            } else {
+              props.onLogout();
             }
           })
           .then((actualData) => {
-            console.log(actualData);
             localStorage.setItem("access", JSON.stringify(actualData));
             localStorage.setItem(
               "user",
@@ -102,7 +103,7 @@ function Navbar(props) {
       .then((response) => {
         if (response.ok) return response.json();
         else {
-          props.raiseAlert("red", "Username or Password incorrect!");
+          props.raiseAlert("red", "Username or Password incorrect!", 3000);
           props.onLogout();
           setPwd("");
           throw new Error("");

@@ -148,6 +148,7 @@
 .viz-details {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   width: 100%;
   gap: 10px;
 }
@@ -157,6 +158,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.big-font {
+  font-size: 28px !important;
+  font-weight: bold;
+  font-family: "Poppins";
+  /* color: white; */
 }
 
 .form-viz-name {
@@ -367,4 +375,38 @@ path {
   stroke: #333;
   fill: #333;
   stroke-width: 1.5px;
+}
+
+.layout-cells {
+  display: flex;
+  align-items: center;
+  border: 1px dashed var(--white);
+  gap: 4px;
+  padding: 0px 4px;
+}
+
+.selected-layout-row {
+  display: flex;
+  align-items: center;
+  background-color: var(--main);
+  border: 2px solid var(--main);
+  gap: 4px;
+  padding: 0px 4px;
+}
+
+.ai-create-btn {
+  display: flex;
+  height: 90%;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: #0055c2;
+  padding: 0px 10px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.ai-create-btn > i {
+  font-size: 25px;
 }

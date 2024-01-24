@@ -31,7 +31,7 @@ function FormPreview(props) {
     // updateConditionalVisibility();
   }
 
-  function checkConditionalVibility(controlConf) {
+  function checkConditionalVisibility(controlConf) {
     if (controlConf.conditionalVisibility) {
       let dep = controlConf.conditionalControl
         .toLowerCase()
@@ -65,7 +65,13 @@ function FormPreview(props) {
         {layout.map((rows, idx) => {
           return (
             <div
-              className="created-row"
+              className={
+                rows.filter(
+                  (row, inx) => !checkConditionalVisibility(conf[idx][inx])
+                ).length > 0
+                  ? "close-flex"
+                  : "created-row"
+              }
               // style={{ height: "calc(100%/" + layout.length + ")" }}
             >
               {rows.map((row, inx) => {
@@ -77,13 +83,14 @@ function FormPreview(props) {
                     totalCells={rows.length}
                     values={data[conf[idx][inx].key]}
                     conf={
-                      checkConditionalVibility(conf[idx][inx])
+                      checkConditionalVisibility(conf[idx][inx])
                         ? conf[idx][inx]
                         : {}
                     }
                     key={"1" + idx + "" + inx}
                     type="form"
                     formData={{}}
+                    formId={-1}
                   ></CreatedCell>
                 ) : (
                   <CreatedGrid
@@ -93,7 +100,7 @@ function FormPreview(props) {
                     totalCells={rows.length}
                     values={data[conf[idx][inx].key]}
                     conf={
-                      checkConditionalVibility(conf[idx][inx])
+                      checkConditionalVisibility(conf[idx][inx])
                         ? conf[idx][inx]
                         : {}
                     }
