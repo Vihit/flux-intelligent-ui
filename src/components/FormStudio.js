@@ -105,7 +105,7 @@ function FormStudio(props) {
           ? location.state.workflow.states.map((st) => {
               return {
                 id: st.id + "",
-                label: st.label,
+                label: st.name,
                 labelType: "string",
                 class: JSON.parse(st.firstState)
                   ? "start-node"
@@ -113,6 +113,7 @@ function FormStudio(props) {
                   ? "end-node"
                   : "success-node",
                 type: "main",
+                stLabel: st.label,
                 selectedRoles: st.roles.map((r) => r.id),
                 selectedDepartments: st.departments.map((r) => r.id),
                 isLastState: st.endState,
@@ -477,7 +478,7 @@ function FormStudio(props) {
           stateId: st.id,
           workflowId: workflowConf.id,
           name: st.name,
-          label: st.label,
+          label: st.stLabel,
           visibleColumns: st.viewableColumns.join(","),
           disabledColumns: st.writableColumns.join(","),
           endState: st.isLastState,
@@ -521,7 +522,7 @@ function FormStudio(props) {
           let toBeUpdated = [...prev];
           return toBeUpdated.map((dt) => {
             dt["stateId"] = actualData.states.filter(
-              (st) => st.label === dt.label
+              (st) => st.name === dt.name
             )[0].id;
             return dt;
           });

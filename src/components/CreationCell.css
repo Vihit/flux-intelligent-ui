@@ -10,7 +10,7 @@
   cursor: pointer;
   position: relative;
   height: 50px;
-  animation: tinLeftIn 1s 1;
+  /* animation: tinLeftIn 1s 1; */
 }
 
 @keyframes wobble {

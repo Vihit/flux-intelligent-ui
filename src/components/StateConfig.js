@@ -18,7 +18,7 @@ function StateConfig(props) {
     props.transitions
       .filter((t) => t.target == props.currCell)
       .map((t) => t.source)
-      .map((sId) => props.states.filter((st) => st.id == sId)[0].label)
+      .map((sId) => props.states.filter((st) => st.id == sId)[0].name)
   );
   const [writableColumns, setWritableColumns] = useState(
     props.conf.writableColumns !== undefined
@@ -206,8 +206,8 @@ function StateConfig(props) {
                 <div className="text">
                   <input
                     type="text"
-                    value={conf.label}
-                    onChange={(e) => confChanged("label", e.target.value)}
+                    value={conf.stLabel}
+                    onChange={(e) => confChanged("stLabel", e.target.value)}
                   ></input>
                 </div>
               </div>
@@ -243,7 +243,7 @@ function StateConfig(props) {
                           toBeUpdated.push(
                             props.states.filter(
                               (st) => st.id === e.target.value
-                            )[0].label
+                            )[0].name
                           );
                           return toBeUpdated;
                         });
@@ -261,7 +261,7 @@ function StateConfig(props) {
                       .map((state, idx) => {
                         return (
                           <option key={idx} value={state.id}>
-                            {state.name + " | " + state.label}
+                            {state.name + " | " + state.stLabel}
                           </option>
                         );
                       })}
@@ -280,7 +280,7 @@ function StateConfig(props) {
                           return toBeUpdated.filter((st) => st !== ps);
                         });
                         props.removeTransition(
-                          props.states.filter((st) => st.label === ps)[0].id,
+                          props.states.filter((st) => st.name === ps)[0].id,
                           props.currCell
                         );
                       }}
