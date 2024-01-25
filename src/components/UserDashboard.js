@@ -7,12 +7,14 @@ function UserDashboard(props) {
   const [iClicked, setIClicked] = useState(false);
   const [pClicked, setPClicked] = useState(false);
   const [aClicked, setAClicked] = useState(false);
+  const [laClicked, setLAClicked] = useState(false);
   const [iSelection, setISelection] = useState("");
   const [pSelection, setPSelection] = useState("");
   const [forms, setForms] = useState([]);
   const [iApps, setIApps] = useState([]);
   const [aApps, setAApps] = useState([]);
   const [pApps, setPApps] = useState([]);
+  const [lsaApps, setLSAApps] = useState([]);
   const [selectedForm, setSelectedForm] = useState({});
   const [selectedType, setSelectedType] = useState("");
   const [tableData, setTableData] = useState({ rows: [], header: [] });
@@ -20,12 +22,14 @@ function UserDashboard(props) {
   const [pendingEntries, setPendingEntries] = useState([]);
   const [allForms, setAllForms] = useState([]);
   const [accessibleForms, setAccessibleForms] = useState([]);
+  const [lastStateAccessibleForms, setLastStateAccessibleForms] = useState([]);
   const [selectionUpdate, setSelectionUpdate] = useState(110);
 
   useEffect(() => {
     getAllForms();
     getInitForms();
     getAccessibleForms();
+    getLastStateAccessibleForms();
   }, []);
 
   function getAllForms() {
@@ -102,7 +106,33 @@ function UserDashboard(props) {
         setAApps(apps);
       });
   }
+  function getLastStateAccessibleForms() {
+    fetch(config.apiUrl + "forms/last-state-accessible-forms/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setLastStateAccessibleForms(actualData);
 
+        let apps = actualData
+          .map((f) => f.app)
+          .reduce((op, a) => {
+            if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
+            return op;
+          }, []);
+        setLSAApps(apps);
+      });
+  }
   function getPendingEntries(fs) {
     fetch(config.apiUrl + "entry/all-pending", {
       method: "GET",
@@ -133,6 +163,73 @@ function UserDashboard(props) {
 
   function getLogEntries(f) {
     fetch(config.apiUrl + "entry/" + f.id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        props.raiseAlert("green", "Fetched Entries");
+        var fCols =
+          "id," +
+          f.columns +
+          ",state,created_by,log_create_dt,updated_by,log_update_dt";
+        var fLabels = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.label)
+          .concat([
+            "ID",
+            "State",
+            "Created By",
+            "Log Create Dt",
+            "Updated By",
+            "Log Update Dt",
+          ]);
+        setLogEntries(actualData);
+        var matCols = [];
+        var rows = [];
+        fCols
+          .split(",")
+          .filter((col) =>
+            fLabels
+              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
+              .includes(col)
+          )
+          .map((c) => {
+            return fLabels.filter(
+              (l) => l.toLowerCase().replaceAll(" ", "_") === c
+            )[0];
+          })
+          .forEach((element) => {
+            matCols.push({
+              accessorKey: element.toLowerCase().replaceAll(" ", "_"),
+              header: element,
+            });
+          });
+        actualData.forEach((data) => {
+          let obj = {};
+          fCols.split(",").forEach((col) => {
+            obj[col] = data.data[col];
+          });
+          rows.push(obj);
+        });
+        setTableData({ rows: rows, header: matCols });
+        setSelectedForm(f);
+        setSelectionUpdate((prev) => prev + 1);
+      });
+  }
+
+  function getAllLogEntries(f) {
+    fetch(config.apiUrl + "entry/" + f.id + "/last-state/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -269,6 +366,8 @@ function UserDashboard(props) {
     setSelectedType(type);
     if (type === "initiate" || type === "view") {
       getLogEntries(f);
+    } else if (type === "view-all") {
+      getAllLogEntries(f);
     } else {
       getPendingEntries(allForms);
       getPendingLogEntries(f);
@@ -280,14 +379,22 @@ function UserDashboard(props) {
       setIClicked(!iClicked);
       setPClicked(false);
       setAClicked(false);
+      setLAClicked(false);
     } else if (type === "pending") {
       setIClicked(false);
       setPClicked(!pClicked);
       setAClicked(false);
+      setLAClicked(false);
     } else if (type === "my") {
       setIClicked(false);
       setPClicked(false);
       setAClicked(!aClicked);
+      setLAClicked(false);
+    } else if (type === "all") {
+      setIClicked(false);
+      setPClicked(false);
+      setAClicked(false);
+      setLAClicked(!laClicked);
     }
   }
   return (
@@ -372,6 +479,35 @@ function UserDashboard(props) {
                         className="u-menu-i"
                         onClick={() => {
                           handleFormClick("view", f);
+                        }}
+                      >
+                        {f.name}
+                      </div>
+                    );
+                  })}
+              </div>
+            );
+          })}
+        </div>
+        {lsaApps.length > 0 && (
+          <div className="u-menu-head" onClick={() => handleTypeClicked("all")}>
+            All Requests
+          </div>
+        )}
+        <div className={"u-menu-part " + (laClicked ? "" : "close-flex")}>
+          {lsaApps.map((a, inx) => {
+            return (
+              <div key={inx} className="u-menu-i-head">
+                {a.name}
+                {allForms
+                  .filter((f) => f.app.id == a.id)
+                  .map((f, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className="u-menu-i"
+                        onClick={() => {
+                          handleFormClick("view-all", f);
                         }}
                       >
                         {f.name}
