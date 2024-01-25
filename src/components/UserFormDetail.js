@@ -52,9 +52,8 @@ function UserFormDetail(props) {
 
   async function openAuditView(row) {
     await getAllForEntry(props.form.id, row.original.id);
-    setInitiatedAudit(true)
+    setInitiatedAudit(true);
   }
-
 
   async function getAllForEntry(formId, entryId) {
     try {
@@ -66,11 +65,12 @@ function UserFormDetail(props) {
             "Content-Type": "application/json",
             Accept: "application/json",
             Authorization:
-              "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+              "Bearer " +
+              JSON.parse(localStorage.getItem("access")).access_token,
           },
         }
       );
-  
+
       if (response.ok) {
         const actualData = await response.json();
         setAllEntries(actualData);
@@ -80,7 +80,6 @@ function UserFormDetail(props) {
       console.error("Error fetching data:", error);
     }
   }
-  
 
   function getGridEntriesFor(formId, entryId) {
     fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
@@ -205,7 +204,9 @@ function UserFormDetail(props) {
                 )}
             </Box>
           )}
-          enableRowActions={type === "pending" || type === "view"}
+          enableRowActions={
+            type === "pending" || type === "view" || type === "view-all"
+          }
           renderRowActions={({ row }) => (
             <Box className="c-actions">
               {type === "pendings" ? (

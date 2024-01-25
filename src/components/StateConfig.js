@@ -21,7 +21,9 @@ function StateConfig(props) {
       .map((sId) => props.states.filter((st) => st.id == sId)[0].label)
   );
   const [writableColumns, setWritableColumns] = useState(
-    props.conf.writableColumns !== undefined ? props.conf.writableColumns : []
+    props.conf.writableColumns !== undefined
+      ? props.conf.writableColumns
+      : props.formColumns.map((col) => col.toLowerCase().replaceAll(" ", "_"))
   );
   const [viewableColumns, setViewableColumns] = useState(
     props.conf.viewableColumns !== undefined
@@ -46,7 +48,11 @@ function StateConfig(props) {
         currConf["selectedRoles"] = selectedRoles;
         currConf["selectedDepartments"] = selectedDepartments;
         currConf["viewableColumns"] = viewableColumns;
-        currConf["writableColumns"] = writableColumns;
+        currConf["writableColumns"] = currConf.isLastState
+          ? props.formColumns.map((col) =>
+              col.toLowerCase().replaceAll(" ", "_")
+            )
+          : writableColumns;
         currConf["class"] = currConf.isFirstState
           ? "start-node"
           : currConf.isLastState
@@ -63,6 +69,13 @@ function StateConfig(props) {
         }
         let finalProp = splitWhat[i];
         obj[finalProp] = value;
+        if (what === "isLastState" && value === "true") {
+          setWritableColumns(
+            props.formColumns.map((col) =>
+              col.toLowerCase().replaceAll(" ", "_")
+            )
+          );
+        }
       }
       return currConf;
     });
@@ -479,14 +492,16 @@ function StateConfig(props) {
                         checked={
                           !writableColumns.includes(
                             col.toLowerCase().replaceAll(" ", "_")
-                          )
+                          ) && !(conf.isLastState === "true")
                         }
-                        onChange={(e) =>
-                          updateWritableColumns(
-                            col.toLowerCase().replaceAll(" ", "_"),
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => {
+                          if (conf.isLastState !== "true") {
+                            updateWritableColumns(
+                              col.toLowerCase().replaceAll(" ", "_"),
+                              e.target.checked
+                            );
+                          }
+                        }}
                       ></input>
                     </div>
                     <div className="dtl-col-col">
