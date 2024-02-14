@@ -216,3 +216,12 @@
   justify-content: center;
   border: 1px solid white;
 }
+
+.file-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.file-link:hover {
+  color: dodgerblue;
+}

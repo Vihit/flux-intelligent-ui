@@ -132,6 +132,16 @@ function RoleMgmt(props) {
               fontFamily: "Poppins",
             },
           }}
+          muiTableHeadCellFilterTextFieldProps={{
+            sx: {
+              strokeWidth: "1.5px",
+              backgroundColor: "var(--white)",
+              input: {
+                fontFamily: "Poppins",
+                color: "var(--main)",
+              },
+            },
+          }}
           muiTableHeadCellColumnActionsButtonProps={{
             sx: {
               path: {

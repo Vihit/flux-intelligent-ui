@@ -12,6 +12,9 @@ function LogAudit(props) {
     .flatMap((ctrl) => ctrl)
     .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
     .map((c) => c.label);
+  const attachments = parsedForm["controls"]
+    .flatMap((ctrl) => ctrl)
+    .filter((ctrl) => ctrl.type === "attachment");
   const gridControls = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
     .filter((ctrl) => ctrl.type === "grid");
@@ -70,7 +73,6 @@ function LogAudit(props) {
         props.entries[0].data.log_entry_id +
         ".pdf";
       const pageCount = pdf.internal.getNumberOfPages();
-      console.log("pagecount is " + pageCount);
       for (var i = 1; i <= pageCount; i++) {
         pdf.text(String(i), 196, 285);
       }
@@ -168,6 +170,42 @@ function LogAudit(props) {
       props.entries[0].data.log_entry_id +
       ".pdf";
     doc.save(file_name);
+  }
+
+  function downloadAttachment(history_id, filename) {
+    fetch(
+      config.apiUrl +
+        "attachment/" +
+        props.form.id +
+        "/" +
+        props.entries[0].data.log_entry_id +
+        "/" +
+        history_id +
+        "/" +
+        filename,
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+      }
+    )
+      .then((response) => {
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.parentNode.removeChild(link);
+      });
   }
 
   useEffect(() => {
@@ -328,11 +366,31 @@ function LogAudit(props) {
                     <div className="a-e-cell">{fLabels[j]}</div>
                     <div className="a-e-cell">--</div>
                     <div className="a-e-cell">
-                      {
+                      {!attachments
+                        .map((ctrl) => ctrl.label)
+                        .includes(fLabels[j]) ? (
                         sortedEntries[i].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
-                      }
+                      ) : (
+                        <div
+                          className="file-link"
+                          onClick={() =>
+                            downloadAttachment(
+                              sortedEntries[i].data["id"],
+                              sortedEntries[i].data[
+                                fLabels[j].toLowerCase().replaceAll(" ", "_")
+                              ]
+                            )
+                          }
+                        >
+                          {
+                            sortedEntries[i].data[
+                              fLabels[j].toLowerCase().replaceAll(" ", "_")
+                            ]
+                          }
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -341,18 +399,58 @@ function LogAudit(props) {
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
                     <div className="a-e-cell">
-                      {
+                      {!attachments
+                        .map((ctrl) => ctrl.label)
+                        .includes(fLabels[j]) ? (
                         sortedEntries[i - 1].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
-                      }
+                      ) : (
+                        <div
+                          className="file-link"
+                          onClick={() =>
+                            downloadAttachment(
+                              sortedEntries[i - 1].data["id"],
+                              sortedEntries[i - 1].data[
+                                fLabels[j].toLowerCase().replaceAll(" ", "_")
+                              ]
+                            )
+                          }
+                        >
+                          {
+                            sortedEntries[i - 1].data[
+                              fLabels[j].toLowerCase().replaceAll(" ", "_")
+                            ]
+                          }
+                        </div>
+                      )}
                     </div>
                     <div className="a-e-cell">
-                      {
+                      {!attachments
+                        .map((ctrl) => ctrl.label)
+                        .includes(fLabels[j]) ? (
                         sortedEntries[i].data[
                           fLabels[j].toLowerCase().replaceAll(" ", "_")
                         ]
-                      }
+                      ) : (
+                        <div
+                          className="file-link"
+                          onClick={() =>
+                            downloadAttachment(
+                              sortedEntries[i].data["id"],
+                              sortedEntries[i].data[
+                                fLabels[j].toLowerCase().replaceAll(" ", "_")
+                              ]
+                            )
+                          }
+                        >
+                          {
+                            sortedEntries[i].data[
+                              fLabels[j].toLowerCase().replaceAll(" ", "_")
+                            ]
+                          }
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

@@ -123,6 +123,7 @@ function FormStudio(props) {
                 name: st.name,
                 stateCondition: st.stateCondition,
                 sendNotification: st.sendNotification,
+                userAccessField: st.userAccessField,
               };
             })
           : []
@@ -335,6 +336,7 @@ function FormStudio(props) {
     setCurrCell({ row: -1, col: -1 });
   }
   function saveStateConfFor(cell, updatedConf) {
+    updatedConf["label"] = updatedConf["stLabel"];
     setStates((prev) => {
       let currStates = [...prev];
       let confToBeUpdated = currStates.filter((st) => st.id !== cell);
@@ -562,7 +564,7 @@ function FormStudio(props) {
           "Content-Type": "application/json",
           Accept: "application/json",
           Authorization:
-            "Bearer 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",
+            "Bearer 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",
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",

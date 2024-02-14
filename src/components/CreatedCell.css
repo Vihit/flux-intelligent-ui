@@ -117,3 +117,19 @@
   font-size: 20px;
   margin-left: 5px;
 }
+
+.remove-attachment {
+  background-color: var(--red);
+  color: var(--white);
+  height: 100%;
+  width: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  margin-left: -10px;
+  z-index: 10;
+  cursor: pointer;
+}

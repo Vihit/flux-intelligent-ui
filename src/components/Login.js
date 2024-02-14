@@ -78,6 +78,7 @@ function Login(props) {
           </div>
         </div>
       </div>
+      <div className="version">Version 1.0</div>
     </div>
   );
 }

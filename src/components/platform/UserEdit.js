@@ -205,7 +205,7 @@ function UserEdit(props) {
               <input
                 type="text"
                 value={user.email}
-                onChange={(e) => userChanged("email", e.target.value)}
+                // onChange={(e) => userChanged("email", e.target.value)}
               ></input>
             </div>
           </div>

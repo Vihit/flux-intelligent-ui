@@ -637,32 +637,46 @@ function CreatedCell(props) {
             isObject={false}
           ></Multiselect>
         )}
-        {props.conf.type === "attachment" && !props.disabled && (
-          <input
-            type="file"
-            onChange={(e) => {
-              changed(
-                props.conf.key,
-                e.target.files.length > 0 ? e.target.files[0].name : ""
-              );
-              changed(
-                "_files_" + props.conf.key,
-                e.target.files.length > 0 ? e.target.files[0] : null
-              );
-            }}
-          ></input>
-        )}
-        {props.conf.type === "attachment" && props.disabled && (
-          <div className="attachment-disabled">
-            {props.values != undefined && (
-              <i
-                className="fa-solid fa-download a-download-icon"
-                onClick={downloadAttachment}
-              ></i>
-            )}
-            <div className="disabled-attachment-name">{props.values}</div>
-          </div>
-        )}
+        {props.conf.type === "attachment" &&
+          !props.disabled &&
+          (props.values == "" || props.values == undefined) && (
+            <input
+              type="file"
+              onChange={(e) => {
+                changed(
+                  props.conf.key,
+                  e.target.files.length > 0 ? e.target.files[0].name : ""
+                );
+                changed(
+                  "_files_" + props.conf.key,
+                  e.target.files.length > 0 ? e.target.files[0] : null
+                );
+              }}
+            ></input>
+          )}
+        {props.conf.type === "attachment" &&
+          (props.disabled ||
+            (props.values != "" && props.values != undefined)) && (
+            <div className="attachment-disabled">
+              {props.values != undefined && (
+                <i
+                  className="fa-solid fa-download a-download-icon"
+                  onClick={downloadAttachment}
+                ></i>
+              )}
+              <div className="disabled-attachment-name">{props.values}</div>
+              {!props.disabled && (
+                <div
+                  className="remove-attachment"
+                  onClick={() => {
+                    changed(props.conf.key, "");
+                  }}
+                >
+                  <i className="fa-solid fa-remove"></i>
+                </div>
+              )}
+            </div>
+          )}
         {props.conf.type === "section-heading" && (
           <div className="section-heading-ctrl">{props.conf.label}</div>
         )}

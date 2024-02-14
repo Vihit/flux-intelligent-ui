@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import ColSelectionWindow from "./ColSelectionWindow.js";
 
 function StateConfig(props) {
+  console.log(props.conf);
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleAccessDetails, setToggleAccessDetails] = useState(false);
@@ -122,8 +123,9 @@ function StateConfig(props) {
   function removeDepartment(id) {
     setSelectedDepartments((prev) => {
       let toBeUpdated = [...prev];
-      let updated = toBeUpdated.filter((r) => r + "" !== id);
-      return updated;
+      console.log(toBeUpdated);
+      console.log(id);
+      return toBeUpdated.filter((r) => r != id);
     });
   }
 

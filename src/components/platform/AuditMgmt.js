@@ -159,6 +159,16 @@ function AuditMgmt(props) {
               fontFamily: "Poppins",
             },
           }}
+          muiTableHeadCellFilterTextFieldProps={{
+            sx: {
+              strokeWidth: "1.5px",
+              backgroundColor: "var(--white)",
+              input: {
+                fontFamily: "Poppins",
+                color: "var(--main)",
+              },
+            },
+          }}
           onPaginationChange={setPagination}
           state={{ pagination }}
           rowCount={pagination.pageSize * totalPages}

@@ -494,7 +494,8 @@ function Form(props) {
             );
           })}
         <div className="btn-controls">
-          {(props.type !== "view" || props.form.type === "master") &&
+          {((props.type !== "view" && props.type !== "view-all") ||
+            props.form.type === "master") &&
             toStates
               .filter(
                 (t) =>

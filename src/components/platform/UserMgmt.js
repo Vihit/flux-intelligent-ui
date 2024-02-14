@@ -161,6 +161,16 @@ function UserMgmt(props) {
               </IconButton>
             </Box>
           )}
+          muiTableHeadCellFilterTextFieldProps={{
+            sx: {
+              strokeWidth: "1.5px",
+              backgroundColor: "var(--white)",
+              input: {
+                fontFamily: "Poppins",
+                color: "var(--main)",
+              },
+            },
+          }}
           muiTableContainerProps={{
             sx: {
               maxHeight: "550px",

@@ -152,3 +152,10 @@ textarea::placeholder {
     transform: rotateZ(75deg);
   }
 }
+
+.version {
+  color: white;
+  position: fixed;
+  right: 1%;
+  bottom: 1%;
+}
