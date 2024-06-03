@@ -130,10 +130,12 @@ function LogAudit(props) {
       if (index > 0) {
         oldData = sortedEntries[index - 1]["data"];
       }
-      const keyValueArray = fLabels.map((key) => {
-        let actual_key = key.toLowerCase().replaceAll(" ", "_");
-        return [key, oldData[actual_key], currentData[actual_key]];
-      });
+      const keyValueArray = fLabels
+        .map((key) => {
+          let actual_key = key.toLowerCase().replaceAll(" ", "_");
+          return [key, oldData[actual_key], currentData[actual_key]];
+        })
+        .filter((arr) => arr[1] != null || arr[2] != null);
       autoTable(doc, {
         head: [["Reference", "Old Value", "New Value"]],
         body: keyValueArray,
@@ -360,7 +362,12 @@ function LogAudit(props) {
               </div>
             );
             for (let j = 0; j < fLabels.length; j++) {
-              if (i == 0) {
+              if (
+                i == 0 &&
+                sortedEntries[i].data[
+                  fLabels[j].toLowerCase().replaceAll(" ", "_")
+                ] != null
+              ) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
@@ -394,7 +401,12 @@ function LogAudit(props) {
                     </div>
                   </div>
                 );
-              } else {
+              } else if (
+                i != 0 &&
+                sortedEntries[i].data[
+                  fLabels[j].toLowerCase().replaceAll(" ", "_")
+                ] != null
+              ) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>

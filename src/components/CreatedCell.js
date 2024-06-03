@@ -550,6 +550,7 @@ function CreatedCell(props) {
         {props.conf.type === "all-users" && !props.disabled && (
           <Multiselect
             style={config.multiSelectStyle}
+            avoidHighlightFirstOption={true}
             disabled={props.disabled}
             onSelect={(e) => {
               changed(
@@ -599,6 +600,7 @@ function CreatedCell(props) {
           (props.conf.referData || props.conf.referApi ? (
             <Multiselect
               style={config.multiSelectStyle}
+              avoidHighlightFirstOption={true}
               disabled={props.disabled}
               onSelect={(e) => {
                 changed(props.conf.key, e.join(","));
@@ -617,6 +619,7 @@ function CreatedCell(props) {
           ) : (
             <Multiselect
               style={config.multiSelectStyle}
+              avoidHighlightFirstOption={true}
               disabled={props.disabled}
               onSelect={(e) => changed(props.conf.key, e.join(","))}
               onRemove={(e) => changed(props.conf.key, e.join(","))}
@@ -629,6 +632,7 @@ function CreatedCell(props) {
           ))}
         {props.conf.type === "multiselect" && props.disabled && (
           <Multiselect
+            avoidHighlightFirstOption={true}
             style={config.multiSelectStyle}
             disable={props.disabled}
             selectedValues={

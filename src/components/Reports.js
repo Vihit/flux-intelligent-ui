@@ -70,7 +70,17 @@ function Reports(props) {
         setReportData((prev) => {
           return {
             header: cReport.columns.split(",").map((col) => {
-              return { accessorKey: col, header: col };
+              if (!col.endsWith("Date"))
+                return { accessorKey: col, header: col };
+              else {
+                console.log("added filterVariant");
+                return {
+                  accessorKey: col,
+                  header: col,
+                  filterVariant: "range",
+                  filterFn: "between",
+                };
+              }
             }),
             rows: actualData.map((data) => data.data),
           };
@@ -139,9 +149,22 @@ function Reports(props) {
           now.toLocaleTimeString(),
         pageWidth - 28
       );
-      doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
-      doc.setFont(undefined, "normal", "normal");
-      doc.text(String(i), pageWidth - 15, pageHeight - 10);
+
+      if (i == pageCount) {
+        doc.text(splits, pageWidth / 2, pageHeight - 20, { align: "center" });
+        doc.text(
+          String("Total Records : " + rows.length),
+          pageWidth / 2,
+          pageHeight - 10,
+          { align: "center" }
+        );
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      } else {
+        doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      }
     }
 
     doc.save(activeReport.name.toLowerCase().replaceAll(" ", "_") + ".pdf");
@@ -164,9 +187,9 @@ function Reports(props) {
     <div className="dashboard-container">
       <div className="u-d-container">
         <div className="u-menu p-menu-sidebar">
-          {reports.map((report) => {
+          {reports.map((report, idx) => {
             return (
-              <div className="u-menu-head r-menu">
+              <div className="u-menu-head r-menu" key={idx}>
                 <div
                   className="r-name"
                   onClick={() => setReportClicked(report.id)}

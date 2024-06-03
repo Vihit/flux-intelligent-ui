@@ -14,24 +14,36 @@ function PlatformSetup(props) {
     <div className="dashboard-container">
       <div className="u-d-container">
         <div className="u-menu p-menu-sidebar">
-          <div
-            className="u-menu-head p-menu"
-            onClick={() => setItemClicked("user")}
-          >
-            User Management
-          </div>
-          <div
-            className="u-menu-head p-menu"
-            onClick={() => setItemClicked("role")}
-          >
-            Role Management
-          </div>
-          <div
-            className="u-menu-head p-menu"
-            onClick={() => setItemClicked("department")}
-          >
-            Departments
-          </div>
+          {!JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_QA"
+          ) && (
+            <div
+              className="u-menu-head p-menu"
+              onClick={() => setItemClicked("user")}
+            >
+              User Management
+            </div>
+          )}
+          {!JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_QA"
+          ) && (
+            <div
+              className="u-menu-head p-menu"
+              onClick={() => setItemClicked("role")}
+            >
+              Role Management
+            </div>
+          )}
+          {!JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_QA"
+          ) && (
+            <div
+              className="u-menu-head p-menu"
+              onClick={() => setItemClicked("department")}
+            >
+              Departments
+            </div>
+          )}
           <div
             className="u-menu-head p-menu"
             onClick={() => setItemClicked("audit")}

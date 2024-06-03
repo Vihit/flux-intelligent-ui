@@ -147,9 +147,9 @@ function App() {
                 </Route>
               </div>
             )}
-            {JSON.parse(localStorage.getItem("user")).role.includes(
-              "ROLE_SYSTEM_ADMIN"
-            ) && (
+            {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
+              ["ROLE_SYSTEM_ADMIN", "ROLE_QA"].includes(role)
+            ).length > 0 && (
               <div>
                 <Route exact path="/platform">
                   <PlatformSetup raiseAlert={raiseAlert}></PlatformSetup>

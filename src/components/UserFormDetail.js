@@ -4,9 +4,10 @@ import "./UserFormDetail.css";
 import { config } from "./config";
 import MaterialReactTable from "material-react-table";
 import { Box, IconButton, Button } from "@mui/material";
-import { AccessTime, Fullscreen } from "@mui/icons-material";
+import { AccessTime, Fullscreen, GetApp } from "@mui/icons-material";
 import LogAudit from "./LogAudit";
 import { Typography } from "@mui/material/";
+import { jsPDF } from "jspdf";
 
 function UserFormDetail(props) {
   const [initiated, setInitiated] = useState(false);
@@ -43,6 +44,96 @@ function UserFormDetail(props) {
       });
     }
   }
+
+  const handleExportRows = (rows, table) => {
+    const columnVisibility = table.getState().columnVisibility;
+    const doc = new jsPDF("p", "pt");
+    const tableHeaders = props.tableData.header
+      .filter(
+        (c) => columnVisibility[c.id] == undefined || columnVisibility[c.id]
+      )
+      .map((c) => {
+        return { header: c.header, id: c.id };
+      });
+    var tableData = rows.map((row) => {
+      let out = {};
+      tableHeaders
+        .map((c) => c.id)
+        .forEach((c) => {
+          out[c] = row.original[c];
+        });
+      return Object.values(out);
+    });
+
+    var pageWidth =
+      doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+    var pageHeight =
+      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+    var header = function (data) {
+      doc.rect(0, 0, pageWidth, 40, "F", [204, 204, 204]);
+      var img = new Image();
+      img.src = "delogo1.png";
+      doc.addImage(img, "png", 10, 5, pageWidth / 12, 30);
+      doc.setFontSize(18);
+      doc.setTextColor("white");
+      doc.text(props.form.name, pageWidth / 2, 25, { align: "center" });
+      var client_logo = new Image();
+      client_logo.src = "client-logo.png";
+      doc.rect(pageWidth * 0.9, 1, pageWidth * 0.1, 38, "F", "#fff");
+      doc.addImage(client_logo, "png", pageWidth * 0.9, 2, pageWidth * 0.1, 35);
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(18);
+      doc.setTextColor(40);
+      // doc.setFontStyle("normal");
+      //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
+    };
+
+    doc.autoTable(
+      tableHeaders.map((c) => c.header),
+      tableData,
+      {
+        margin: { top: 50, left: 14, right: 14 },
+        beforePageContent: header,
+      }
+    );
+
+    const pageCount = doc.internal.getNumberOfPages();
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))[
+      "fullName"
+    ].replaceAll("null", "");
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString(),
+        pageWidth - 28
+      );
+      if (i == pageCount) {
+        doc.text(splits, pageWidth / 2, pageHeight - 20, { align: "center" });
+        doc.text(
+          String("Total Records : " + rows.length),
+          pageWidth / 2,
+          pageHeight - 10,
+          { align: "center" }
+        );
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      } else {
+        doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      }
+    }
+
+    doc.save(props.form.name.toLowerCase().replaceAll(" ", "_") + ".pdf");
+  };
 
   async function openFormView(row) {
     setEntry(row.original);
@@ -112,41 +203,6 @@ function UserFormDetail(props) {
 
   return (
     <div className="f-dtl-container">
-      {/* <div className="f-dtl-head">
-        <div className="f-dtl-name">{props.form.name}</div>
-        {props.type === "initiate" && (
-          <div className="i-btn" onClick={() => setInitiated(true)}>
-            {props.form.workflow.states.filter((st) => st.firstState)[0].label}
-          </div>
-        )}
-        {props.type === "view" &&
-          props.form.app.name === "Master Data Management" && (
-            <div className="btns">
-              <div className="i-btn">
-                <a
-                  href={
-                    config.apiUrl +
-                    "master/entry/bulk/template/" +
-                    props.form.id
-                  }
-                  target="_blank"
-                  download
-                >
-                  Download Bulk Upload Template
-                </a>
-              </div>
-              <div className="i-btn" onClick={handleClick}>
-                Bulk Upload
-                <input
-                  type="file"
-                  ref={hiddenFileInput}
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-              </div>
-            </div>
-          )}
-      </div> */}
       <div className="f-dtl"></div>
       <div className="f-table">
         <MaterialReactTable
@@ -202,6 +258,28 @@ function UserFormDetail(props) {
                     </div>
                   </div>
                 )}
+              {props.type === "view-all" && (
+                <Button
+                  disabled={table.getPrePaginationRowModel().rows.length === 0}
+                  //export all rows, including from the next page, (still respects filtering and sorting)
+                  onClick={() =>
+                    handleExportRows(
+                      table.getPrePaginationRowModel().rows,
+                      table
+                    )
+                  }
+                  style={{
+                    background: "var(--green)",
+                    color: "white",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    fontFamily: "Poppins",
+                    boxShadow: "2px 2px 2px #00000055",
+                  }}
+                >
+                  {<GetApp />} &nbsp;Download
+                </Button>
+              )}
             </Box>
           )}
           enableRowActions={

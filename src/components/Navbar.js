@@ -26,11 +26,12 @@ function Navbar(props) {
         if (
           Date.now() / 1000 - JSON.parse(localStorage.getItem("user")).exp >=
           -60
-        )
-          // setShowLogin(true);
+        ) {
+          console.log("Refreshing Token");
           renewToken();
+        }
       }
-    }, 10000);
+    }, 59 * 60 * 1000);
   }, []);
 
   function handleAccountClick() {
@@ -144,6 +145,13 @@ function Navbar(props) {
           )}
           {JSON.parse(localStorage.getItem("user")).role.includes(
             "ROLE_SYSTEM_ADMIN"
+          ) && (
+            <div>
+              <Link to="/platform">Platform</Link>
+            </div>
+          )}
+          {JSON.parse(localStorage.getItem("user")).role.includes(
+            "ROLE_QA"
           ) && (
             <div>
               <Link to="/platform">Platform</Link>
