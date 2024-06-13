@@ -124,7 +124,7 @@ function RoleMgmt(props) {
           }}
           muiTableHeadCellProps={{
             sx: {
-              fontWeight: "bold",
+              fontWeight: "600",
               fontSize: "14px",
               backgroundColor: "var(--main)",
               color: "var(--white)",

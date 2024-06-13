@@ -438,7 +438,6 @@ function FormStudio(props) {
         if (response.ok) {
           return response.json();
         } else {
-          console.log("Error");
           props.raiseAlert("red", "Some error occurred!", 3000);
           throw new Error("");
         }
@@ -598,7 +597,6 @@ function FormStudio(props) {
           parseResponse(actualData);
         })
         .catch((error) => {
-          console.log(error);
           props.raiseAlert("loading", "end");
           props.raiseAlert(
             "red",
@@ -620,7 +618,6 @@ function FormStudio(props) {
     var parser = new DOMParser();
     var doc = parser.parseFromString(htmlCode, "text/html");
     var formElements = doc.body.children;
-    console.log(formElements);
     var form = null;
     for (var i = 0; i < formElements.length; i++) {
       if (formElements[i].localName === "form") {
@@ -628,7 +625,6 @@ function FormStudio(props) {
         break;
       }
     }
-    console.log(form);
     if (form != null) {
       // var labels = form.getElementsByTagName("label");
       var children = form.children;

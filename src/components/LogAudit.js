@@ -156,9 +156,9 @@ function LogAudit(props) {
         "This document has been generated electronically. E-signed by " +
           user +
           " at " +
-          now.toLocaleDateString() +
+          now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
-          now.toLocaleTimeString(),
+          now.toLocaleTimeString("en-IN", { hour12: false }),
         200
       );
       doc.text(splits, pageWidth / 2, 295, { align: "center" });

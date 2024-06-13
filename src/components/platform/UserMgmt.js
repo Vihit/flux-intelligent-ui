@@ -148,9 +148,13 @@ function UserMgmt(props) {
               >
                 Users
               </Typography>{" "}
-              <div className="i-btn" onClick={() => addANewUser()}>
-                Add
-              </div>
+              {JSON.parse(localStorage.getItem("user")).role.includes(
+                "ROLE_ADMIN"
+              ) && (
+                <div className="i-btn" onClick={() => addANewUser()}>
+                  Add
+                </div>
+              )}
             </Box>
           )}
           enableRowActions

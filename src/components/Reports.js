@@ -73,7 +73,6 @@ function Reports(props) {
               if (!col.endsWith("Date"))
                 return { accessorKey: col, header: col };
               else {
-                console.log("added filterVariant");
                 return {
                   accessorKey: col,
                   header: col,
@@ -100,7 +99,11 @@ function Reports(props) {
   }
 
   const handleExportRows = (rows) => {
-    const doc = new jsPDF("p", "pt");
+    var orientation = "p";
+    if (rows.length > 7) {
+      orientation = "l";
+    }
+    const doc = new jsPDF(orientation, "pt");
     const tableData = rows.map((row) => Object.values(row.original));
     const tableHeaders = reportData.header.map((c) => c.header);
     var pageWidth =
@@ -144,9 +147,9 @@ function Reports(props) {
         "This document has been generated electronically. E-signed by " +
           user +
           " at " +
-          now.toLocaleDateString() +
+          now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
-          now.toLocaleTimeString(),
+          now.toLocaleTimeString("en-IN", { hour12: false }),
         pageWidth - 28
       );
 

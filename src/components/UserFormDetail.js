@@ -36,12 +36,20 @@ function UserFormDetail(props) {
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
         body: f,
-      }).then((response) => {
-        if (response.ok) {
+      })
+        .then((response) => {
+          if (response.ok) {
+            return null;
+          } else {
+            return response.text();
+          }
+        })
+        .then((actualData) => {
+          if (actualData != null)
+            props.raiseAlert("red", "Error occurred : " + actualData, 5000);
           props.raiseAlert("green", "Data Uploaded");
           props.updateData(props.type, props.form);
-        }
-      });
+        });
     }
   }
 
@@ -110,9 +118,9 @@ function UserFormDetail(props) {
         "This document has been generated electronically. E-signed by " +
           user +
           " at " +
-          now.toLocaleDateString() +
+          now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
-          now.toLocaleTimeString(),
+          now.toLocaleTimeString("en-IN", { hour12: false }),
         pageWidth - 28
       );
       if (i == pageCount) {

@@ -22,10 +22,11 @@ function Form(props) {
     props.entry.id == -1 ||
     (props.entry.state ===
       props.form.workflow.states.filter((st) => st.endState)[0].name &&
-      props.form.app.name === "Master Data Management")
+      props.form.app.name === "Master Data Managements")
       ? props.form.workflow.states.filter((st) => st.firstState)[0].name
       : props.entry.state.split("-INPA")[0];
   const [sortedEntries, setSortedEntries] = useState([]);
+
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -442,7 +443,8 @@ function Form(props) {
                       key={"1" + idx + "" + inx}
                       disabled={
                         disabledColumns.includes(conf[idx][inx].key) ||
-                        props.type === "view"
+                        props.type === "view" ||
+                        showESign
                       }
                       dataChanged={dataChanged}
                       type={"form"}
@@ -518,36 +520,36 @@ function Form(props) {
             Cancel
           </div>
         </div>
-        <div className={"esign-modal " + (showESign ? " " : " close-flex")}>
-          <div className="create-job-header">
-            <div className="flex-row-title margin-btm">
-              <i className="fa-solid fa-signature new-job-icon"></i>
-              <div className="new-job-head">E-Sign</div>
+      </div>
+      <div className={"esign-modal " + (showESign ? " " : " close-flex")}>
+        <div className="create-job-header">
+          <div className="flex-row-title margin-btm">
+            <i className="fa-solid fa-signature new-job-icon"></i>
+            <div className="new-job-head">E-Sign</div>
+          </div>
+          <div className="new-esign-input">
+            <div className="new-esign-label">Username</div>
+            <div className="new-job-ta">
+              <input type="text" value={user} disabled></input>
             </div>
-            <div className="new-esign-input">
-              <div className="new-esign-label">Username</div>
-              <div className="new-job-ta">
-                <input type="text" value={user} disabled></input>
-              </div>
+          </div>
+          <div className="new-esign-input">
+            <div className="new-esign-label">Password</div>
+            <div className="new-job-ta">
+              <input
+                type="password"
+                value={esignPwd}
+                onChange={(e) => setESignPwd(e.target.value)}
+                onKeyDown={(e) => pressedKey(e)}
+              ></input>
             </div>
-            <div className="new-esign-input">
-              <div className="new-esign-label">Password</div>
-              <div className="new-job-ta">
-                <input
-                  type="password"
-                  value={esignPwd}
-                  onChange={(e) => setESignPwd(e.target.value)}
-                  onKeyDown={(e) => pressedKey(e)}
-                ></input>
-              </div>
+          </div>
+          <div className="flex-row-title">
+            <div className="btn-save" onClick={esign}>
+              E-Sign
             </div>
-            <div className="flex-row-title">
-              <div className="btn-save" onClick={esign}>
-                E-Sign
-              </div>
-              <div className="btn-cancel" onClick={cancelESign}>
-                Cancel
-              </div>
+            <div className="btn-cancel" onClick={cancelESign}>
+              Cancel
             </div>
           </div>
         </div>
