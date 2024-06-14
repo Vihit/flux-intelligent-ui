@@ -100,12 +100,13 @@ function Reports(props) {
 
   const handleExportRows = (rows) => {
     var orientation = "p";
-    if (rows.length > 7) {
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = reportData.header.map((c) => c.header);
+
+    if (tableHeaders.length > 7) {
       orientation = "l";
     }
     const doc = new jsPDF(orientation, "pt");
-    const tableData = rows.map((row) => Object.values(row.original));
-    const tableHeaders = reportData.header.map((c) => c.header);
     var pageWidth =
       doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
     var pageHeight =
@@ -129,9 +130,26 @@ function Reports(props) {
       //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
     };
 
+    var cStyles = {};
+    var arr = [...Array(tableHeaders.length).keys()];
+    arr.forEach((element) => {
+      cStyles[element] = {
+        cellWidth: (pageWidth - 28) / tableHeaders.length,
+        minCellWidth: 50,
+      };
+    });
+
     doc.autoTable(tableHeaders, tableData, {
-      margin: { top: 50, left: 14, right: 14 },
+      margin: { top: 60, left: 14, right: 14 },
       beforePageContent: header,
+      styles: {
+        lineColor: "white",
+        lineWidth: 1,
+      },
+      columnStyles: cStyles,
+      headStyles: {
+        fontStyle: "normal",
+      },
     });
 
     const pageCount = doc.internal.getNumberOfPages();
