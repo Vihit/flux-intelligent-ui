@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 import MaterialReactTable from "material-react-table";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Button } from "@mui/material";
+import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
+import { jsPDF } from "jspdf";
 
 function AuditMgmt(props) {
   const [tableData, setTableData] = useState({ header: [], rows: [] });
@@ -30,6 +32,103 @@ function AuditMgmt(props) {
   useEffect(() => {
     getAuditLogs();
   }, [pagination.pageIndex]);
+
+  const handleExportRows = (rows) => {
+    var orientation = "l";
+    const tD = rows.map((row) => keys.map((key) => row.original[key]));
+    const tableHeaders = tableData.header.map((c) => c.header);
+
+    console.log(rows[0].original);
+    console.log(tD);
+    console.log(tableHeaders);
+
+    if (tableHeaders.length > 7) {
+      orientation = "l";
+    }
+    const doc = new jsPDF(orientation, "pt");
+    var pageWidth =
+      doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+    var pageHeight =
+      doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+    var header = function (data) {
+      doc.rect(0, 0, pageWidth, 40, "F", [204, 204, 204]);
+      var img = new Image();
+      img.src = "delogo1.png";
+      doc.addImage(img, "png", 10, 5, pageWidth / 12, 30);
+      doc.setFontSize(18);
+      doc.setTextColor("white");
+      doc.text("Audit Trail", pageWidth / 2, 25, { align: "center" });
+      var client_logo = new Image();
+      client_logo.src = "client-logo.png";
+      doc.rect(pageWidth * 0.9, 1, pageWidth * 0.1, 38, "F", "#fff");
+      doc.addImage(client_logo, "png", pageWidth * 0.9, 2, pageWidth * 0.1, 35);
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(18);
+      doc.setTextColor(40);
+      // doc.setFontStyle("normal");
+      //doc.addImage(headerImgData, 'JPEG', data.settings.margin.left, 20, 50, 50);
+    };
+
+    var cStyles = {};
+    var arr = [...Array(tableHeaders.length).keys()];
+    arr.forEach((element) => {
+      cStyles[element] = {
+        cellWidth: (pageWidth - 28) / tableHeaders.length,
+        minCellWidth: 50,
+      };
+    });
+
+    doc.autoTable(tableHeaders, tD, {
+      margin: { top: 60, left: 14, right: 14 },
+      beforePageContent: header,
+      styles: {
+        lineColor: "white",
+        lineWidth: 1,
+      },
+      columnStyles: cStyles,
+      headStyles: {
+        fontStyle: "normal",
+      },
+    });
+
+    const pageCount = doc.internal.getNumberOfPages();
+    var now = new Date();
+    const user = JSON.parse(localStorage.getItem("user"))[
+      "fullName"
+    ].replaceAll("null", "");
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setFontSize(10).setFont(undefined, "italic", "normal");
+      doc.setPage(i);
+
+      var splits = doc.splitTextToSize(
+        "This document has been generated electronically. E-signed by " +
+          user +
+          " at " +
+          now.toLocaleDateString("en-IN", { hour12: false }) +
+          " " +
+          now.toLocaleTimeString("en-IN", { hour12: false }),
+        pageWidth - 28
+      );
+
+      if (i == pageCount) {
+        doc.text(splits, pageWidth / 2, pageHeight - 20, { align: "center" });
+        doc.text(
+          String("Total Records : " + rows.length),
+          pageWidth / 2,
+          pageHeight - 10,
+          { align: "center" }
+        );
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      } else {
+        doc.text(splits, pageWidth / 2, pageHeight - 10, { align: "center" });
+        doc.setFont(undefined, "normal", "normal");
+        doc.text(String(i), pageWidth - 15, pageHeight - 10);
+      }
+    }
+
+    doc.save("Audit_trail.pdf");
+  };
 
   function getAuditLogs() {
     fetch(
@@ -119,6 +218,22 @@ function AuditMgmt(props) {
               >
                 Audit Trail
               </Typography>
+              <Button
+                disabled={table.getPrePaginationRowModel().rows.length === 0}
+                onClick={() =>
+                  handleExportRows(table.getPrePaginationRowModel().rows)
+                }
+                style={{
+                  background: "var(--green)",
+                  color: "white",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  fontFamily: "Poppins",
+                  boxShadow: "2px 2px 2px #00000055",
+                }}
+              >
+                {<GetApp />} &nbsp;Download Page
+              </Button>
             </Box>
           )}
           muiTableContainerProps={{

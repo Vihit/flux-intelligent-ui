@@ -119,11 +119,16 @@ function LogAudit(props) {
 
     sortedEntries.forEach((element, index) => {
       let currentData = element["data"];
+      console.log(currentData);
       finalY = finalY + 20;
       doc.text(`Target State : ${currentData["state"]}`, 14, finalY);
       finalY = finalY + 5;
       doc.setFontSize(10);
-      doc.text(`Performed by  : ${currentData["created_by"]}`, 14, finalY);
+      doc.text(
+        `Performed by  : ${currentData["created_by"]} at ${currentData["log_create_dt"]}`,
+        14,
+        finalY
+      );
       finalY = finalY + 5;
       doc.setFontSize(12);
       let oldData = {};
