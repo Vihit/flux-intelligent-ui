@@ -67,8 +67,27 @@ function App() {
   }
 
   function logoutHandler() {
-    localStorage.clear();
-    setLoggedIn(false);
+    let user = {};
+    user["id"] = JSON.parse(localStorage.getItem("user"))["user_id"];
+    user["username"] = JSON.parse(localStorage.getItem("user"))["sub"];
+    console.log(user);
+    fetch(config.apiUrl + "log-out", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+      body: JSON.stringify(user),
+    }).then((response) => {
+      if (response.ok) {
+        localStorage.clear();
+        setLoggedIn(false);
+      } else {
+        raiseAlert("red", "Some error occurred while logging out!", 3000);
+      }
+    });
   }
 
   const handleTimeout = () => {
