@@ -179,6 +179,7 @@ function UserEdit(props) {
               <input
                 type="text"
                 value={user.first_name}
+                disabled={user.id != undefined}
                 onChange={(e) => userChanged("first_name", e.target.value)}
               ></input>
             </div>
@@ -191,6 +192,7 @@ function UserEdit(props) {
               <input
                 type="text"
                 value={user.last_name}
+                disabled={user.id != undefined}
                 onChange={(e) => userChanged("last_name", e.target.value)}
               ></input>
             </div>
@@ -205,7 +207,8 @@ function UserEdit(props) {
               <input
                 type="text"
                 value={user.email}
-                // onChange={(e) => userChanged("email", e.target.value)}
+                disabled={user.id != undefined}
+                onChange={(e) => userChanged("email", e.target.value)}
               ></input>
             </div>
           </div>
@@ -231,6 +234,7 @@ function UserEdit(props) {
             <div className="cell-control">
               <input
                 type="password"
+                disabled={user.id != undefined}
                 value={user.password}
                 onChange={(e) => userChanged("password", e.target.value)}
               ></input>
@@ -258,6 +262,7 @@ function UserEdit(props) {
             <div className="cell-control">
               <select
                 value={user.department}
+                disabled={user.id != undefined}
                 onChange={(e) => userChanged("department", e.target.value)}
               >
                 <option value={""}>Select</option>
@@ -291,21 +296,14 @@ function UserEdit(props) {
               <div>Reporting Manager</div>
             </div>
             <div className="cell-control">
-              <select
+              <input
+                type="text"
                 value={user.reporting_manager}
+                disabled={user.id != undefined}
                 onChange={(e) =>
                   userChanged("reporting_manager", e.target.value)
                 }
-              >
-                <option value={null}>Select</option>
-                {props.users.map((user, inx) => {
-                  return (
-                    <option key={inx} value={user.username}>
-                      {user.username}
-                    </option>
-                  );
-                })}
-              </select>
+              ></input>
             </div>
           </div>
         </div>
@@ -329,7 +327,6 @@ function UserEdit(props) {
                       <input
                         type="checkbox"
                         value={sV.role}
-                        disabled={props.disabled}
                         onChange={(e) => userChanged("roles", e.target)}
                         checked={
                           user.roles != undefined
