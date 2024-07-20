@@ -358,10 +358,10 @@ function UserFormDetail(props) {
         .controls.flatMap((f) => f)
         .filter((ctrl) => ctrl.type === "grid").length > 0 &&
         gridEntries.map((data, indx) => {
-          var matCols = data.columns.split(",").map((col) => {
+          var matCols = data.columns.split(",").map((col, inx) => {
             return {
               accessorKey: col,
-              header: col.replaceAll("_", " ").toUpperCase(),
+              header: data.labels.split(",")[inx],
             };
           });
           var rows = [];
@@ -392,7 +392,7 @@ function UserFormDetail(props) {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {data.grid.toUpperCase()}
+                      {data.gridLabel}
                     </Typography>
                   )}
                   muiTableBodyProps={{

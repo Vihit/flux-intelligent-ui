@@ -220,10 +220,12 @@ function Reports(props) {
                 {JSON.parse(localStorage.getItem("user")).role.includes(
                   "ROLE_ADMIN"
                 ) && (
-                  <i
-                    className="fa-solid fa-edit"
-                    onClick={() => editReport(report)}
-                  ></i>
+                  <div>
+                    <i
+                      className="fa-solid fa-edit"
+                      onClick={() => editReport(report)}
+                    ></i>
+                  </div>
                 )}
               </div>
             );

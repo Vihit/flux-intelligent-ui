@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import ColSelectionWindow from "./ColSelectionWindow.js";
 
 function StateConfig(props) {
+  console.log(props);
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleAccessDetails, setToggleAccessDetails] = useState(false);
@@ -23,12 +24,12 @@ function StateConfig(props) {
   const [writableColumns, setWritableColumns] = useState(
     props.conf.writableColumns !== undefined
       ? props.conf.writableColumns
-      : props.formColumns.map((col) => col.toLowerCase().replaceAll(" ", "_"))
+      : props.formColumnKeys
   );
   const [viewableColumns, setViewableColumns] = useState(
     props.conf.viewableColumns !== undefined
       ? props.conf.viewableColumns
-      : props.formColumns.map((col) => col.toLowerCase().replaceAll(" ", "_"))
+      : props.formColumnKeys
   );
   useEffect(() => {}, []);
 
@@ -49,9 +50,7 @@ function StateConfig(props) {
         currConf["selectedDepartments"] = selectedDepartments;
         currConf["viewableColumns"] = viewableColumns;
         currConf["writableColumns"] = currConf.isLastState
-          ? props.formColumns.map((col) =>
-              col.toLowerCase().replaceAll(" ", "_")
-            )
+          ? props.formColumnKeys
           : writableColumns;
         currConf["class"] = currConf.isFirstState
           ? "start-node"
@@ -70,11 +69,7 @@ function StateConfig(props) {
         let finalProp = splitWhat[i];
         obj[finalProp] = value;
         if (what === "isLastState" && value === "true") {
-          setWritableColumns(
-            props.formColumns.map((col) =>
-              col.toLowerCase().replaceAll(" ", "_")
-            )
-          );
+          setWritableColumns(props.formColumnKeys);
         }
       }
       return currConf;
@@ -446,9 +441,8 @@ function StateConfig(props) {
                       return (
                         <option key={idx} value={col}>
                           {
-                            props.formColumns.filter(
-                              (fcol) =>
-                                fcol.toLowerCase().replaceAll(" ", "_") === col
+                            props.formColumnKeys.filter(
+                              (fcol) => fcol === col
                             )[0]
                           }
                         </option>
@@ -490,13 +484,13 @@ function StateConfig(props) {
                         type="checkbox"
                         checked={
                           !writableColumns.includes(
-                            col.toLowerCase().replaceAll(" ", "_")
+                            props.formColumnKeys[ind]
                           ) && !(conf.isLastState === "true")
                         }
                         onChange={(e) => {
                           if (conf.isLastState !== "true") {
                             updateWritableColumns(
-                              col.toLowerCase().replaceAll(" ", "_"),
+                              props.formColumnKeys[ind],
                               e.target.checked
                             );
                           }
@@ -507,11 +501,11 @@ function StateConfig(props) {
                       <input
                         type="checkbox"
                         checked={viewableColumns.includes(
-                          col.toLowerCase().replaceAll(" ", "_")
+                          props.formColumnKeys[ind]
                         )}
                         onChange={(e) =>
                           updateViewableColumns(
-                            col.toLowerCase().replaceAll(" ", "_"),
+                            props.formColumnKeys[ind],
                             e.target.checked
                           )
                         }

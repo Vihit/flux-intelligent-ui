@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import ColSelectionWindow from "./ColSelectionWindow.js";
 
 function ControlConfig(props) {
+  console.log(props);
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleReferenceDataDetails, setToggleReferenceDataDetails] =
@@ -164,6 +165,18 @@ function ControlConfig(props) {
                     value={conf.label}
                     onChange={(e) => {
                       confChanged("label", e.target.value);
+                    }}
+                  ></input>
+                </div>
+              </div>
+              <div className="label-n-text">
+                <div className="label">Key</div>
+                <div className="text">
+                  <input
+                    type="text"
+                    value={conf.key}
+                    onChange={(e) => {
+                      confChanged("key", e.target.value);
                     }}
                   ></input>
                 </div>

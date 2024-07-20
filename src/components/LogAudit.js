@@ -12,6 +12,10 @@ function LogAudit(props) {
     .flatMap((ctrl) => ctrl)
     .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
     .map((c) => c.label);
+  const fKeys = parsedForm["controls"]
+    .flatMap((ctrl) => ctrl)
+    .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+    .map((c) => c.key);
   const attachments = parsedForm["controls"]
     .flatMap((ctrl) => ctrl)
     .filter((ctrl) => ctrl.type === "attachment");
@@ -19,6 +23,7 @@ function LogAudit(props) {
     .flatMap((ctrl) => ctrl)
     .filter((ctrl) => ctrl.type === "grid");
   const gridLabels = gridControls.map((c) => c.label);
+  const gridKeys = gridControls.map((c) => c.key);
   const [gridLogs, setGridLogs] = useState([]);
   const sortedEntries = props.entries
     .filter((entry) => !entry.data["state"].endsWith("-INPA"))
@@ -92,17 +97,18 @@ function LogAudit(props) {
 
   function newAuditReportDownload() {
     const doc = new jsPDF();
-
+    doc.setFillColor("#0f2938");
     doc.rect(0, 0, 210, 20, "F", [204, 204, 204]);
     var img = new Image();
     img.src = "delogo1.png";
-    doc.addImage(img, "png", 10, 2, 20, 15);
+    doc.addImage(img, "png", 5, 2, 20, 15);
     doc.setFontSize(12);
-    doc.setTextColor("#00ADB5");
+    doc.setTextColor("#FFFFFF");
     doc.text(
       `Audit for ${props.form.name} Entry #${props.entries[0].data.log_entry_id}`,
       100,
-      12
+      12,
+      { align: "center" }
     );
     var client_logo = new Image();
     client_logo.src = "client-logo.png";
@@ -136,8 +142,8 @@ function LogAudit(props) {
         oldData = sortedEntries[index - 1]["data"];
       }
       const keyValueArray = fLabels
-        .map((key) => {
-          let actual_key = key.toLowerCase().replaceAll(" ", "_");
+        .map((key, inx) => {
+          let actual_key = fKeys[inx];
           return [key, oldData[actual_key], currentData[actual_key]];
         })
         .filter((arr) => arr[1] != null || arr[2] != null);
@@ -145,8 +151,16 @@ function LogAudit(props) {
         head: [["Reference", "Old Value", "New Value"]],
         body: keyValueArray,
         startY: finalY,
+        headStyles: {
+          fillColor: "#0f2938",
+          fontStyle: "normal",
+        },
       });
       finalY = doc.lastAutoTable.finalY;
+      if (finalY > 278) {
+        doc.addPage();
+        finalY = 0;
+      }
     });
     const pageCount = doc.internal.getNumberOfPages();
     var now = new Date();
@@ -367,12 +381,7 @@ function LogAudit(props) {
               </div>
             );
             for (let j = 0; j < fLabels.length; j++) {
-              if (
-                i == 0 &&
-                sortedEntries[i].data[
-                  fLabels[j].toLowerCase().replaceAll(" ", "_")
-                ] != null
-              ) {
+              if (i == 0 && sortedEntries[i].data[fKeys[j]] != null) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
@@ -381,37 +390,24 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i].data[
-                          fLabels[j].toLowerCase().replaceAll(" ", "_")
-                        ]
+                        sortedEntries[i].data[fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
                               sortedEntries[i].data["id"],
-                              sortedEntries[i].data[
-                                fLabels[j].toLowerCase().replaceAll(" ", "_")
-                              ]
+                              sortedEntries[i].data[fKeys[j]]
                             )
                           }
                         >
-                          {
-                            sortedEntries[i].data[
-                              fLabels[j].toLowerCase().replaceAll(" ", "_")
-                            ]
-                          }
+                          {sortedEntries[i].data[fKeys[j]]}
                         </div>
                       )}
                     </div>
                   </div>
                 );
-              } else if (
-                i != 0 &&
-                sortedEntries[i].data[
-                  fLabels[j].toLowerCase().replaceAll(" ", "_")
-                ] != null
-              ) {
+              } else if (i != 0 && sortedEntries[i].data[fKeys[j]] != null) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
@@ -419,26 +415,18 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i - 1].data[
-                          fLabels[j].toLowerCase().replaceAll(" ", "_")
-                        ]
+                        sortedEntries[i - 1].data[fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
                               sortedEntries[i - 1].data["id"],
-                              sortedEntries[i - 1].data[
-                                fLabels[j].toLowerCase().replaceAll(" ", "_")
-                              ]
+                              sortedEntries[i - 1].data[fKeys[j]]
                             )
                           }
                         >
-                          {
-                            sortedEntries[i - 1].data[
-                              fLabels[j].toLowerCase().replaceAll(" ", "_")
-                            ]
-                          }
+                          {sortedEntries[i - 1].data[fKeys[j]]}
                         </div>
                       )}
                     </div>
@@ -446,26 +434,18 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i].data[
-                          fLabels[j].toLowerCase().replaceAll(" ", "_")
-                        ]
+                        sortedEntries[i].data[fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
                               sortedEntries[i].data["id"],
-                              sortedEntries[i].data[
-                                fLabels[j].toLowerCase().replaceAll(" ", "_")
-                              ]
+                              sortedEntries[i].data[fKeys[j]]
                             )
                           }
                         >
-                          {
-                            sortedEntries[i].data[
-                              fLabels[j].toLowerCase().replaceAll(" ", "_")
-                            ]
-                          }
+                          {sortedEntries[i].data[fKeys[j]]}
                         </div>
                       )}
                     </div>
@@ -489,11 +469,8 @@ function LogAudit(props) {
                         .flatMap((f) => f.logs)
                         .filter(
                           (el) =>
-                            el.logs.filter(
-                              (log) =>
-                                log.grid ===
-                                gridLabels[g].toLowerCase().replaceAll(" ", "_")
-                            ).length > 0
+                            el.logs.filter((log) => log.grid === gridKeys[g])
+                              .length > 0
                         )
                         .map((element) => {
                           return (
@@ -501,13 +478,7 @@ function LogAudit(props) {
                               <div className="g-data-head">{element.name}</div>
                               <div className="g-data-log">
                                 {element.logs
-                                  .filter(
-                                    (log) =>
-                                      log.grid ===
-                                      gridLabels[g]
-                                        .toLowerCase()
-                                        .replaceAll(" ", "_")
-                                  )
+                                  .filter((log) => log.grid === gridKeys[g])
                                   .map((log) => (
                                     <div>{log.msg}</div>
                                   ))}
@@ -520,9 +491,7 @@ function LogAudit(props) {
                         .flatMap((f) => f)
                         .filter(
                           (data) =>
-                            data != undefined &&
-                            data.grid ===
-                              gridLabels[g].toLowerCase().replaceAll(" ", "_")
+                            data != undefined && data.grid === gridKeys[g]
                         )
                         .map((data, id) => {
                           if (id == 0) {
@@ -531,7 +500,7 @@ function LogAudit(props) {
                                 <div className="n-g-a-head">
                                   {gridControls
                                     .filter((c) => c.key === data.grid)[0]
-                                    .controls.map((c) => c.key)
+                                    .controls.map((c) => c.label)
                                     .map((k) => (
                                       <div className="n-g-a-cell">{k}</div>
                                     ))}

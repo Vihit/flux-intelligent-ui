@@ -417,7 +417,7 @@ function FormStudio(props) {
       columns: conf
         .flatMap((f) => f)
         .filter((c) => c.label !== "" && c.type !== "section-heading")
-        .map((c) => c.label.toLowerCase().replaceAll(" ", "_"))
+        .map((c) => c.key)
         .reduce((a, b) => a + "," + b),
       type:
         apps.filter((a) => a.id == app)[0].name === "Master Data Management"
@@ -980,8 +980,12 @@ function FormStudio(props) {
           deleteState={deleteState}
           formColumns={conf
             .flatMap((f) => f)
-            .filter((c) => c.label !== "")
+            .filter((c) => c.label !== "" && c.key !== "")
             .map((c) => c.label)}
+          formColumnKeys={conf
+            .flatMap((f) => f)
+            .filter((c) => c.label !== "" && c.key !== "")
+            .map((c) => c.key)}
         ></StateConfig>
       )}
       {showPreview && (

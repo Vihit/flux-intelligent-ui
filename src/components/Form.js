@@ -245,7 +245,7 @@ function Form(props) {
     }
   }
   function checkDependency(of, on) {
-    if (JSON.parse(of.referData)) {
+    if (of.referData != undefined && JSON.parse(of.referData)) {
       var refQuery = of.referenceFilterQuery;
       var reg = /\${(\w+)}/g;
       var matches = refQuery.match(reg);

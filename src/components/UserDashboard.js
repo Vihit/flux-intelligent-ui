@@ -194,27 +194,28 @@ function UserDashboard(props) {
             "Updated By",
             "Log Update Dt",
           ]);
+
         setLogEntries(actualData);
         var matCols = [];
         var rows = [];
-        fCols
-          .split(",")
-          .filter((col) =>
-            fLabels
-              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
-              .includes(col)
-          )
-          .map((c) => {
-            return fLabels.filter(
-              (l) => l.toLowerCase().replaceAll(" ", "_") === c
-            )[0];
-          })
-          .forEach((element) => {
-            matCols.push({
-              accessorKey: element.toLowerCase().replaceAll(" ", "_"),
-              header: element,
-            });
+        var fKeys = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.key)
+          .concat([
+            "id",
+            "state",
+            "created_by",
+            "log_create_dt",
+            "updated_by",
+            "log_update_dt",
+          ]);
+        fKeys.forEach((element, inx) => {
+          matCols.push({
+            accessorKey: element,
+            header: fLabels[inx],
           });
+        });
         actualData.forEach((data) => {
           let obj = {};
           fCols.split(",").forEach((col) => {
@@ -264,24 +265,42 @@ function UserDashboard(props) {
         setLogEntries(actualData);
         var matCols = [];
         var rows = [];
-        fCols
-          .split(",")
-          .filter((col) =>
-            fLabels
-              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
-              .includes(col)
-          )
-          .map((c) => {
-            return fLabels.filter(
-              (l) => l.toLowerCase().replaceAll(" ", "_") === c
-            )[0];
-          })
-          .forEach((element) => {
-            matCols.push({
-              accessorKey: element.toLowerCase().replaceAll(" ", "_"),
-              header: element,
-            });
+        var fKeys = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.key)
+          .concat([
+            "id",
+            "state",
+            "created_by",
+            "log_create_dt",
+            "updated_by",
+            "log_update_dt",
+          ]);
+        fKeys.forEach((element, inx) => {
+          matCols.push({
+            accessorKey: element,
+            header: fLabels[inx],
           });
+        });
+        // fCols
+        //   .split(",")
+        //   .filter((col) =>
+        //     fLabels
+        //       .map((l) => l.toLowerCase().replaceAll(" ", "_"))
+        //       .includes(col)
+        //   )
+        //   .map((c) => {
+        //     return fLabels.filter(
+        //       (l) => l.toLowerCase().replaceAll(" ", "_") === c
+        //     )[0];
+        //   })
+        //   .forEach((element) => {
+        //     matCols.push({
+        //       accessorKey: element.toLowerCase().replaceAll(" ", "_"),
+        //       header: element,
+        //     });
+        //   });
         actualData.forEach((data) => {
           let obj = {};
           fCols.split(",").forEach((col) => {
@@ -331,24 +350,42 @@ function UserDashboard(props) {
         setLogEntries(actualData);
         var matCols = [];
         var rows = [];
-        fCols
-          .split(",")
-          .filter((col) =>
-            fLabels
-              .map((l) => l.toLowerCase().replaceAll(" ", "_"))
-              .includes(col)
-          )
-          .map((c) => {
-            return fLabels.filter(
-              (l) => l.toLowerCase().replaceAll(" ", "_") === c
-            )[0];
-          })
-          .forEach((element) => {
-            matCols.push({
-              accessorKey: element.toLowerCase().replaceAll(" ", "_"),
-              header: element,
-            });
+        // fCols
+        //   .split(",")
+        //   .filter((col) =>
+        //     fLabels
+        //       .map((l) => l.toLowerCase().replaceAll(" ", "_"))
+        //       .includes(col)
+        //   )
+        //   .map((c) => {
+        //     return fLabels.filter(
+        //       (l) => l.toLowerCase().replaceAll(" ", "_") === c
+        //     )[0];
+        //   })
+        //   .forEach((element) => {
+        //     matCols.push({
+        //       accessorKey: element.toLowerCase().replaceAll(" ", "_"),
+        //       header: element,
+        //     });
+        //   });
+        var fKeys = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.key)
+          .concat([
+            "id",
+            "state",
+            "created_by",
+            "log_create_dt",
+            "updated_by",
+            "log_update_dt",
+          ]);
+        fKeys.forEach((element, inx) => {
+          matCols.push({
+            accessorKey: element,
+            header: fLabels[inx],
           });
+        });
         actualData.forEach((data) => {
           let obj = {};
           fCols.split(",").forEach((col) => {
