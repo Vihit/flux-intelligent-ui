@@ -415,6 +415,18 @@ function ControlConfig(props) {
                     </div>
                   </div>
                 )}
+
+                {props.conf.type === "formula" && (
+                  <div className="label-n-text">
+                    <div className="label">Formula</div>
+                    <div className="text">
+                      <textarea
+                        value={conf.formula}
+                        onChange={(e) => confChanged("formula", e.target.value)}
+                      ></textarea>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -497,6 +509,7 @@ function ControlConfig(props) {
           "attachment",
           "datetime",
           "section-heading",
+          "formula",
         ].includes(conf.type) && (
           <div className="dtl">
             <div
@@ -588,6 +601,7 @@ function ControlConfig(props) {
           "attachment",
           "datetime",
           "section-heading",
+          "formula",
         ].includes(conf.type) && (
           <div className="dtl">
             <div className="dtl-head" onClick={() => toggle("api-details")}>

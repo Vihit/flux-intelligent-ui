@@ -1,15 +1,13 @@
 .creation-cell-ta {
   height: 100%;
-  /* border: 1px solid red; */
-  margin: 2px;
+  margin: 0.2rem;
   background-color: #bcc1c56f;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 100px;
+  font-size: 10rem;
   cursor: pointer;
   position: relative;
-  /* height: 50px; */
 }
 
 .created-row-ta {

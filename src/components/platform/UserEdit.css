@@ -5,25 +5,24 @@
   left: 15%;
   right: 15%;
   background-color: white;
-  border: 3px solid black;
+  border: 0.3rem solid black;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 9999.9rem rgba(0, 0, 0, 0.8);
   z-index: 100;
 }
 
 .role-creation-cell {
   /* height: 100%; */
-  /* border: 1px solid red; */
-  margin: 2px;
+  margin: 0.2rem;
   background-color: #bcc1c56f;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 100px;
+  font-size: 10rem;
   cursor: pointer;
   position: relative;
-  /* height: 50px; */
+  /* height: 5.0rem; */
 }
 
 .role-cell-control {
@@ -33,11 +32,11 @@
   align-items: center;
   height: 100%;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 3rem;
 }
 
 .role-cell-name {
-  font-size: 16px;
+  font-size: 1.6rem;
   width: 15%;
   display: flex;
   justify-content: center;

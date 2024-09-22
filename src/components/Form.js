@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 function Form(props) {
+  console.log(props);
   var obj = {};
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
@@ -169,7 +170,7 @@ function Form(props) {
   function sendEntry(finalData, to) {
     props.raiseAlert("loading", "start");
     let formData = new FormData();
-    finalData["_files"].forEach((f) => formData.append("files", f));
+    finalData["_files"]?.forEach((f) => formData.append("files", f));
     delete finalData["_files"];
     let gridColumns = conf
       .flatMap((f) => f)
@@ -245,6 +246,7 @@ function Form(props) {
     }
   }
   function checkDependency(of, on) {
+    console.log(of);
     if (of.referData != undefined && JSON.parse(of.referData)) {
       var refQuery = of.referenceFilterQuery;
       var reg = /\${(\w+)}/g;

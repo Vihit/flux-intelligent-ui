@@ -5,11 +5,12 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
+  // console.log(props);
   const now = new Date();
   const dateMax =
     props.conf.dateMaxValue != undefined &&
     props.conf.dateMaxValue != null &&
-    props.conf.dateMaxValue != ""
+    props.conf.dateMaxValue !== ""
       ? new Date(
           now.getTime() +
             props.conf.dateMaxValue * 24 * 60 * 60 * 1000 -
@@ -39,6 +40,7 @@ function CreatedCell(props) {
       : props.formData
   );
   const [usersData, setUsersData] = useState([]);
+
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
@@ -57,14 +59,30 @@ function CreatedCell(props) {
           if (props.conf.type === "datetime") {
             const cVal = value;
             var fVal = "";
-            if (cVal >= dateMin && cVal <= dateMax) {
-              fVal = cVal;
-            } else if (cVal < dateMin) {
-              props.raiseAlert("red", "Minimum date could be " + dateMin, 3000);
-              fVal = dateMin;
+            if (dateMin != null && dateMax != null) {
+              if (cVal >= dateMin && cVal <= dateMax) {
+                fVal = cVal;
+              }
+            } else if (dateMin != null) {
+              if (cVal < dateMin) {
+                props.raiseAlert(
+                  "red",
+                  "Minimum date could be " + dateMin,
+                  3000
+                );
+                fVal = dateMin;
+              } else fVal = cVal;
+            } else if (dateMax != null) {
+              if (cVal > dateMax) {
+                props.raiseAlert(
+                  "red",
+                  "Maximum date could be " + dateMax,
+                  3000
+                );
+                fVal = dateMax;
+              } else fVal = cVal;
             } else {
-              props.raiseAlert("red", "Maximum date could be " + dateMax, 3000);
-              fVal = dateMax;
+              fVal = cVal;
             }
             props.dataChanged(what, fVal);
           } else {
@@ -282,6 +300,24 @@ function CreatedCell(props) {
     if (props.conf.type === "all-users" && !props.disabled) {
       fetchUsersData();
     }
+    if (
+      props.conf.type === "datetime" &&
+      props.conf.dateDefaultValue === "sysdate" &&
+      props.values == null
+    ) {
+      changed(
+        props.conf.key,
+        new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .substring(0, 19)
+      );
+    }
+    if (props.conf.type === "formula") {
+      changed(
+        props.conf.key,
+        eval(props.conf.formula.replaceAll("data", "props.formData"))
+      );
+    }
   }, [props.dataUpdated]);
 
   function fetchReferenceData(refForm, refColumn, refCondition) {
@@ -388,6 +424,26 @@ function CreatedCell(props) {
             value={
               props.conf.referApi && !props.disabled ? refData[0] : props.values
             }
+            disabled={props.disabled}
+            onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
+        )}
+        {props.conf.type === "formula" && (
+          <input
+            type="text"
+            placeholder={props.conf.placeholder}
+            value={eval(
+              props.conf.formula.replaceAll("data", "props.formData")
+            )}
+            disabled={true}
+            // onChange={(e) => changed(props.conf.key, e.target.value)}
+          ></input>
+        )}
+        {props.conf.type === "numbers" && (
+          <input
+            type="number"
+            placeholder={props.conf.placeholder}
+            value={props.values}
             disabled={props.disabled}
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
@@ -521,7 +577,9 @@ function CreatedCell(props) {
                       .substring(0, 19)
                 : props.values
             }
-            disabled={props.disabled}
+            disabled={
+              props.conf.dateDefaultValue === "sysdate" ? true : props.disabled
+            }
             onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
         )}

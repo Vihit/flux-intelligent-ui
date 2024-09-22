@@ -1,6 +1,6 @@
 .new-esign-input {
   width: 100%;
-  margin: 10px 10px 0px 10px;
+  margin: 1rem 1rem 0rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,10 +10,10 @@
 .new-esign-label {
   width: 50%;
   font-family: "Poppins";
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
   text-align: right;
-  margin-right: 20px;
+  margin-right: 2rem;
   display: flex;
   justify-content: flex-start;
 }
@@ -26,7 +26,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 20px 0px 20px;
+  margin: 1rem 2rem 0rem 2rem;
 }
 
 .close-flex {
@@ -34,17 +34,17 @@
 }
 
 .margin-btm {
-  margin-bottom: 30px;
+  margin-bottom: 3rem;
 }
 
 .new-job-icon {
-  font-size: 28px;
+  font-size: 2.8rem;
   color: var(--dark);
-  margin-right: 10px;
+  margin-right: 1rem;
 }
 .new-job-head {
   text-align: center;
-  font-size: 16px;
+  font-size: 1.6rem;
   color: var(--dark);
   font-family: "Poppins";
   font-weight: bold;
@@ -52,7 +52,7 @@
 
 .new-job-input {
   width: 100%;
-  margin: 30px 20px 10px 0px;
+  margin: 3rem 2rem 1rem 0rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,11 +62,11 @@
 .new-job-label {
   width: 50%;
   font-family: "Poppins";
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: bold;
-  margin-left: 20px;
+  margin-left: 2rem;
   text-align: right;
-  margin-right: 20px;
+  margin-right: 2rem;
 }
 
 .new-job-ta {
@@ -75,20 +75,20 @@
 }
 .btn-save {
   background-color: #00cc83;
-  padding: 5px 15px 5px 15px;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
   font-family: "Poppins";
-  border-radius: 10px;
-  margin: 20px 10px 20px 10px;
+  border-radius: 1rem;
+  margin: 2rem 1rem 2rem 1rem;
   cursor: pointer;
   color: white;
 }
 
 .btn-cancel {
   background-color: #ff5f5f;
-  padding: 5px 15px 5px 15px;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
   font-family: "Poppins";
-  border-radius: 10px;
-  margin: 20px 10px 20px 10px;
+  border-radius: 1rem;
+  margin: 2rem 1rem 2rem 1rem;
   cursor: pointer;
   color: white;
 }
@@ -104,8 +104,8 @@
   flex-direction: column;
   justify-content: center;
   z-index: 100;
-  border-radius: 20px;
-  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
+  border-radius: 2rem;
+  box-shadow: 0 0 0 9999.9rem rgba(0, 0, 0, 0.8);
   cursor: pointer;
-  padding: 20px;
+  padding: 2rem;
 }

@@ -7,10 +7,10 @@
 }
 
 .f-head-in {
-  padding: 5px 10px;
+  padding: 0.5rem 1rem;
   background-color: var(--accent);
   color: var(--dark);
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.542);
+  box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.542);
   cursor: pointer;
   flex-grow: 1;
   display: flex;
@@ -24,7 +24,7 @@
 }
 
 .f-head-set {
-  padding: 5px 40px;
+  padding: 0.5rem 4rem;
   background-color: var(--main);
   color: var(--white);
   height: 10%;
@@ -39,7 +39,7 @@
   height: 90%;
   /* justify-content: center; */
   align-items: center;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 .f-set-container {

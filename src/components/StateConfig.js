@@ -191,10 +191,6 @@ function StateConfig(props) {
                   ></input>
                 </div>
               </div>
-            </div>
-          )}
-          {toggleBasicDetails && (
-            <div className="dtls">
               <div className="label-n-text">
                 <div className="label">Label</div>
                 <div className="text">
@@ -262,28 +258,30 @@ function StateConfig(props) {
                   </select>
                 </div>
               </div>
-              <div className="selected-accesses">
-                {prevStates.map((ps, ind) => {
-                  return (
-                    <div
-                      key={ind}
-                      className="selected-access"
-                      onClick={() => {
-                        setPrevStates((prev) => {
-                          let toBeUpdated = [...prev];
-                          return toBeUpdated.filter((st) => st !== ps);
-                        });
-                        props.removeTransition(
-                          props.states.filter((st) => st.name === ps)[0].id,
-                          props.currCell
-                        );
-                      }}
-                    >
-                      {ps}
-                    </div>
-                  );
-                })}
-              </div>
+              {prevStates.length > 0 && (
+                <div className="selected-accesses">
+                  {prevStates.map((ps, ind) => {
+                    return (
+                      <div
+                        key={ind}
+                        className="selected-access"
+                        onClick={() => {
+                          setPrevStates((prev) => {
+                            let toBeUpdated = [...prev];
+                            return toBeUpdated.filter((st) => st !== ps);
+                          });
+                          props.removeTransition(
+                            props.states.filter((st) => st.name === ps)[0].id,
+                            props.currCell
+                          );
+                        }}
+                      >
+                        {ps}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               <div className="label-n-text">
                 <div className="label">First State</div>
                 <div className="text">

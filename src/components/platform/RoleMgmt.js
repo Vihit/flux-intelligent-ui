@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import RoleEdit from "./RoleEdit";
@@ -84,7 +84,7 @@ function RoleMgmt(props) {
           enableStickyFooter
           // enableColumnActions={false}
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: ".4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -92,7 +92,7 @@ function RoleMgmt(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
-                  fontSize: "18px",
+                  fontSize: "1.8rem",
                   alignSelf: "center",
                 }}
               >
@@ -113,7 +113,7 @@ function RoleMgmt(props) {
           )}
           muiTableContainerProps={{
             sx: {
-              maxHeight: "550px",
+              maxHeight: "55.0rem",
               maxWidth: "100%",
               overflowX: "auto",
             },
@@ -125,16 +125,16 @@ function RoleMgmt(props) {
           muiTableHeadCellProps={{
             sx: {
               fontWeight: "600",
-              fontSize: "14px",
+              fontSize: "1.4rem",
               backgroundColor: "var(--main)",
               color: "var(--white)",
-              border: "1px solid",
+              border: ".1rem solid",
               fontFamily: "Poppins",
             },
           }}
           muiTableHeadCellFilterTextFieldProps={{
             sx: {
-              strokeWidth: "1.5px",
+              strokeWidth: ".15rem",
               backgroundColor: "var(--white)",
               input: {
                 fontFamily: "Poppins",
@@ -147,21 +147,21 @@ function RoleMgmt(props) {
               path: {
                 stroke: "white",
                 fill: "white",
-                strokeWidth: "1.5px",
+                strokeWidth: ".15rem",
               },
             },
           }}
           muiTableBodyCellProps={{
             sx: {
               backgroundColor: "var(--grey)",
-              borderRight: "1px solid var(--white)",
-              borderBottom: "1px solid var(--main)",
+              borderRight: ".1rem solid var(--white)",
+              borderBottom: ".1rem solid var(--main)",
               fontFamily: "Poppins",
             },
           }}
           muiTableBodyProps={{
             sx: {
-              margin: "20px",
+              margin: "2.0rem",
             },
           }}
         ></MaterialReactTable>

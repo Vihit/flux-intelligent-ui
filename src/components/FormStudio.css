@@ -12,18 +12,18 @@
   flex-direction: column;
   color: var(--white);
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  /* margin-top: 10px; */
-  /* border: 1px solid black; */
+  gap: 1rem;
+  font-size: 1.4rem;
+  /* margin-top: 1.0rem; */
+  /* border: .1rem solid black; */
 }
 
 .creation-container {
   content: "";
   width: 80%;
-  border-width: 1px;
+  border-width: 0.1rem;
   border-style: dashed;
-  margin: 20px;
+  margin: 2rem;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -34,13 +34,13 @@
   width: 97%;
   align-items: center;
   justify-content: center;
-  /* margin-top: 20px; */
+  /* margin-top: 2.0rem; */
 }
 
 .app-name-container > select {
-  height: 30px;
+  height: 3rem;
   width: 100%;
-  border-radius: 0px;
+  border-radius: 0rem;
   color: var(--white);
   background-color: black;
 }
@@ -52,7 +52,7 @@
   justify-content: center;
   max-height: 50%;
   /* overflow-x: auto; */
-  /* margin: 0px 10px; */
+  /* margin: .0rem 1.0rem; */
 }
 
 .layout {
@@ -61,7 +61,7 @@
   width: 100%;
   background-color: var(--white);
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
   overflow-y: auto;
   max-height: 100%;
 }
@@ -70,16 +70,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 0.5rem;
   color: #bcc1c5;
 }
 
 .layout-cell {
-  font-size: 25px;
+  font-size: 2.5rem;
 }
 
 .layout-add {
-  font-size: 18px;
+  font-size: 1.8rem;
   cursor: pointer;
   color: black;
 }
@@ -88,19 +88,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 1rem;
   width: 30%;
   background-color: black;
-  height: 20px;
-  margin-bottom: 10px;
+  height: 2rem;
+  margin-bottom: 1rem;
   cursor: pointer;
 }
 
 .creation-row {
   display: flex;
-  border: 2px dashed var(--main);
+  border: 0.2rem dashed var(--main);
   /* width: 100%; */
-  margin: 2px;
+  margin: 0.2rem;
 }
 
 .viz-container {
@@ -108,10 +108,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0px 10px;
+  margin: 0rem 1rem;
   flex-direction: column;
   background-color: var(--white);
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 .viz-options {
@@ -129,20 +129,20 @@
   justify-content: flex-start;
   width: 90%;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
 .component-header {
   color: black;
   font-weight: bold;
-  padding: 5px 0px;
+  padding: 0.5rem 0rem;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  /* margin: 0px 5px; */
+  /* margin: .0rem .5rem; */
   align-items: center;
   width: 97%;
-  border-bottom: 1px solid black;
+  border-bottom: 0.1rem solid black;
 }
 
 .viz-details {
@@ -150,7 +150,7 @@
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .viz-name {
@@ -161,7 +161,7 @@
 }
 
 .big-font {
-  font-size: 28px !important;
+  font-size: 2.8rem !important;
   font-weight: bold;
   font-family: "Poppins";
   /* color: white; */
@@ -204,7 +204,7 @@
   background-color: #bcc1c56f;
   color: #0055c2;
   width: 100%;
-  font-size: 12px;
+  font-size: 1.2rem;
   outline-style: none;
   height: 100%;
 }
@@ -213,7 +213,7 @@
   background-color: #bcc1c56f;
   color: #0055c2;
   width: 100%;
-  padding: 0px 5px;
+  padding: 0rem 0.5rem;
   height: 100%;
 }
 
@@ -223,13 +223,13 @@
 
 .preview-btn {
   background-color: #979da6;
-  border-radius: 10px;
-  height: 30px;
+  border-radius: 1rem;
+  height: 3rem;
   border-style: none;
-  box-shadow: 0.5px 0.5px 7px rgba(0, 0, 0, 0.469);
+  box-shadow: 0.05rem 0.05rem 0.5rem black;
   cursor: pointer;
-  margin-right: 10px;
-  padding: 0px 10px;
+  margin-right: 1rem;
+  padding: 0rem 1rem;
   color: var(--white);
   font-family: Poppins;
 }
@@ -237,23 +237,23 @@
   background-color: var(--green);
   color: var(--white);
   font-family: Poppins;
-  border-radius: 10px;
-  height: 30px;
+  border-radius: 1rem;
+  height: 3rem;
   border-style: none;
-  box-shadow: 0.5px 0.5px 7px rgba(0, 0, 0, 0.469);
+  box-shadow: 0.05rem 0.05rem 0.5rem black;
   cursor: pointer;
-  margin-right: 10px;
-  padding: 0px 10px;
+  margin-right: 1rem;
+  padding: 0rem 1rem;
 }
 .publish-btn {
   background-color: #04bfad;
-  border-radius: 10px;
-  height: 30px;
+  border-radius: 1rem;
+  height: 3rem;
   border-style: none;
-  box-shadow: 0.5px 0.5px 7px rgba(0, 0, 0, 0.469);
+  box-shadow: 0.5rem 0.5rem 0.7rem rgba(0, 0, 0, 0.469);
   cursor: pointer;
-  margin-right: 10px;
-  padding: 0px 10px;
+  margin-right: 1rem;
+  padding: 0rem 1rem;
   color: var(--white);
   font-family: Poppins;
 }
@@ -262,10 +262,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 2rem;
   width: 100%;
   /* background-color: var(--white); */
-  height: 40px;
+  height: 4rem;
 }
 
 .fw-option {
@@ -275,7 +275,7 @@
   width: 50%;
   height: 100%;
   cursor: pointer;
-  /* height: 50px; */
+  /* height: 5.0rem; */
 }
 
 .fw-option-selected {
@@ -286,7 +286,7 @@
 .workflow-creation-container {
   content: "";
   width: 80%;
-  margin: 20px;
+  margin: 2rem;
   display: flex;
   flex-direction: column;
   height: 97%;
@@ -294,9 +294,9 @@
 
 .wf-creation-container {
   content: "";
-  border-width: 1px;
+  border-width: 0.1rem;
   border-style: dashed;
-  margin: 20px;
+  margin: 2rem;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -305,8 +305,8 @@
 .success-node {
   fill: var(--green);
   font-family: "Poppins";
-  outline: 0px outset #2bf3ad;
-  /* outline-offset: 0px; */
+  outline: 0rem outset #2bf3ad;
+  /* outline-offset: .0rem; */
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -320,7 +320,7 @@
 
 .success-node text {
   fill: white;
-  font-size: 10px;
+  font-size: 1rem;
   font-family: "Poppins";
   text-align: center;
 }
@@ -328,8 +328,8 @@
 .start-node {
   fill: #0055c2;
   font-family: "Poppins";
-  outline: 0px outset #0055c2;
-  /* outline-offset: 0px; */
+  outline: 0rem outset #0055c2;
+  /* outline-offset: .0rem; */
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -343,7 +343,7 @@
 
 .start-node text {
   fill: white;
-  font-size: 10px;
+  font-size: 1rem;
   font-family: "Poppins";
   text-align: center;
 }
@@ -351,8 +351,8 @@
 .end-node {
   fill: #fea260;
   font-family: "Poppins";
-  outline: 0px outset #fea260;
-  /* outline-offset: 0px; */
+  outline: 0rem outset #fea260;
+  /* outline-offset: .0rem; */
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -366,7 +366,7 @@
 
 .end-node text {
   fill: white;
-  font-size: 10px;
+  font-size: 1rem;
   font-family: "Poppins";
   text-align: center;
 }
@@ -374,24 +374,24 @@
 path {
   stroke: #333;
   fill: #333;
-  stroke-width: 1.5px;
+  stroke-width: 1.5rem;
 }
 
 .layout-cells {
   display: flex;
   align-items: center;
-  border: 1px dashed var(--white);
-  gap: 4px;
-  padding: 0px 4px;
+  border: 0.1rem dashed var(--white);
+  gap: 0.4rem;
+  padding: 0rem 0.4rem;
 }
 
 .selected-layout-row {
   display: flex;
   align-items: center;
   background-color: var(--main);
-  border: 2px solid var(--main);
-  gap: 4px;
-  padding: 0px 4px;
+  border: 0.2rem solid var(--main);
+  gap: 0.4rem;
+  padding: 0rem 0.4rem;
 }
 
 .ai-create-btn {
@@ -399,14 +399,14 @@ path {
   height: 90%;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 0.5rem;
   background-color: #0055c2;
-  padding: 0px 10px;
+  padding: 0rem 1rem;
   color: white;
-  border-radius: 10px;
+  border-radius: 1rem;
   cursor: pointer;
 }
 
 .ai-create-btn > i {
-  font-size: 25px;
+  font-size: 2.5rem;
 }

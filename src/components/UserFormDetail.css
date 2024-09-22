@@ -13,31 +13,31 @@
   display: flex;
   justify-content: space-between;
   width: 95%;
-  margin-top: 10px;
+  margin-top: 1rem;
   height: 5%;
   align-items: center;
-  font-size: 18px;
+  font-size: 1.8rem;
 }
 
 .f-sub-dtl-head {
   display: flex;
   justify-content: space-between;
-  margin-left: 10px;
+  margin-left: 1rem;
   /* width: 10%; */
-  /* margin-top: 10px; */
+  /* margin-top: 1.0rem; */
   /* height: 5%; */
   align-items: center;
-  font-size: 16px;
+  font-size: 1.6rem;
 }
 
 .i-btn {
   display: flex;
   align-items: center;
   background-color: var(--green);
-  padding: 5px 20px;
+  padding: 0.5rem 2rem;
   color: var(--white);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.466);
-  font-size: 16px;
+  box-shadow: 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.466);
+  font-size: 1.6rem;
   cursor: pointer;
 }
 
@@ -45,13 +45,13 @@
   display: flex;
   align-items: center;
   background-color: var(--green);
-  padding: 5px 20px;
+  padding: 0.5rem 2rem;
   color: var(--white);
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.466);
-  font-size: 16px;
+  box-shadow: 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.466);
+  font-size: 1.6rem;
   font-family: "Poppins";
   cursor: pointer;
-  border-radius: 0px;
+  border-radius: 0rem;
   text-transform: "none" !important;
   border: none;
 }
@@ -66,7 +66,7 @@
   width: 100%;
   /* height: 90%; */
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 .f-dept-table {
@@ -74,13 +74,13 @@
   width: 100%;
   height: 90%;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 .MuiPaper-elevation {
-  box-shadow: 0px 0px 0px white;
+  box-shadow: 0rem 0rem 0rem white;
   width: 98%;
-  box-shadow: 0px 0px 0px white;
+  box-shadow: 0rem 0rem 0rem white;
   shadows: none;
 }
 
@@ -93,7 +93,7 @@
 }
 
 table {
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
 .c-actions {
@@ -103,10 +103,10 @@ table {
 .a-icon > path {
   stroke: var(--accent);
   fill: var(--accent);
-  stroke-width: 1px;
+  stroke-width: 0.1;
 }
 
 .btns {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }

@@ -2,7 +2,7 @@ import "./Reports.css";
 import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { Box, Typography, Button } from "@mui/material";
 import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
@@ -248,7 +248,7 @@ function Reports(props) {
                 enableStickyHeader
                 enableStickyFooter
                 renderTopToolbarCustomActions={({ table }) => (
-                  <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+                  <Box sx={{ display: "flex", gap: "1rem", p: ".4rem" }}>
                     <Typography
                       variant="h6"
                       style={{
@@ -256,7 +256,7 @@ function Reports(props) {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         fontFamily: "Poppins",
-                        fontSize: "18px",
+                        fontSize: "1.8rem",
                         alignSelf: "center",
                       }}
                     >
@@ -276,7 +276,7 @@ function Reports(props) {
                         fontWeight: "bold",
                         textTransform: "none",
                         fontFamily: "Poppins",
-                        boxShadow: "2px 2px 2px #00000055",
+                        boxShadow: ".2rem .2rem .2rem #00000055",
                       }}
                     >
                       {<GetApp />} &nbsp;Download Report
@@ -285,7 +285,7 @@ function Reports(props) {
                 )}
                 muiTableContainerProps={{
                   sx: {
-                    maxHeight: "550px",
+                    maxHeight: "55rem",
                     maxWidth: "100%",
                     overflowX: "auto",
                   },
@@ -297,23 +297,23 @@ function Reports(props) {
                 muiTableHeadCellProps={{
                   sx: {
                     fontWeight: "bold",
-                    fontSize: "14px",
+                    fontSize: "1.4rem",
                     backgroundColor: "var(--white)",
                     color: "var(--dark)",
-                    border: "1px solid",
+                    border: ".1rem solid",
                     fontFamily: "Poppins",
                   },
                 }}
                 muiTableBodyCellProps={{
                   sx: {
                     backgroundColor: "var(--grey)",
-                    borderRight: "0.1px solid var(--white)",
+                    borderRight: "0.01rem solid var(--white)",
                     fontFamily: "Poppins",
                   },
                 }}
                 muiTableBodyProps={{
                   sx: {
-                    margin: "20px",
+                    margin: "2rem",
                   },
                 }}
               ></MaterialReactTable>

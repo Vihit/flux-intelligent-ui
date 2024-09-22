@@ -834,6 +834,8 @@ function FormStudio(props) {
                   <ControlOption type="multiselect"></ControlOption>
                   <ControlOption type="attachment"></ControlOption>
                   <ControlOption type="section-heading"></ControlOption>
+                  <ControlOption type="formula"></ControlOption>
+                  <ControlOption type="numbers"></ControlOption>
                 </div>
               </div>
             )}

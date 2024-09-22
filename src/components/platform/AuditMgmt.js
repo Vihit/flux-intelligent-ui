@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Typography, Button } from "@mui/material";
 import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import { jsPDF } from "jspdf";
@@ -204,7 +204,7 @@ function AuditMgmt(props) {
           enableStickyHeader
           enableStickyFooter
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: ".4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -212,7 +212,7 @@ function AuditMgmt(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
-                  fontSize: "18px",
+                  fontSize: "1.8rem",
                   alignSelf: "center",
                 }}
               >
@@ -229,7 +229,7 @@ function AuditMgmt(props) {
                   fontWeight: "bold",
                   textTransform: "none",
                   fontFamily: "Poppins",
-                  boxShadow: "2px 2px 2px #00000055",
+                  boxShadow: ".2rem .2rem .2rem #00000055",
                 }}
               >
                 {<GetApp />} &nbsp;Download Page
@@ -238,7 +238,7 @@ function AuditMgmt(props) {
           )}
           muiTableContainerProps={{
             sx: {
-              maxHeight: "550px",
+              maxHeight: "55.0rem",
               maxWidth: "100%",
               overflowX: "auto",
             },
@@ -250,10 +250,10 @@ function AuditMgmt(props) {
           muiTableHeadCellProps={{
             sx: {
               fontWeight: "bold",
-              fontSize: "14px",
+              fontSize: "1.4rem",
               backgroundColor: "var(--main)",
               color: "var(--white)",
-              border: "1px solid",
+              border: ".1rem solid",
               fontFamily: "Poppins",
             },
           }}
@@ -262,21 +262,21 @@ function AuditMgmt(props) {
               path: {
                 stroke: "white",
                 fill: "white",
-                strokeWidth: "1.5px",
+                strokeWidth: ".15rem",
               },
             },
           }}
           muiTableBodyCellProps={{
             sx: {
               backgroundColor: "var(--grey)",
-              borderRight: "1px solid var(--white)",
-              borderBottom: "1px solid var(--main)",
+              borderRight: ".1rem solid var(--white)",
+              borderBottom: ".1rem solid var(--main)",
               fontFamily: "Poppins",
             },
           }}
           muiTableHeadCellFilterTextFieldProps={{
             sx: {
-              strokeWidth: "1.5px",
+              strokeWidth: ".15rem",
               backgroundColor: "var(--white)",
               input: {
                 fontFamily: "Poppins",
@@ -293,7 +293,7 @@ function AuditMgmt(props) {
           pageCount={totalPages}
           muiTableBodyProps={{
             sx: {
-              margin: "20px",
+              margin: "2.0rem",
             },
           }}
           // autoResetPageIndex={false}

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Form from "./Form";
 import "./UserFormDetail.css";
 import { config } from "./config";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Button } from "@mui/material";
 import { AccessTime, Fullscreen, GetApp } from "@mui/icons-material";
 import LogAudit from "./LogAudit";
@@ -227,6 +227,8 @@ function UserFormDetail(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
+                  fontSize: "1.8rem",
+                  alignSelf: "center",
                 }}
               >
                 {props.form.name}
@@ -297,61 +299,52 @@ function UserFormDetail(props) {
             <Box className="c-actions">
               {type === "pendings" ? (
                 <IconButton onClick={() => openFormView(row)}>
-                  <Fullscreen />
+                  <Fullscreen sx={{ fontSize: "3rem" }} />
                 </IconButton>
               ) : (
                 <div>
                   <IconButton onClick={() => openAuditView(row)}>
                     <AccessTime
-                      style={{ color: "#00ffee" }}
+                      style={{}}
+                      sx={{ fontSize: "3rem" }}
                       className="a-icon"
                     />
                   </IconButton>
                   <IconButton onClick={() => openFormView(row)}>
-                    <Fullscreen />
+                    <Fullscreen sx={{ fontSize: "3rem" }} />
                   </IconButton>
                 </div>
               )}
             </Box>
           )}
-          muiTableContainerProps={{
-            sx: {
-              maxHeight: "550px",
-              maxWidth: "100%",
-              overflowX: "auto",
-            },
-          }}
           initialState={{
             density: "compact",
             columnVisibility: { id: false },
-          }}
-          muiTableHeadCellProps={{
-            sx: {
-              fontWeight: "bold",
-              fontSize: "14px",
-              backgroundColor: "var(--white)",
-              color: "var(--dark)",
-              border: "1px solid",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableBodyCellProps={{
-            sx: {
-              backgroundColor: "var(--grey)",
-              borderRight: "0.1px solid var(--white)",
-              fontFamily: "Poppins",
-            },
           }}
           muiTableBodyRowProps={({ row }) => ({
             onClick: (event) => {
               getGridEntriesFor(props.form.id, row.original.id);
             },
           })}
-          muiTableBodyProps={{
-            sx: {
-              margin: "20px",
-            },
-          }}
+          muiTableHeadCellColumnActionsButtonProps={
+            config.mrtStyle.muiTableHeadCellColumnActionsButtonProps
+          }
+          muiTableHeadCellFilterTextFieldProps={
+            config.mrtStyle.muiTableHeadCellFilterTextFieldProps
+          }
+          muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
+          // initialState={{
+          //   density: "compact",
+          //   columnVisibility: { id: false },
+          //   pagination: {
+          //     pageSize: 20,
+          //     pageIndex: 0,
+          //   },
+          // }}
+          muiTableHeadCellProps={config.mrtStyle.muiTableHeadCellProps}
+          muiTableBodyCellProps={config.mrtStyle.muiTableBodyCellProps}
+          muiTableBodyProps={config.mrtStyle.muiTableBodyProps}
+          muiBottomToolbarProps={config.mrtStyle.muiBottomToolbarProps}
         ></MaterialReactTable>
       </div>
       {JSON.parse(props.form.template)

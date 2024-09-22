@@ -90,6 +90,22 @@ function CreationCell(props) {
               disabled
             ></input>
           )}
+          {props.conf.type === "formula" && (
+            <input
+              type="text"
+              placeholder={props.conf.placeholder}
+              value={null}
+              disabled
+            ></input>
+          )}
+          {props.conf.type === "numbers" && (
+            <input
+              type="number"
+              placeholder={props.conf.placeholder}
+              value={null}
+              disabled
+            ></input>
+          )}
           {props.conf.type === "select" && (
             <select placeholder={props.conf.placeholder} value={null} disabled>
               {props.conf.selectValues.split(",").map((value, indx) => {

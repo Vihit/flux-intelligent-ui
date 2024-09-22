@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import UserEdit from "./UserEdit";
@@ -129,12 +129,12 @@ function UserMgmt(props) {
               path: {
                 stroke: "white",
                 fill: "white",
-                strokeWidth: "1.5px",
+                strokeWidth: ".15rem",
               },
             },
           }}
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: ".4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -142,7 +142,7 @@ function UserMgmt(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
-                  fontSize: "18px",
+                  fontSize: "1.8rem",
                   alignSelf: "center",
                 }}
               >
@@ -167,7 +167,7 @@ function UserMgmt(props) {
           )}
           muiTableHeadCellFilterTextFieldProps={{
             sx: {
-              strokeWidth: "1.5px",
+              strokeWidth: ".15rem",
               backgroundColor: "var(--white)",
               input: {
                 fontFamily: "Poppins",
@@ -177,7 +177,7 @@ function UserMgmt(props) {
           }}
           muiTableContainerProps={{
             sx: {
-              maxHeight: "550px",
+              maxHeight: "55.0rem",
               maxWidth: "100%",
               overflowX: "auto",
             },
@@ -189,24 +189,24 @@ function UserMgmt(props) {
           muiTableHeadCellProps={{
             sx: {
               fontWeight: "bold",
-              fontSize: "14px",
+              fontSize: "1.4rem",
               backgroundColor: "var(--main)",
               color: "var(--white)",
-              border: "1px solid",
+              border: ".1rem solid",
               fontFamily: "Poppins",
             },
           }}
           muiTableBodyCellProps={{
             sx: {
               backgroundColor: "var(--grey)",
-              borderRight: "1px solid var(--white)",
-              borderBottom: "1px solid var(--main)",
+              borderRight: ".1rem solid var(--white)",
+              borderBottom: ".1rem solid var(--main)",
               fontFamily: "Poppins",
             },
           }}
           muiTableBodyProps={{
             sx: {
-              margin: "20px",
+              margin: "2.0rem",
             },
           }}
         ></MaterialReactTable>
