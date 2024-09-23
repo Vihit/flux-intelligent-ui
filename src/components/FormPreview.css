@@ -41,11 +41,12 @@
   gap: 1rem;
   margin-left: 2rem;
   margin-top: 1rem;
+  /* border: 1px solid red; */
 }
 
 .viz-preview-details > .viz-name {
   font-size: 2rem;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 .viz-preview-details > .viz-filter > select {

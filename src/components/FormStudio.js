@@ -103,6 +103,7 @@ function FormStudio(props) {
       setStates(
         location.state.workflow != null
           ? location.state.workflow.states.map((st) => {
+              console.log(st);
               return {
                 id: st.id + "",
                 label: st.name,
@@ -124,6 +125,7 @@ function FormStudio(props) {
                 stateCondition: st.stateCondition,
                 sendNotification: st.sendNotification,
                 userAccessField: st.userAccessField,
+                stConf: st.stConf,
               };
             })
           : []
@@ -336,6 +338,7 @@ function FormStudio(props) {
     setCurrCell({ row: -1, col: -1 });
   }
   function saveStateConfFor(cell, updatedConf) {
+    console.log(updatedConf);
     updatedConf["label"] = updatedConf["stLabel"];
     setStates((prev) => {
       let currStates = [...prev];
@@ -472,6 +475,7 @@ function FormStudio(props) {
   }
 
   function saveWorkflow() {
+    console.log(states);
     let stateWorkflow = {
       workflowId: workflowConf.id,
       states: states.map((st) => {
@@ -486,6 +490,7 @@ function FormStudio(props) {
           firstState: st.isFirstState,
           stateCondition: st.stateCondition,
           userAccessField: st.userAccessField,
+          stConf: JSON.stringify(st.stConf),
           roles: st.selectedRoles.map((r) => {
             return { id: r };
           }),

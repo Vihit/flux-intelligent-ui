@@ -154,14 +154,15 @@
 }
 
 .viz-name {
-  /* width: 50%; */
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  /* background-color: grey; */
 }
 
 .big-font {
-  font-size: 2.8rem !important;
+  font-size: 2.2rem !important;
   font-weight: bold;
   font-family: "Poppins";
   /* color: white; */
@@ -405,6 +406,8 @@ path {
   color: white;
   border-radius: 1rem;
   cursor: pointer;
+  font-size: 1.4rem;
+  box-shadow: 0.05rem 0.05rem 0.5rem black;
 }
 
 .ai-create-btn > i {

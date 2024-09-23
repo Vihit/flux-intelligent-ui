@@ -9,8 +9,9 @@ function StateConfig(props) {
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleAccessDetails, setToggleAccessDetails] = useState(false);
   const [toggleColumnsDetails, setToggleColumnDetails] = useState(false);
+  const [toggleClickDetails, setToggleClickDetails] = useState(false);
   const [conf, setConf] = useState(props.conf);
-  const [form, setForm] = useState();
+  // const [form, setForm] = useState();
   const [selectedRoles, setSelectedRoles] = useState(props.conf.selectedRoles);
   const [selectedDepartments, setSelectedDepartments] = useState(
     props.conf.selectedDepartments
@@ -31,6 +32,13 @@ function StateConfig(props) {
       ? props.conf.viewableColumns
       : props.formColumnKeys
   );
+  const [stCnf, setStCnf] = useState(
+    props.conf.stConf != null
+      ? typeof props.conf.stConf == "string"
+        ? JSON.parse(props.conf.stConf)
+        : props.conf.stConf
+      : {}
+  );
   useEffect(() => {}, []);
 
   function toggle(what) {
@@ -40,6 +48,8 @@ function StateConfig(props) {
       setToggleAccessDetails(!toggleAccessDetails);
     else if (what === "column-details")
       setToggleColumnDetails(!toggleColumnsDetails);
+    else if (what === "on-click-details")
+      setToggleClickDetails(!toggleClickDetails);
   }
 
   function confChanged(what, value) {
@@ -57,6 +67,7 @@ function StateConfig(props) {
           : currConf.isLastState
           ? "end-node"
           : "success-node";
+        currConf["stConf"] = stCnf;
         props.saveConf(props.currCell, currConf);
       } else {
         let currConf = { ...conf };
@@ -79,6 +90,7 @@ function StateConfig(props) {
       currConf["selectedDepartments"] = selectedDepartments;
       currConf["viewableColumns"] = viewableColumns;
       currConf["writableColumns"] = writableColumns;
+      currConf["stConf"] = stCnf;
       // props.saveConf(props.currCell, currConf);
     } else {
       var obj = currConf;
@@ -512,6 +524,94 @@ function StateConfig(props) {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+        <div className="dtl">
+          <div className="dtl-head" onClick={() => toggle("on-click-details")}>
+            <div>Click Event Details</div>
+            {toggleClickDetails && (
+              <div>
+                <i className="fa-solid fa-minus"></i>
+              </div>
+            )}
+            {!toggleClickDetails && (
+              <div>
+                <i className="fa-solid fa-plus"></i>
+              </div>
+            )}
+          </div>
+          {toggleClickDetails && (
+            <div className="dtls">
+              <div className="label-n-text">
+                <div className="label">API Call</div>
+                <div className="text">
+                  <select
+                    value={stCnf.apiCall}
+                    onChange={(e) =>
+                      setStCnf((prev) => {
+                        var toBeUpdated = { ...prev };
+                        toBeUpdated["apiCall"] = JSON.parse(e.target.value);
+                        return toBeUpdated;
+                      })
+                    }
+                  >
+                    <option value={false}>No</option>
+                    <option value={true}>Yes</option>
+                  </select>
+                </div>
+              </div>
+              {stCnf.apiCall && (
+                <div className="label-n-text">
+                  <div className="label">API</div>
+                  <div className="text">
+                    <input
+                      type="text"
+                      value={stCnf.apiUrl}
+                      placeholder="URL"
+                      onChange={(e) =>
+                        setStCnf((prev) => {
+                          var toBeUpdated = { ...prev };
+                          toBeUpdated["apiUrl"] = e.target.value;
+                          return toBeUpdated;
+                        })
+                      }
+                    ></input>
+                    <select
+                      value={stCnf.apiMethod}
+                      onChange={(e) =>
+                        setStCnf((prev) => {
+                          var toBeUpdated = { ...prev };
+                          toBeUpdated["apiMethod"] = e.target.value;
+                          return toBeUpdated;
+                        })
+                      }
+                    >
+                      <option value="">Select API Method</option>
+                      <option value="GET">GET</option>
+                      <option value="POST">POST</option>
+                      <option value="PUT">PUT</option>
+                    </select>
+                    {(stCnf.apiMethod === "PUT" ||
+                      stCnf.apiMethod === "POST") && (
+                      <textarea
+                        className="normal-height"
+                        type="text"
+                        rows="1"
+                        value={stCnf.apiBody}
+                        placeholder="Body"
+                        onChange={(e) =>
+                          setStCnf((prev) => {
+                            var toBeUpdated = { ...prev };
+                            toBeUpdated["apiBody"] = e.target.value;
+                            return toBeUpdated;
+                          })
+                        }
+                      ></textarea>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

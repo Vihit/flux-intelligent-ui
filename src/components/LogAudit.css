@@ -135,6 +135,8 @@
   font-size: 1.4rem;
   margin-right: 4rem;
   cursor: pointer;
+  box-shadow: 0.05rem 0.05rem 0.5rem black;
+  border-radius: 1rem;
 }
 
 .dark-bg {

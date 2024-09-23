@@ -7,7 +7,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 function Form(props) {
-  console.log(props);
+  // console.log(props);
+
   var obj = {};
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
@@ -89,44 +90,95 @@ function Form(props) {
         setShowESign(false);
         setESignPwd("");
         props.raiseAlert("green", "E-signed Successfully!");
-        var finalData = {};
-        var check = false;
-        conf
-          .flatMap((f) => f)
-          .forEach((ctrl) => {
-            if (
-              stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
-              JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
-              (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
-              checkConditionalVisibility(ctrl) &&
-              check == false
-            ) {
-              props.raiseAlert("red", "Please fill up " + ctrl.label, 3000);
-              check = true;
-            }
-          });
-        conf
-          .flatMap((f) => f)
-          .forEach((ctrl) => {
-            if (
-              checkConditionalVisibility(ctrl) &&
-              stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
-              data[ctrl.key] != null
-            ) {
-              finalData[ctrl.key] = data[ctrl.key];
-            }
-          });
-        finalData["_files"] = Object.keys(data)
-          .filter((k) => k.startsWith("_files_"))
-          .map((k) => data[k]);
-        if (!check) sendEntry(finalData, to);
-        else console.log("Check true");
-        return true;
+        checkClickEventAndSend();
       } else {
         props.raiseAlert("red", "Error while authenticating!", 3000);
-        return false;
       }
     });
+  }
+
+  function send() {
+    var finalData = {};
+    var check = false;
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        if (
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
+          (data[ctrl.key] === "" || data[ctrl.key] == undefined) &&
+          checkConditionalVisibility(ctrl) &&
+          check == false
+        ) {
+          props.raiseAlert("red", "Please fill up " + ctrl.label, 3000);
+          check = true;
+        }
+      });
+    conf
+      .flatMap((f) => f)
+      .forEach((ctrl) => {
+        if (
+          checkConditionalVisibility(ctrl) &&
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          data[ctrl.key] != null
+        ) {
+          finalData[ctrl.key] = data[ctrl.key];
+        }
+      });
+    finalData["_files"] = Object.keys(data)
+      .filter((k) => k.startsWith("_files_"))
+      .map((k) => data[k]);
+    if (!check) sendEntry(finalData, to);
+    else console.log("Check true");
+  }
+
+  function checkClickEventAndSend() {
+    var stConf = props.form.workflow.states.filter((st) => st.name === to)[0]
+      .stConf;
+    if (stConf == null || stConf == undefined || stConf === "") {
+      send();
+    } else {
+      var cnf = JSON.parse(stConf);
+      if (cnf.apiCall) {
+        console.log(data);
+        let url = cnf.apiUrl;
+        var reg = /\${(\w+)}/g;
+        var matches = url.match(reg);
+        if (matches != null)
+          matches.forEach((variable) => {
+            url = url.replace(variable, data[variable.split(/{|}/)[1]]);
+          });
+        fetch(config.apiUrl + url, {
+          method: cnf.apiMethod,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization:
+              "Bearer " +
+              JSON.parse(localStorage.getItem("access")).access_token,
+          },
+          body: cnf.apiBody,
+        })
+          .then((response) => {
+            if (response.ok) {
+              return null;
+            } else {
+              return response.text();
+            }
+          })
+          .then((actualData) => {
+            if (actualData == null) {
+              send();
+            } else {
+              props.raiseAlert(
+                "red",
+                "Some error occurred : " + actualData,
+                5000
+              );
+            }
+          });
+      }
+    }
   }
 
   function prepareFinalDataAndSendEntry(updatedParam) {
@@ -417,6 +469,7 @@ function Form(props) {
           layout.map((rows, idx) => {
             return (
               <div
+                key={idx}
                 className={
                   rows.filter(
                     (row, inx) =>
@@ -501,13 +554,14 @@ function Form(props) {
           {((props.type !== "view" && props.type !== "view-all") ||
             props.form.type === "master") &&
             toStates
-              .filter(
-                (t) =>
+              .filter((t) => {
+                return (
                   t.toState.stateCondition == undefined ||
                   t.toState.stateCondition == null ||
                   t.toState.stateCondition === "" ||
                   eval(t.toState.stateCondition)
-              )
+                );
+              })
               // .map((t) => t.toState.label)
               .map((ts, ind) => (
                 <div

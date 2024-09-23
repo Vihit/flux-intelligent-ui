@@ -383,6 +383,9 @@ function UserFormDetail(props) {
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        fontFamily: "Poppins",
+                        fontSize: "1.6rem",
+                        alignSelf: "center",
                       }}
                     >
                       {data.gridLabel}

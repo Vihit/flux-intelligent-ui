@@ -137,6 +137,7 @@ a:visited {
   align-items: center;
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
+  font-size: 1.4rem;
 }
 
 @keyframes notif-animate {

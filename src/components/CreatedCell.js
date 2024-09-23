@@ -42,6 +42,7 @@ function CreatedCell(props) {
   const [usersData, setUsersData] = useState([]);
 
   function changed(what, value) {
+    console.log("Changed " + what + " value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -289,7 +290,7 @@ function CreatedCell(props) {
             });
         });
     }
-    if (props.conf.type === "user" && !props.disabled) {
+    if (props.conf.type === "user" && !props.disabled && props.values == null) {
       changed(
         props.conf.key,
         JSON.parse(localStorage.getItem("user"))[
@@ -312,11 +313,11 @@ function CreatedCell(props) {
           .substring(0, 19)
       );
     }
-    if (props.conf.type === "formula") {
-      changed(
-        props.conf.key,
-        eval(props.conf.formula.replaceAll("data", "props.formData"))
-      );
+    if (props.conf.type === "formula" && !props.disabled) {
+      var value = eval(props.conf.formula.replaceAll("data", "props.formData"));
+      console.log(isNaN(value));
+      if (value !== props.values && !isNaN(value))
+        changed(props.conf.key, value);
     }
   }, [props.dataUpdated]);
 
@@ -432,9 +433,7 @@ function CreatedCell(props) {
           <input
             type="text"
             placeholder={props.conf.placeholder}
-            value={eval(
-              props.conf.formula.replaceAll("data", "props.formData")
-            )}
+            value={props.values}
             disabled={true}
             // onChange={(e) => changed(props.conf.key, e.target.value)}
           ></input>
