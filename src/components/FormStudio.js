@@ -125,7 +125,7 @@ function FormStudio(props) {
                 stateCondition: st.stateCondition,
                 sendNotification: st.sendNotification,
                 userAccessField: st.userAccessField,
-                stConf: st.stConf,
+                stConf: JSON.parse(st.stConf),
               };
             })
           : []

@@ -13,6 +13,7 @@ import PlatformSetup from "./components/platform/PlatformSetup";
 import jwt from "jwt-decode";
 import Reports from "./components/Reports";
 import IdleTimer from "./components/IdleTimer";
+import UserDashboard from "./components/UserDashboard";
 
 function App() {
   const [alert, setAlert] = useState(false);
@@ -150,6 +151,9 @@ function App() {
             </Route>
             <Route exact path="/dashboard">
               <Dashboard raiseAlert={raiseAlert}></Dashboard>
+            </Route>
+            <Route exact path="/user-app/:id">
+              <UserDashboard raiseAlert={raiseAlert}></UserDashboard>
             </Route>
             {JSON.parse(localStorage.getItem("user")).role.includes(
               "ROLE_ADMIN"

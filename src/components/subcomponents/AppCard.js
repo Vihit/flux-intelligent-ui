@@ -19,6 +19,10 @@ function AppCard(props) {
     "fa-fingerprint",
   ];
 
+  const isAdmin = JSON.parse(localStorage.getItem("user")).role.includes(
+    "ROLE_ADMIN"
+  );
+
   let history = useHistory();
 
   function addApp() {
@@ -58,7 +62,8 @@ function AppCard(props) {
   };
 
   function openApp(id) {
-    history.push("/app/" + id, props.app.name);
+    if (isAdmin) history.push("/app/" + id, props.app.name);
+    else history.push("/user-app/" + id, props.app.name);
   }
 
   return (

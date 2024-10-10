@@ -276,46 +276,37 @@ function Reports(props) {
                         fontWeight: "bold",
                         textTransform: "none",
                         fontFamily: "Poppins",
-                        boxShadow: ".2rem .2rem .2rem #00000055",
+                        boxShadow: "0.05rem 0.05rem 0.5rem black",
+                        fontSize: "1.4rem",
                       }}
                     >
-                      {<GetApp />} &nbsp;Download Report
+                      Download Report
                     </Button>
                   </Box>
                 )}
-                muiTableContainerProps={{
-                  sx: {
-                    maxHeight: "55rem",
-                    maxWidth: "100%",
-                    overflowX: "auto",
-                  },
-                }}
                 initialState={{
                   density: "compact",
                   columnVisibility: { id: false },
                 }}
-                muiTableHeadCellProps={{
-                  sx: {
-                    fontWeight: "bold",
-                    fontSize: "1.4rem",
-                    backgroundColor: "var(--white)",
-                    color: "var(--dark)",
-                    border: ".1rem solid",
-                    fontFamily: "Poppins",
-                  },
-                }}
-                muiTableBodyCellProps={{
-                  sx: {
-                    backgroundColor: "var(--grey)",
-                    borderRight: "0.01rem solid var(--white)",
-                    fontFamily: "Poppins",
-                  },
-                }}
-                muiTableBodyProps={{
-                  sx: {
-                    margin: "2rem",
-                  },
-                }}
+                muiTableHeadCellColumnActionsButtonProps={
+                  config.mrtStyle.muiTableHeadCellColumnActionsButtonProps
+                }
+                muiTableHeadCellFilterTextFieldProps={
+                  config.mrtStyle.muiTableHeadCellFilterTextFieldProps
+                }
+                muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
+                // initialState={{
+                //   density: "compact",
+                //   columnVisibility: { id: false },
+                //   pagination: {
+                //     pageSize: 20,
+                //     pageIndex: 0,
+                //   },
+                // }}
+                muiTableHeadCellProps={config.mrtStyle.muiTableHeadCellProps}
+                muiTableBodyCellProps={config.mrtStyle.muiTableBodyCellProps}
+                muiTableBodyProps={config.mrtStyle.muiTableBodyProps}
+                muiBottomToolbarProps={config.mrtStyle.muiBottomToolbarProps}
               ></MaterialReactTable>
             )}
           </div>

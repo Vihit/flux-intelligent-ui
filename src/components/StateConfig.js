@@ -32,6 +32,13 @@ function StateConfig(props) {
       ? props.conf.viewableColumns
       : props.formColumnKeys
   );
+  console.log(
+    props.conf.stConf != null
+      ? typeof props.conf.stConf == "string"
+        ? JSON.parse(props.conf.stConf)
+        : props.conf.stConf
+      : {}
+  );
   const [stCnf, setStCnf] = useState(
     props.conf.stConf != null
       ? typeof props.conf.stConf == "string"
@@ -59,9 +66,10 @@ function StateConfig(props) {
         currConf["selectedRoles"] = selectedRoles;
         currConf["selectedDepartments"] = selectedDepartments;
         currConf["viewableColumns"] = viewableColumns;
-        currConf["writableColumns"] = currConf.isLastState
-          ? props.formColumnKeys
-          : writableColumns;
+        // currConf["writableColumns"] = currConf.isLastState
+        //   ? props.formColumnKeys
+        //   : writableColumns;
+        currConf["writableColumns"] = writableColumns;
         currConf["class"] = currConf.isFirstState
           ? "start-node"
           : currConf.isLastState
@@ -498,7 +506,7 @@ function StateConfig(props) {
                           ) && !(conf.isLastState === "true")
                         }
                         onChange={(e) => {
-                          if (conf.isLastState !== "true") {
+                          if (conf.isLastState !== "true" || 1 == 1) {
                             updateWritableColumns(
                               props.formColumnKeys[ind],
                               e.target.checked

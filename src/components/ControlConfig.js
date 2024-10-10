@@ -575,6 +575,7 @@ function ControlConfig(props) {
                             .filter((f) => f.name === conf.referenceMaster)[0]
                             .columns.split(",")
                             .concat("id")
+                            .concat("entry_state")
                             .map((col, inx) => {
                               return <option value={col}>{col}</option>;
                             })}

@@ -40,11 +40,15 @@ function Dashboard(props) {
   }
 
   return (
-    <div className="dashboard-container">
-      {JSON.parse(localStorage.getItem("user")).role.includes("ROLE_ADMIN") &&
-        apps.map((app, ind) => {
-          return <AppCard key={ind} app={app}></AppCard>;
-        })}
+    <div
+      className="dashboard-container"
+      style={{
+        padding: "0 1% 0 1%",
+      }}
+    >
+      {apps.map((app, ind) => {
+        return <AppCard key={ind} app={app}></AppCard>;
+      })}
       {JSON.parse(localStorage.getItem("user")).role.includes("ROLE_ADMIN") && (
         <AppCard
           app={{ name: "Create an App!", icon: "fa-square-plus" }}
@@ -52,9 +56,10 @@ function Dashboard(props) {
           appAdded={appAdded}
         ></AppCard>
       )}
-      {!JSON.parse(localStorage.getItem("user")).role.includes(
-        "ROLE_ADMIN"
-      ) && <UserDashboard raiseAlert={props.raiseAlert}></UserDashboard>}
+      {false &&
+        !JSON.parse(localStorage.getItem("user")).role.includes(
+          "ROLE_ADMIN"
+        ) && <UserDashboard raiseAlert={props.raiseAlert}></UserDashboard>}
     </div>
   );
 }

@@ -2,6 +2,7 @@ export const config = {
   apiUrl: "http://localhost:8080/",
   // apiUrl: "http://ec2-65-2-57-3.ap-south-1.compute.amazonaws.com:8080/",
   // apiUrl: "http://180.190.51.15:8080/",
+  // apiUrl: "https://backend2.digitedgy.com/",
   measures: ["sum", "avg", "max", "min", "count"],
   filterOps: ["=", "<>", ">", "<", ">=", "<="],
   logicalOps: ["and", "or"],

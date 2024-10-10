@@ -135,11 +135,16 @@ function Form(props) {
   function checkClickEventAndSend() {
     var stConf = props.form.workflow.states.filter((st) => st.name === to)[0]
       .stConf;
-    if (stConf == null || stConf == undefined || stConf === "") {
+    if (
+      stConf == null ||
+      stConf == undefined ||
+      stConf === "{}" ||
+      stConf === "null"
+    ) {
       send();
     } else {
       var cnf = JSON.parse(stConf);
-      if (cnf.apiCall) {
+      if (cnf["apiCall"]) {
         console.log(data);
         let url = cnf.apiUrl;
         var reg = /\${(\w+)}/g;

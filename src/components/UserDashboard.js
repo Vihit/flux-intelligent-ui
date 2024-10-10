@@ -2,8 +2,12 @@ import "./UserDashboard.css";
 import { config } from "./config";
 import { useEffect, useState } from "react";
 import UserFormDetail from "./UserFormDetail";
+import { useParams } from "react-router-dom";
 
 function UserDashboard(props) {
+  console.log(props);
+  let params = useParams();
+  const appId = params.id;
   const [iClicked, setIClicked] = useState(false);
   const [pClicked, setPClicked] = useState(false);
   const [aClicked, setAClicked] = useState(false);
@@ -435,137 +439,151 @@ function UserDashboard(props) {
     }
   }
   return (
-    <div className="u-d-container">
-      <div className="u-menu p-menu-sidebar">
-        <div
-          className="u-menu-head"
-          onClick={() => handleTypeClicked("initiate")}
-        >
-          Initiate Request
-        </div>
-        <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
-          {iApps.map((a, inx) => {
-            return (
-              <div key={inx} className="u-menu-i-head">
-                {a.name}
-                {forms
-                  .filter((f) => f.app.id == a.id)
-                  .map((f, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="u-menu-i"
-                        onClick={() => handleFormClick("initiate", f)}
-                      >
-                        {f.name}
-                      </div>
-                    );
-                  })}
-              </div>
-            );
-          })}
-        </div>
-        <div
-          className="u-menu-head"
-          onClick={() => handleTypeClicked("pending")}
-        >
-          Pending Requests {pApps.length > 0 && <div className="p-not"></div>}
-        </div>
-        <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
-          {pApps.map((a, inx) => {
-            return (
-              <div key={inx} className="u-menu-i-head">
-                {a.name}
-                {allForms
-                  .filter(
-                    (f) =>
-                      f.app.id == a.id &&
-                      pendingEntries.map((p) => p.formId).includes(f.id)
-                  )
-                  .map((f, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="u-menu-i"
-                        onClick={() => {
-                          handleFormClick("pending", f);
-                        }}
-                      >
-                        {f.name}
-                      </div>
-                    );
-                  })}
-              </div>
-            );
-          })}
-        </div>
-        <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
-          My Requests
-        </div>
-        <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
-          {aApps.map((a, inx) => {
-            return (
-              <div key={inx} className="u-menu-i-head">
-                {a.name}
-                {allForms
-                  .filter((f) => f.app.id == a.id)
-                  .map((f, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="u-menu-i"
-                        onClick={() => {
-                          handleFormClick("view", f);
-                        }}
-                      >
-                        {f.name}
-                      </div>
-                    );
-                  })}
-              </div>
-            );
-          })}
-        </div>
-        {lsaApps.length > 0 && (
-          <div className="u-menu-head" onClick={() => handleTypeClicked("all")}>
-            All Requests
+    <div className="dashboard-container">
+      <div className="u-d-container">
+        <div className="u-menu p-menu-sidebar">
+          <div
+            className="u-menu-head"
+            onClick={() => handleTypeClicked("initiate")}
+          >
+            Initiate Request
           </div>
-        )}
-        <div className={"u-menu-part " + (laClicked ? "" : "close-flex")}>
-          {lsaApps.map((a, inx) => {
-            return (
-              <div key={inx} className="u-menu-i-head">
-                {a.name}
-                {allForms
-                  .filter((f) => f.app.id == a.id)
-                  .map((f, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        className="u-menu-i"
-                        onClick={() => {
-                          handleFormClick("view-all", f);
-                        }}
-                      >
-                        {f.name}
-                      </div>
-                    );
-                  })}
-              </div>
-            );
-          })}
+          <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
+            {iApps
+              .filter((a) => a.id == appId)
+              .map((a, inx) => {
+                return (
+                  <div key={inx} className="u-menu-i-head">
+                    {a.name}
+                    {forms
+                      .filter((f) => f.app.id == a.id)
+                      .map((f, idx) => {
+                        return (
+                          <div
+                            key={idx}
+                            className="u-menu-i"
+                            onClick={() => handleFormClick("initiate", f)}
+                          >
+                            {f.name}
+                          </div>
+                        );
+                      })}
+                  </div>
+                );
+              })}
+          </div>
+          <div
+            className="u-menu-head"
+            onClick={() => handleTypeClicked("pending")}
+          >
+            Pending Requests{" "}
+            {pApps.filter((a) => a.id == appId).length > 0 && (
+              <div className="p-not"></div>
+            )}
+          </div>
+          <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
+            {pApps
+              .filter((a) => a.id == appId)
+              .map((a, inx) => {
+                return (
+                  <div key={inx} className="u-menu-i-head">
+                    {a.name}
+                    {allForms
+                      .filter(
+                        (f) =>
+                          f.app.id == a.id &&
+                          pendingEntries.map((p) => p.formId).includes(f.id)
+                      )
+                      .map((f, idx) => {
+                        return (
+                          <div
+                            key={idx}
+                            className="u-menu-i"
+                            onClick={() => {
+                              handleFormClick("pending", f);
+                            }}
+                          >
+                            {f.name}
+                          </div>
+                        );
+                      })}
+                  </div>
+                );
+              })}
+          </div>
+          <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
+            My Requests
+          </div>
+          <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
+            {aApps
+              .filter((a) => a.id == appId)
+              .map((a, inx) => {
+                return (
+                  <div key={inx} className="u-menu-i-head">
+                    {a.name}
+                    {allForms
+                      .filter((f) => f.app.id == a.id)
+                      .map((f, idx) => {
+                        return (
+                          <div
+                            key={idx}
+                            className="u-menu-i"
+                            onClick={() => {
+                              handleFormClick("view", f);
+                            }}
+                          >
+                            {f.name}
+                          </div>
+                        );
+                      })}
+                  </div>
+                );
+              })}
+          </div>
+          {lsaApps.length > 0 && (
+            <div
+              className="u-menu-head"
+              onClick={() => handleTypeClicked("all")}
+            >
+              All Requests
+            </div>
+          )}
+          <div className={"u-menu-part " + (laClicked ? "" : "close-flex")}>
+            {lsaApps.map((a, inx) => {
+              return (
+                <div key={inx} className="u-menu-i-head">
+                  {a.name}
+                  {allForms
+                    .filter((f) => f.app.id == a.id)
+                    .map((f, idx) => {
+                      return (
+                        <div
+                          key={idx}
+                          className="u-menu-i"
+                          onClick={() => {
+                            handleFormClick("view-all", f);
+                          }}
+                        >
+                          {f.name}
+                        </div>
+                      );
+                    })}
+                </div>
+              );
+            })}
+          </div>
         </div>
+        {selectedForm.id != undefined && selectedType !== "" && (
+          <UserFormDetail
+            type={selectedType}
+            form={selectedForm}
+            raiseAlert={props.raiseAlert}
+            key={selectionUpdate}
+            tableData={tableData}
+            updateData={handleFormClick}
+          ></UserFormDetail>
+        )}
       </div>
-      {selectedForm.id != undefined && selectedType !== "" && (
-        <UserFormDetail
-          type={selectedType}
-          form={selectedForm}
-          raiseAlert={props.raiseAlert}
-          key={selectionUpdate}
-          tableData={tableData}
-          updateData={handleFormClick}
-        ></UserFormDetail>
-      )}
     </div>
   );
 }

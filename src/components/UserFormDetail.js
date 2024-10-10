@@ -284,10 +284,11 @@ function UserFormDetail(props) {
                     fontWeight: "bold",
                     textTransform: "none",
                     fontFamily: "Poppins",
-                    boxShadow: "2px 2px 2px #00000055",
+                    boxShadow: "0.05rem 0.05rem 0.5rem black",
+                    fontSize: "1.4rem",
                   }}
                 >
-                  {<GetApp />} &nbsp;Download
+                  Download
                 </Button>
               )}
             </Box>
