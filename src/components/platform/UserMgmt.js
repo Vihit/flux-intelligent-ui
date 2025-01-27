@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import { MaterialReactTable } from "material-react-table";
+import MaterialReactTable from "material-react-table";
 import { Box, IconButton, Typography } from "@mui/material";
 import { Fullscreen } from "@mui/icons-material";
 import UserEdit from "./UserEdit";

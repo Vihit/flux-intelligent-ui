@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
-import { MaterialReactTable } from "material-react-table";
+import MaterialReactTable from "material-react-table";
 import { Box, IconButton, Typography, Button } from "@mui/material";
 import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import { jsPDF } from "jspdf";

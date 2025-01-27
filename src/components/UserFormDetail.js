@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Form from "./Form";
 import "./UserFormDetail.css";
 import { config } from "./config";
-import { MaterialReactTable } from "material-react-table";
+import MaterialReactTable from "material-react-table";
 import { Box, IconButton, Button } from "@mui/material";
 import { AccessTime, Fullscreen, GetApp } from "@mui/icons-material";
 import LogAudit from "./LogAudit";

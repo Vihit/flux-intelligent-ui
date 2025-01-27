@@ -2,7 +2,7 @@ import "./Reports.css";
 import "./ReportEdit";
 import { config } from "./config";
 import { useEffect, useState } from "react";
-import { MaterialReactTable } from "material-react-table";
+import MaterialReactTable from "material-react-table";
 import { Box, Typography, Button } from "@mui/material";
 import { Fullscreen, ExitToApp, GetApp } from "@mui/icons-material";
 import ReportEdit from "./ReportEdit";
