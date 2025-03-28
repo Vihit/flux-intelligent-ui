@@ -389,6 +389,8 @@ function CreatedCell(props) {
             ? props.rowNum > 0
               ? "grid-creation-cell-wh"
               : "grid-creation-cell "
+            : props.conf.type === ""
+            ? "trans-cell"
             : "created-cell "
           : "empty-created-cell"
       }

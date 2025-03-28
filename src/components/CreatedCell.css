@@ -133,3 +133,29 @@
   z-index: 10;
   cursor: pointer;
 }
+
+.trans-cell {
+  /* height: 100%; */
+  /* border: .1rem solid red; */
+  margin: 0.1rem;
+  /* background-color: #ebebeb; */
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  font-size: 10rem;
+  flex-direction: column;
+  /* cursor: pointer; */
+  position: relative;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 1rem;
+  overflow-x: auto;
+
+  background: rgba(1, 18, 77, 0.1);
+  border-radius: 5px;
+  backdrop-filter: blur(5.2px);
+  -webkit-backdrop-filter: blur(5.2px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: white;
+  opacity: 0;
+}
