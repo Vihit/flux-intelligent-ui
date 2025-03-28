@@ -8,25 +8,28 @@
 
 .f-head-in {
   padding: 0.5rem 1rem;
-  background-color: var(--accent);
-  color: var(--dark);
+  background-color: var(--white);
+  color: var(--black);
   box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.542);
   cursor: pointer;
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 400;
 }
 
 .f-head-in-selected {
-  background-color: var(--main);
-  color: var(--white);
+  background-color: var(--accent);
+  color: var(--black);
+  font-weight: 500;
 }
 
 .f-head-set {
   padding: 0.5rem 4rem;
   background-color: var(--main);
-  color: var(--white);
+  color: var(--black);
   height: 10%;
   display: flex;
   align-items: center;
@@ -36,8 +39,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 90%;
-  /* justify-content: center; */
+  height: 70vh;
   align-items: center;
   margin-top: 1rem;
 }

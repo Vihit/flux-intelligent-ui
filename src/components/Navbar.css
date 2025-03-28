@@ -1,8 +1,8 @@
 .navbar {
   display: flex;
   align-items: center;
-  background-color: var(--dark);
-  box-shadow: 0.5rem 0.5rem 0.7rem;
+  /* background-color: var(--dark); */
+  /* box-shadow: 0.5rem 0.5rem 0.7rem; */
   height: 8vh;
 }
 
@@ -10,16 +10,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 5rem;
+  padding-left: 2rem;
   margin-top: 0rem;
 }
 
 .appname {
   font-family: "Reem Kufi";
-  color: var(--white);
+  color: var(--black);
   font-weight: bold;
   font-size: 4rem;
   margin-right: 2rem;
+  letter-spacing: -0.1rem;
+}
+
+.r-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8rem;
+  margin-right: 4rem;
+}
+
+.r-nav > div {
+  padding: 0.5rem 3rem;
+  border-radius: 4rem;
+  cursor: pointer;
+}
+
+.r-nav > div > * {
+  color: var(--black);
+  font-size: 3rem;
+  -webkit-text-stroke: 0.1rem var(--main);
 }
 
 /* .delogo {
@@ -41,105 +62,24 @@
   margin-top: 1.5rem;
 }
 
-.options {
-  flex: 1.8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.8rem;
-  vertical-align: middle;
-  font-family: "Poppins";
+.sel-nav {
+  background-color: var(--black);
+  padding: 1rem 3rem !important;
+  /* -webkit-text-stroke: 0.1rem var(--accent) !important; */
 }
 
-.options > div {
-  /* margin-right: 10.0rem; */
-  color: var(--white);
-  font-size: 1.6rem;
-}
-
-.options > div > a {
-  margin-right: 10rem;
-  color: var(--white);
-}
-
-.icon-account {
-  font-size: 4.30703rem;
-  color: var(--white);
-}
-
-.account {
-  width: 4.7rem;
-  height: 4.7rem;
-  border-radius: 60%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 3rem;
-  border-color: var(--white);
-  border-style: solid;
-  transition: filter 300ms;
-}
-
-.account:hover {
-  filter: brightness(1.2);
-}
-
-.account > div {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 2rem;
-}
-
-.dropdown {
-  background-color: var(--white);
-  position: absolute;
-  top: 5%;
-  right: 1%;
-  overflow: hidden;
-  border-radius: 1rem;
-  box-shadow: 0rem 0.8rem 1.6rem 0rem rgba(0, 0, 0, 0.2);
-  display: none;
-  list-style: none;
-  text-decoration: none;
-  padding: 1rem 0rem 1rem 0rem;
-  z-index: 1000;
-  width: 15rem;
+.sel-nav > * {
+  color: white !important;
+  -webkit-text-stroke: 0rem !important;
+  font-size: 2rem !important;
 }
 
 li {
   text-align: center;
 }
 
-.dropdown-item {
-  padding: 0.5rem;
-  text-decoration: none;
-  color: black;
-  font-family: "Poppins";
-  font-size: 1.3rem;
-}
-
 a {
   text-decoration: none;
-}
-
-.dropdown:hover .dropdown .account:hover {
-  display: block;
-}
-
-.account:hover + .dropdown {
-  display: block;
-}
-
-.dropdown:hover {
-  display: block;
-}
-
-.dropdown-item:hover .dropdown {
-  display: block;
-}
-
-.dropdown-item:hover {
-  background-color: #cccccc;
 }
 
 .hidden {
@@ -157,7 +97,7 @@ a {
 
 .delogo {
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  content: url("./../../public/delogo1.png");
+  content: url("./../../public/siq.png");
   object-fit: fill;
   height: 4.5rem;
   margin-right: 1rem;
@@ -174,4 +114,141 @@ a {
   margin-right: 1rem;
   margin-bottom: 1.5rem;
   margin-top: 1.5rem;
+}
+
+.app-options {
+  position: absolute;
+  top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  width: 100%;
+  align-self: center;
+  /* padding-top: 3rem; */
+  /* margin-top: -3rem; */
+  z-index: 10;
+  /* box-shadow: 0 8px 6px -6px black; */
+  box-shadow: 0 1rem 1rem -1rem rgba(0, 0, 0, 0.466);
+  border-bottom-left-radius: 2.5rem;
+  border-bottom-right-radius: 2.5rem;
+  overflow: hidden;
+}
+
+.app-option {
+  height: 5.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid #ededed;
+  font-size: 1.6rem;
+  gap: 1rem;
+  cursor: pointer !important;
+  z-index: 10;
+  /* box-shadow: 0 1rem 1rem -1rem rgba(0, 0, 0, 0.466); */
+}
+
+.app-o-i {
+  width: 4rem;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  /* height: 6rem; */
+}
+
+.app-o-n {
+  /* font-weight: bold; */
+  width: calc(100% - 6.5rem);
+}
+
+.app-o-as {
+  width: 4.5rem;
+  font-size: 2rem;
+}
+
+.app-o-as > i {
+  color: #00c9ff;
+  cursor: pointer;
+}
+
+.option-a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.8rem;
+  vertical-align: middle;
+  font-family: "Poppins";
+  color: var(--black);
+  cursor: pointer;
+  margin-right: 3%;
+  gap: 1vw;
+}
+
+.l-option {
+  background-color: #ffffffaa;
+  font-size: 2.2rem;
+  color: var(--black);
+  -webkit-text-stroke: 1px #ffffffaa;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem 2rem;
+  border-radius: 4rem;
+  box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.notif {
+  position: absolute;
+  top: -5%;
+  left: 65%;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--green);
+  border-radius: 100%;
+  animation: pulse 1s infinite;
+}
+
+.notif-cont {
+  position: absolute;
+  font-size: 1.4rem;
+  /* font-weight: 100; */
+  display: flex;
+  top: 95%;
+  width: 700%;
+  /* left: -300%; */
+  right: -50%;
+  background-color: var(--white);
+  border-radius: 1rem;
+  padding: 1rem 0rem;
+  justify-content: center;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.notif-cont > div {
+  color: var(--black);
+  background-color: var(--white);
+  padding: 1rem 2rem;
+  -webkit-text-stroke: 0px;
+  font-weight: 400;
+  /* box-shadow: 0.1rem 0.1rem 1rem var(--accent); */
+  border-radius: 1rem;
+  width: calc(98% - 4rem);
+  cursor: pointer;
+  /* font-weight: bold; */
+}
+
+.notif-cont > div:hover {
+  filter: brightness(1.1);
+  background-color: var(--dark);
+  color: var(--black);
 }

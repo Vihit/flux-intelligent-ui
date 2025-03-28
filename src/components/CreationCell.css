@@ -2,7 +2,7 @@
   /* height: 100%; */
   /* border: .1rem solid red; */
   margin: 0.2rem;
-  background-color: #bcc1c56f;
+  background-color: var(--main);
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -58,7 +58,7 @@
 
 .grid-creation-cell {
   margin: 0.2rem;
-  background-color: #bcc1c56f;
+  background-color: var(--main);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -72,7 +72,7 @@
 
 .grid-creation-cell-wh {
   margin: 0.2rem;
-  background-color: #bcc1c56f;
+  background-color: var(--main);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

@@ -17,7 +17,7 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  background-image: url("./../fi.png");
+  background-image: url("./../../public/fi.png");
   /* margin-bottom: 10.0rem; */
 }
 
@@ -65,24 +65,58 @@
 .login-header {
   font-family: "Poppins";
   font-size: 4rem;
-  font-weight: bold;
-  color: var(--white);
+  font-weight: 500;
+  color: var(--black);
+}
+
+.srch-control {
+  width: 70%;
+  position: relative;
+}
+
+.srch-control > form > input {
+  height: 4rem;
+  width: 100%;
+  border-radius: 2.5rem;
+  /* border: 0.1rem solid var(--black); */
+  background-color: white;
+  padding: 0;
+  box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.02);
+}
+
+.srch-control > form > input:focus {
+  outline: none;
+  border: none;
+}
+
+.srch-control > form > input:not(:placeholder-shown) {
+  outline: none;
+  border: none;
+  border-bottom-right-radius: 0rem;
+  border-bottom-left-radius: 0rem;
 }
 
 .control > input {
-  height: 3rem;
+  height: 4rem;
   width: 100%;
   border-radius: 2.5rem;
-  border-color: var(--white);
+  outline: 0.1rem solid var(--black);
+  background-color: white;
+  /* text-align: center; */
+}
+
+.control > input:focus {
+  outline: 0.1rem solid var(--black);
+  background-color: white;
   /* text-align: center; */
 }
 
 ::placeholder {
   font-family: "Poppins";
   font-size: 1.3rem;
-  font-weight: bolder;
-  color: #cccccc;
-  letter-spacing: 0.1rem;
+  font-weight: 300;
+  color: var(--black);
+  letter-spacing: -0.02rem;
   font-style: normal;
   text-align: center;
 }
@@ -126,16 +160,16 @@ textarea::placeholder {
 
 .submit {
   border-radius: 2rem;
-  background-color: var(--accent);
+  background-color: var(--black);
   padding: 0.5rem 2rem 0.5rem 2rem;
   text-align: center;
   align-self: center;
-  color: var(--white);
+  color: var(--accent);
   font-weight: bold;
   font-size: 2rem;
   font-family: "Poppins";
   cursor: pointer;
-  box-shadow: 0rem 0.5rem 0.3rem 0rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0rem 0.1rem 0.1rem 0rem rgba(0, 0, 0, 0.3);
 }
 
 #Light {

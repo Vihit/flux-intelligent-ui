@@ -5,11 +5,13 @@
   left: 15%;
   right: 15%;
   background-color: white;
-  border: 0.3rem solid black;
+  /* border: 0.3rem solid black; */
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 0 9999.9rem rgba(0, 0, 0, 0.8);
   z-index: 100;
+  border-radius: 4rem;
+  overflow: hidden;
 }
 
 .role-creation-cell {

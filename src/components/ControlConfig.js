@@ -4,7 +4,6 @@ import { config } from "./config.js";
 import ColSelectionWindow from "./ColSelectionWindow.js";
 
 function ControlConfig(props) {
-  console.log(props);
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleReferenceDataDetails, setToggleReferenceDataDetails] =

@@ -1,6 +1,8 @@
+import { height } from "@fortawesome/free-solid-svg-icons/fa0";
+
 export const config = {
-  apiUrl: "http://localhost:8080/",
-  // apiUrl: "http://ec2-65-2-57-3.ap-south-1.compute.amazonaws.com:8080/",
+  // apiUrl: "http://localhost:8080/",
+  apiUrl: "http://ec2-13-234-24-38.ap-south-1.compute.amazonaws.com:8080/",
   // apiUrl: "http://180.190.51.15:8080/",
   // apiUrl: "https://backend1.digitedgy.com/",
   measures: ["sum", "avg", "max", "min", "count"],
@@ -104,12 +106,12 @@ export const config = {
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        height: "4vh",
+        height: "4rem",
       },
     },
     muiTableContainerProps: {
       sx: {
-        maxHeight: "60vh",
+        maxHeight: "55vh",
         minHeight: "10vh",
         maxWidth: "100%",
         overflowX: "auto",
@@ -125,31 +127,39 @@ export const config = {
     },
     muiTableHeadCellProps: {
       sx: {
-        fontWeight: "400",
-        fontSize: "1.4rem",
+        "& .Mui-TableHeadCell-Content": {
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+        fontWeight: "500",
+        fontSize: "1.5rem",
         backgroundColor: "var(--dark)",
-        color: "var(--white)",
-        border: "0.1rem solid",
+        color: "var(--black)",
+        borderRight: "0.1rem solid white",
         fontFamily: "Poppins",
-        height: "4rem",
+        height: "5rem",
         verticalAlign: "middle",
-        // lineHeight: "4rem",
+        // padding: "0rem 0rem 1rem 1rem",
+        lineHeight: "2rem",
       },
     },
     muiTableHeadCellColumnActionsButtonProps: {
       sx: {
         path: {
-          stroke: "white",
-          fill: "white",
-          strokeWidth: "15rem",
+          stroke: "var(--black)",
+          fill: "var(--black)",
+          strokeWidth: "1",
+        },
+        svg: {
+          fontSize: "2rem !important",
         },
       },
     },
     muiTableBodyCellProps: {
       sx: {
-        backgroundColor: "var(--white)",
+        // backgroundColor: "var(--black)",
         borderRight: "0.1rem solid var(--white)",
-        borderBottom: "0.1rem solid var(--grey)",
+        // borderBottom: "0.1rem solid var(--white)",
         fontFamily: "Poppins",
         fontSize: "1.4rem",
       },
@@ -166,8 +176,9 @@ export const config = {
         backgroundColor: "var(--white)",
         input: {
           fontFamily: "Poppins",
-          color: "var(--dark)",
+          color: "var(--black)",
           fontSize: "1.4rem",
+          fontWeight: "200",
         },
       },
     },

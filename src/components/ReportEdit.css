@@ -1,7 +1,7 @@
 .creation-cell-ta {
   height: 100%;
   margin: 0.2rem;
-  background-color: #bcc1c56f;
+  background-color: var(--dark);
   display: flex;
   justify-content: flex-start;
   align-items: center;

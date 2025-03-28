@@ -7,8 +7,6 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 function Form(props) {
-  // console.log(props);
-
   var obj = {};
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
   const [updateCount, setUpdateCount] = useState(1);
@@ -21,14 +19,10 @@ function Form(props) {
   const conf = JSON.parse(props.form.template).controls;
   const [to, setTo] = useState("");
   const currState =
-    props.entry.id == -1 ||
-    (props.entry.state ===
-      props.form.workflow.states.filter((st) => st.endState)[0].name &&
-      props.form.app.name === "Master Data Managements")
+    props.entry.id == -1
       ? props.form.workflow.states.filter((st) => st.firstState)[0].name
       : props.entry.state.split("-INPA")[0];
   const [sortedEntries, setSortedEntries] = useState([]);
-
   const toStates = props.form.workflow.transitions
     .filter(
       (t) =>
@@ -50,7 +44,7 @@ function Form(props) {
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
-        obj[grid.grid] = grid.data.map((data) => data.data);
+        obj[grid.grid] = grid.data.data.map((data) => data);
       });
     }
     setData(props.entry.id == -1 ? { id: -1 } : { ...props.entry, ...obj });
@@ -145,7 +139,6 @@ function Form(props) {
     } else {
       var cnf = JSON.parse(stConf);
       if (cnf["apiCall"]) {
-        console.log(data);
         let url = cnf.apiUrl;
         var reg = /\${(\w+)}/g;
         var matches = url.match(reg);
@@ -303,7 +296,6 @@ function Form(props) {
     }
   }
   function checkDependency(of, on) {
-    console.log(of);
     if (of.referData != undefined && JSON.parse(of.referData)) {
       var refQuery = of.referenceFilterQuery;
       var reg = /\${(\w+)}/g;
@@ -465,7 +457,7 @@ function Form(props) {
         <div className="close-icon">
           <i
             className="fa-solid fa-close"
-            onClick={() => props.closeInit(false)}
+            onClick={() => props.closeInit(props.form)}
           ></i>
         </div>
       </div>
@@ -482,7 +474,7 @@ function Form(props) {
                         viewableColumns.includes(conf[idx][inx].key) &&
                         checkConditionalVisibility(conf[idx][inx])
                       )
-                  ).length > 0
+                  ).length == rows.length
                     ? "close-flex"
                     : "created-row"
                 }

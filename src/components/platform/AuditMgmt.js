@@ -38,10 +38,6 @@ function AuditMgmt(props) {
     const tD = rows.map((row) => keys.map((key) => row.original[key]));
     const tableHeaders = tableData.header.map((c) => c.header);
 
-    console.log(rows[0].original);
-    console.log(tD);
-    console.log(tableHeaders);
-
     if (tableHeaders.length > 7) {
       orientation = "l";
     }
@@ -203,6 +199,7 @@ function AuditMgmt(props) {
           data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
+          enableTopToolbar={false}
           renderTopToolbarCustomActions={({ table }) => (
             <Box sx={{ display: "flex", gap: "1rem", p: ".4rem" }}>
               <Typography
@@ -236,53 +233,9 @@ function AuditMgmt(props) {
               </Button>
             </Box>
           )}
-          muiTableContainerProps={{
-            sx: {
-              maxHeight: "55.0rem",
-              maxWidth: "100%",
-              overflowX: "auto",
-            },
-          }}
           initialState={{
             density: "compact",
             columnVisibility: { id: false },
-          }}
-          muiTableHeadCellProps={{
-            sx: {
-              fontWeight: "bold",
-              fontSize: "1.4rem",
-              backgroundColor: "var(--main)",
-              color: "var(--white)",
-              border: ".1rem solid",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableHeadCellColumnActionsButtonProps={{
-            sx: {
-              path: {
-                stroke: "white",
-                fill: "white",
-                strokeWidth: ".15rem",
-              },
-            },
-          }}
-          muiTableBodyCellProps={{
-            sx: {
-              backgroundColor: "var(--grey)",
-              borderRight: ".1rem solid var(--white)",
-              borderBottom: ".1rem solid var(--main)",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableHeadCellFilterTextFieldProps={{
-            sx: {
-              strokeWidth: ".15rem",
-              backgroundColor: "var(--white)",
-              input: {
-                fontFamily: "Poppins",
-                color: "var(--main)",
-              },
-            },
           }}
           onPaginationChange={setPagination}
           state={{ pagination }}
@@ -291,12 +244,24 @@ function AuditMgmt(props) {
           // pageIndex={pagination.pageIndex}
           // pageIndex={}
           pageCount={totalPages}
-          muiTableBodyProps={{
-            sx: {
-              margin: "2.0rem",
-            },
-          }}
           // autoResetPageIndex={false}
+          muiTableBodyRowProps={({ row }) => ({
+            sx: {
+              backgroundColor: "var(--white) !important",
+              borderBottom: "0.1rem solid var(--main)",
+            },
+          })}
+          muiTableHeadCellColumnActionsButtonProps={
+            config.mrtStyle.muiTableHeadCellColumnActionsButtonProps
+          }
+          muiTableHeadCellFilterTextFieldProps={
+            config.mrtStyle.muiTableHeadCellFilterTextFieldProps
+          }
+          muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
+          muiTableHeadCellProps={config.mrtStyle.muiTableHeadCellProps}
+          muiTableBodyCellProps={config.mrtStyle.muiTableBodyCellProps}
+          muiTableBodyProps={config.mrtStyle.muiTableBodyProps}
+          muiBottomToolbarProps={config.mrtStyle.muiBottomToolbarProps}
         ></MaterialReactTable>
       </div>
     </div>

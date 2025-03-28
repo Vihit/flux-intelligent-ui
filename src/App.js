@@ -16,6 +16,7 @@ import IdleTimer from "./components/IdleTimer";
 import UserDashboard from "./components/UserDashboard";
 
 function App() {
+  const [notifications, setNotifications] = useState([]);
   const [alert, setAlert] = useState(false);
   const [alertTime, setAlertTime] = useState(500);
   const [alertContent, setAlertContent] = useState("");
@@ -68,27 +69,35 @@ function App() {
   }
 
   function logoutHandler() {
-    let user = {};
-    user["id"] = JSON.parse(localStorage.getItem("user"))["user_id"];
-    user["username"] = JSON.parse(localStorage.getItem("user"))["sub"];
-    console.log(user);
-    fetch(config.apiUrl + "log-out", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-      body: JSON.stringify(user),
-    }).then((response) => {
-      if (response.ok) {
-        localStorage.clear();
-        setLoggedIn(false);
-      } else {
-        raiseAlert("red", "Some error occurred while logging out!", 3000);
-      }
-    });
+    try {
+      let user = {};
+      user["id"] = JSON.parse(localStorage.getItem("user"))["user_id"];
+      user["username"] = JSON.parse(localStorage.getItem("user"))["sub"];
+      fetch(config.apiUrl + "log-out", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+        body: JSON.stringify(user),
+      }).then((response) => {
+        if (response.ok) {
+          localStorage.clear();
+          setLoggedIn(false);
+        } else {
+          raiseAlert("red", "Some error occurred while logging out!", 3000);
+        }
+      });
+    } catch (err) {
+      localStorage.clear();
+      setLoggedIn(false);
+      console.log("Already logged out!");
+    } finally {
+      window.name = "";
+      history.push("/login");
+    }
   }
 
   const handleTimeout = () => {
@@ -97,7 +106,7 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <div className={loading ? "loading " : "close-flex "}>
         <div className="loading-inner">
           <div className="small-e-line"></div>
@@ -138,27 +147,43 @@ function App() {
         raiseAlert={raiseAlert}
         isLoggedIn={loggedIn}
         onLogout={logoutHandler}
+        notifications={notifications}
       ></Navbar>
       {!loggedIn ? (
         <Login raiseAlert={raiseAlert} onLogin={loginHandler}></Login>
       ) : null}
       {loggedIn && (
         <div className={loading ? "inactive " : ""}>
-          <div>
+          <>
             <IdleTimer onTimeout={handleTimeout} />
             <Route exact path="/">
-              <Dashboard raiseAlert={raiseAlert}></Dashboard>
+              <Dashboard
+                raiseAlert={raiseAlert}
+                setNotifications={setNotifications}
+              ></Dashboard>
+            </Route>
+            <Route exact path="/dashboard/:appId/:formId">
+              <Dashboard
+                raiseAlert={raiseAlert}
+                setNotifications={setNotifications}
+              ></Dashboard>
             </Route>
             <Route exact path="/dashboard">
-              <Dashboard raiseAlert={raiseAlert}></Dashboard>
+              <Dashboard
+                raiseAlert={raiseAlert}
+                setNotifications={setNotifications}
+              ></Dashboard>
             </Route>
             <Route exact path="/user-app/:id">
-              <UserDashboard raiseAlert={raiseAlert}></UserDashboard>
+              <UserDashboard
+                raiseAlert={raiseAlert}
+                setNotifications={setNotifications}
+              ></UserDashboard>
             </Route>
             {JSON.parse(localStorage.getItem("user")).role.includes(
               "ROLE_ADMIN"
             ) && (
-              <div>
+              <>
                 <Route exact path="/form-studio">
                   <FormStudio raiseAlert={raiseAlert}></FormStudio>
                 </Route>
@@ -168,30 +193,30 @@ function App() {
                 <Route exact path="/platform">
                   <PlatformSetup raiseAlert={raiseAlert}></PlatformSetup>
                 </Route>
-              </div>
+              </>
             )}
             {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
               ["ROLE_SYSTEM_ADMIN", "ROLE_QA"].includes(role)
             ).length > 0 && (
-              <div>
+              <>
                 <Route exact path="/platform">
                   <PlatformSetup raiseAlert={raiseAlert}></PlatformSetup>
                 </Route>
-              </div>
+              </>
             )}
             {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
               ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role)
             ).length > 0 && (
-              <div>
+              <>
                 <Route exact path="/reports">
                   <Reports raiseAlert={raiseAlert}></Reports>
                 </Route>
-              </div>
+              </>
             )}
-          </div>
+          </>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

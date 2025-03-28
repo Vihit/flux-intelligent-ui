@@ -10,16 +10,15 @@ function AppDashboard(props) {
   const [showPreview, setShowPreview] = useState(false);
   const [prevForm, setPrevForm] = useState({});
 
-  let params = useParams();
   let location = useLocation();
   let history = useHistory();
-  const [appName, setAppName] = useState(location.state);
+
   useEffect(() => {
     getForms();
-  }, []);
+  }, [props.id]);
 
   function getForms() {
-    fetch(config.apiUrl + "forms/" + params.id, {
+    fetch(config.apiUrl + "forms/" + props.id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +56,7 @@ function AppDashboard(props) {
 
   return (
     <div className="dashboard-app-container">
-      <div className="app-name-dac">{appName}</div>
+      <div className="app-name-dac">{props.name}</div>
       <div className="app-viz-container">
         <div className={"viz-lvl"}>
           {forms.map((form, idx) => {

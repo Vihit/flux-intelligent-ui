@@ -9,60 +9,94 @@ import LogAudit from "./LogAudit";
 import { Typography } from "@mui/material/";
 import { jsPDF } from "jspdf";
 
-function UserFormDetail(props) {
-  const [pagination, setPagination] = useState(props.pagination);
-  const [initiated, setInitiated] = useState(
-    props.type === "initiate" ? true : false
-  );
+function MyRequests(props) {
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [totalRows, setTotalRows] = useState(-1);
+  const [initiated, setInitiated] = useState(false);
   const [entry, setEntry] = useState({ id: -1 });
   const [allEntries, setAllEntries] = useState([]);
   const [gridEntries, setGridEntries] = useState([]);
   const [initiatedAudit, setInitiatedAudit] = useState(false);
-  const hiddenFileInput = useRef(null);
-  const [type, setType] = useState(props.type);
-  const handleClick = (event) => {
-    hiddenFileInput.current.click();
-  };
-  const [file, setFile] = useState();
+  const [tableData, setTableData] = useState({ rows: [], header: [] });
 
   useEffect(() => {
-    setType(props.type);
-    setInitiated(props.type === "initiate" ? true : false);
-    setPagination(props.pagination);
-  }, [props.type, props.pagination]);
+    props.raiseAlert("loading", "start");
+    getLogEntries(props.form);
+  }, [pagination, columnFilters]);
 
-  function handleFileChange(e) {
-    if (e.target.files) {
-      const f = new FormData();
-      f.append("file", e.target.files[0]);
-      fetch(config.apiUrl + "master/entry/bulk/upload/" + props.form.id, {
+  function getLogEntries(f) {
+    fetch(
+      config.apiUrl +
+        "entry/get/" +
+        f.id +
+        "/?pageSize=" +
+        pagination.pageSize +
+        "&pageNumber=" +
+        pagination.pageIndex,
+      {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
           Authorization:
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
-        body: f,
+        body: JSON.stringify(columnFilters),
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            return null;
-          } else {
-            return response.text();
-          }
-        })
-        .then((actualData) => {
-          if (actualData != null)
-            props.raiseAlert("red", "Error occurred : " + actualData, 5000);
-          props.raiseAlert("green", "Data Uploaded");
-          props.updateData(props.type, props.form);
+      .then((actualData) => {
+        props.raiseAlert("green", "Fetched Entries");
+        var fLabels = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.label)
+          .concat([
+            "ID",
+            "State",
+            "Created By",
+            "Log Create Dt",
+            "Updated By",
+            "Log Update Dt",
+          ]);
+
+        var matCols = [];
+        var fKeys = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.key)
+          .concat([
+            "id",
+            "state",
+            "created_by",
+            "log_create_dt",
+            "updated_by",
+            "log_update_dt",
+          ]);
+        var settings = JSON.parse(f.settings);
+        var filterColumns = settings?.view?.filters;
+        fKeys.forEach((element, inx) => {
+          matCols.push({
+            accessorKey: element,
+            header: fLabels[inx],
+            enableColumnFilter: filterColumns?.split(",").includes(element),
+          });
         });
-    }
+        setTableData({ rows: actualData.data, header: matCols });
+        setTotalRows(actualData.totalRows);
+        props.raiseAlert("loading", "end");
+      });
   }
 
   const handleExportRows = (rows, table) => {
     const columnVisibility = table.getState().columnVisibility;
     const doc = new jsPDF("p", "pt");
-    const tableHeaders = props.tableData.header
+    const tableHeaders = tableData.header
       .filter(
         (c) => columnVisibility[c.id] == undefined || columnVisibility[c.id]
       )
@@ -178,42 +212,12 @@ function UserFormDetail(props) {
 
       if (response.ok) {
         const actualData = await response.json();
-        setAllEntries(actualData);
+        setAllEntries(actualData.data);
       }
     } catch (error) {
       // Handle errors here
       console.error("Error fetching data:", error);
     }
-  }
-
-  function getGridEntriesFor(formId, entryId) {
-    fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setGridEntries(actualData);
-      });
-  }
-
-  function updateAndCloseInit(f) {
-    setInitiated(false);
-    props.setInitiated();
-    props.updateData(props.type === "initiate" ? "view" : props.type, f);
-  }
-
-  function closeLogAudit() {
-    setInitiatedAudit(false);
   }
 
   const detailPanel =
@@ -274,32 +278,43 @@ function UserFormDetail(props) {
         }
       : false;
 
+  function getGridEntriesFor(formId, entryId) {
+    fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setGridEntries(actualData);
+      });
+  }
+
+  function closeLogAudit() {
+    setInitiatedAudit(false);
+  }
+
   return (
-    <div className="f-dtl-container">
+    <div className="f-dtl-container" style={{ marginTop: "0rem" }}>
       <div className="f-table">
         <MaterialReactTable
-          columns={props.tableData.header}
-          data={props.tableData.rows}
+          columns={tableData.header}
+          data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
           enableTopToolbar={false}
-          // detail
-          state={{ pagination }}
-          renderDetailPanel={detailPanel}
-          onPaginationChange={props.setPagination}
-          rowCount={12}
-          manualPagination
-          pageCount={Math.ceil(12 / props.pagination.pageSize)}
-          enableRowActions={
-            type === "pending" || type === "view" || type === "view-all"
-          }
+          enableRowActions
           renderRowActions={({ row }) => (
             <Box className="c-actions">
-              {type === "pendings" ? (
-                <IconButton onClick={() => openFormView(row)}>
-                  <Fullscreen sx={{ fontSize: "3rem" }} />
-                </IconButton>
-              ) : (
+              {
                 <div>
                   <IconButton onClick={() => openAuditView(row)}>
                     <AccessTime
@@ -312,9 +327,16 @@ function UserFormDetail(props) {
                     <Fullscreen sx={{ fontSize: "3rem" }} />
                   </IconButton>
                 </div>
-              )}
+              }
             </Box>
           )}
+          renderDetailPanel={detailPanel}
+          onPaginationChange={setPagination}
+          state={{ pagination }}
+          rowCount={totalRows}
+          manualPagination={true}
+          pageCount={Math.ceil(totalRows / pagination.pageSize)}
+          onColumnFiltersChange={setColumnFilters}
           initialState={{
             density: "compact",
             columnVisibility: {
@@ -337,6 +359,14 @@ function UserFormDetail(props) {
             config.mrtStyle.muiTableHeadCellFilterTextFieldProps
           }
           muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
+          // initialState={{
+          //   density: "compact",
+          //   columnVisibility: { id: false },
+          //   pagination: {
+          //     pageSize: 20,
+          //     pageIndex: 0,
+          //   },
+          // }}
           muiTableHeadCellProps={config.mrtStyle.muiTableHeadCellProps}
           muiTableBodyCellProps={config.mrtStyle.muiTableBodyCellProps}
           muiTableBodyProps={config.mrtStyle.muiTableBodyProps}
@@ -354,11 +384,11 @@ function UserFormDetail(props) {
             };
           });
           var rows = [];
-
-          data.data.forEach((dt) => {
+          console.log(data);
+          data.data.data.forEach((dt) => {
             let obj = {};
             data.columns.split(",").forEach((col) => {
-              obj[col] = dt.data[col];
+              obj[col] = dt[col];
             });
             rows.push(obj);
           });
@@ -371,7 +401,8 @@ function UserFormDetail(props) {
                   data={rows}
                   enableStickyHeader
                   enableStickyFooter
-                  enableTopToolbar={true}
+                  enableToolbarInternalActions={false}
+                  enableBottomToolbar={false}
                   renderTopToolbarCustomActions={({ table }) => (
                     <Typography
                       variant="h10"
@@ -382,6 +413,11 @@ function UserFormDetail(props) {
                         fontFamily: "Poppins",
                         fontSize: "1.6rem",
                         alignSelf: "center",
+                        padding: "1rem",
+                        background: "var(--main)",
+                        borderRadius: "1rem",
+                        fontWeight: "500",
+                        letterSpacing: "-0.05rem",
                       }}
                     >
                       {data.gridLabel}
@@ -389,7 +425,7 @@ function UserFormDetail(props) {
                   )}
                   muiTableBodyProps={{
                     sx: {
-                      margin: "20px",
+                      margin: "2rem",
                     },
                   }}
                   muiTableContainerProps={{
@@ -405,18 +441,20 @@ function UserFormDetail(props) {
                   }}
                   muiTableHeadCellProps={{
                     sx: {
-                      fontWeight: "bold",
-                      fontSize: "12px",
-                      backgroundColor: "var(--white)",
-                      color: "var(--dark)",
-                      border: "1px solid",
+                      fontWeight: "500",
+                      fontSize: "1.3rem",
+                      backgroundColor: "var(--dark)",
+                      color: "var(--black)",
+                      border: "1px solid var(--dark)`",
                       fontFamily: "Poppins",
+                      height: "3rem",
+                      lineHeight: "3.2rem",
                     },
                   }}
                   muiTableBodyCellProps={{
                     sx: {
-                      backgroundColor: "var(--grey)",
-                      borderRight: "0.1px solid var(--white)",
+                      backgroundColor: "var(--white)",
+                      borderRight: "0.1px solid var(--main)",
                       fontFamily: "Poppins",
                       fontSize: "1.3rem",
                     },
@@ -429,11 +467,13 @@ function UserFormDetail(props) {
       {initiated && (
         <Form
           form={props.form}
-          closeInit={updateAndCloseInit}
-          cancel={props.setInitiated}
+          closeInit={() => {
+            setInitiated(false);
+          }}
+          cancel={setInitiated}
           entry={{ ...entry, grids: gridEntries }}
           entries={allEntries.sort((a, b) => {
-            return a.data.id > b.data.id ? 1 : -1;
+            return a.id > b.id ? 1 : -1;
           })}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
@@ -444,7 +484,7 @@ function UserFormDetail(props) {
         <LogAudit
           form={props.form}
           entries={allEntries.sort((a, b) => {
-            return a.data.id > b.data.id ? 1 : -1;
+            return a.id > b.id ? 1 : -1;
           })}
           closeInit={closeLogAudit}
         ></LogAudit>
@@ -453,4 +493,4 @@ function UserFormDetail(props) {
   );
 }
 
-export default UserFormDetail;
+export default MyRequests;

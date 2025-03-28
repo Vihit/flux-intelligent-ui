@@ -1,23 +1,26 @@
 .dept-preview {
   position: fixed;
   top: 25%;
-  bottom: 25%;
+  /* bottom: 25%; */
   left: 15%;
   right: 15%;
   background-color: white;
-  border: 0.3rem solid black;
+  /* border: 0.3rem solid black; */
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 0 9999.9rem rgba(0, 0, 0, 0.8);
   z-index: 100;
+  border-radius: 4rem;
+  overflow: hidden;
 }
 
 .dept-node {
-  background-color: var(--accent);
+  background-color: var(--white);
   font-family: "Poppins";
   outline: 0.3rem outset var(--dark);
   outline-offset: -0.3rem;
   cursor: pointer;
+  font-size: 1.6rem;
 }
 
 .dept-node p {
@@ -34,4 +37,8 @@
 
 .tree-org {
   overflow-x: auto;
+}
+
+.org-tree-container {
+  background-color: var(--main) !important;
 }

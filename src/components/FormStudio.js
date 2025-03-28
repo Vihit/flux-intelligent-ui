@@ -14,6 +14,7 @@ import StateConfig from "./StateConfig";
 // import * as d3 from "d3";
 
 function FormStudio(props) {
+  console.log("Yo");
   const [layout, setLayout] = useState([]);
   const [confVisible, setConfVisible] = useState(false);
   const [gridClicked, setGridClicked] = useState(false);
@@ -71,7 +72,7 @@ function FormStudio(props) {
   const [showPreview, setShowPreview] = useState(false);
   const [vizName, setVizName] = useState("");
   const [apps, setApps] = useState([]);
-  const [app, setApp] = useState("");
+  const [app, setApp] = useState(2);
   const [forms, setForms] = useState([]);
   const location = useLocation();
   const [id, setId] = useState(null);
@@ -103,7 +104,6 @@ function FormStudio(props) {
       setStates(
         location.state.workflow != null
           ? location.state.workflow.states.map((st) => {
-              console.log(st);
               return {
                 id: st.id + "",
                 label: st.name,
@@ -162,8 +162,67 @@ function FormStudio(props) {
           return response.json();
         }
       })
-      .then((actualData) => {
-        setForms(actualData);
+      .then((actualDatas) => {
+        setForms(actualDatas);
+        let actualData = actualDatas.filter((a) => a.id == 5)[0];
+        const template = JSON.parse(actualData.template);
+        setLayout((prev) => {
+          return template.layout;
+        });
+        setVizName(actualData.name);
+        setConf((prev) => {
+          return template.controls;
+        });
+        setApp(actualData.appId);
+        setId(actualData.id);
+        setWorkflowConf((prev) => {
+          return actualData.workflow != null
+            ? actualData.workflow
+            : {
+                id: null,
+                states: [],
+                transitions: [],
+              };
+        });
+        setStates(
+          actualData.workflow != null
+            ? actualData.workflow.states.map((st) => {
+                return {
+                  id: st.id + "",
+                  label: st.name,
+                  labelType: "string",
+                  class: JSON.parse(st.firstState)
+                    ? "start-node"
+                    : st.endState
+                    ? "end-node"
+                    : "success-node",
+                  type: "main",
+                  stLabel: st.label,
+                  selectedRoles: st.roles.map((r) => r.id),
+                  selectedDepartments: st.departments.map((r) => r.id),
+                  isLastState: st.endState,
+                  isFirstState: st.firstState,
+                  viewableColumns: st.visibleColumns.split(","),
+                  writableColumns: st.disabledColumns.split(","),
+                  name: st.name,
+                  stateCondition: st.stateCondition,
+                  sendNotification: st.sendNotification,
+                  userAccessField: st.userAccessField,
+                  stConf: JSON.parse(st.stConf),
+                };
+              })
+            : []
+        );
+        setTransitions(
+          actualData.workflow != null
+            ? actualData.workflow.transitions.map((t) => {
+                return {
+                  source: t.fromState.id,
+                  target: t.toState.id,
+                };
+              })
+            : []
+        );
       });
   }
 
@@ -338,7 +397,6 @@ function FormStudio(props) {
     setCurrCell({ row: -1, col: -1 });
   }
   function saveStateConfFor(cell, updatedConf) {
-    console.log(updatedConf);
     updatedConf["label"] = updatedConf["stLabel"];
     setStates((prev) => {
       let currStates = [...prev];
@@ -475,7 +533,6 @@ function FormStudio(props) {
   }
 
   function saveWorkflow() {
-    console.log(states);
     let stateWorkflow = {
       workflowId: workflowConf.id,
       states: states.map((st) => {

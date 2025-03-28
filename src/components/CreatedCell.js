@@ -5,7 +5,7 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
-  // console.log(props);
+  console.log(props);
   const now = new Date();
   const dateMax =
     props.conf.dateMaxValue != undefined &&
@@ -42,7 +42,6 @@ function CreatedCell(props) {
   const [usersData, setUsersData] = useState([]);
 
   function changed(what, value) {
-    console.log("Changed " + what + " value " + value);
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
       if (props.type === "form") {
@@ -214,13 +213,19 @@ function CreatedCell(props) {
   useEffect(() => {
     let aData = props.gridControl
       ? props.formData[props.gridKey] != undefined
-        ? props.formData[props.gridKey][props.rowNum]
+        ? {
+            ...props.formData[props.gridKey][props.rowNum],
+            ...props.formData,
+          }
         : {}
       : props.formData;
     setAccessibleData(
       props.gridControl
         ? props.formData[props.gridKey] != undefined
-          ? props.formData[props.gridKey][props.rowNum]
+          ? {
+              ...props.formData[props.gridKey][props.rowNum],
+              ...props.formData,
+            }
           : {}
         : props.formData
     );
@@ -236,6 +241,7 @@ function CreatedCell(props) {
               aData[variable.split(/{|}/)[1]] == undefined ||
               aData[variable.split(/{|}/)[1]] === ""
             ) {
+              console.log(aData);
               check = true;
             }
             conds = conds.replace(variable, aData[variable.split(/{|}/)[1]]);
@@ -315,7 +321,6 @@ function CreatedCell(props) {
     }
     if (props.conf.type === "formula" && !props.disabled) {
       var value = eval(props.conf.formula.replaceAll("data", "props.formData"));
-      console.log(isNaN(value));
       if (value !== props.values && !isNaN(value))
         changed(props.conf.key, value);
     }
@@ -347,8 +352,8 @@ function CreatedCell(props) {
       })
       .then((actualData) => {
         setRefData((prev) => {
-          var ad = actualData
-            .map((data) => data.data[refColumn])
+          var ad = actualData.data
+            .map((data) => data[refColumn])
             .filter((val, index, arr) => arr.indexOf(val) === index);
           ad.sort(function (a, b) {
             return a.toLowerCase().localeCompare(b.toLowerCase());
@@ -359,8 +364,8 @@ function CreatedCell(props) {
         if (inputType === "text" || inputType === "textarea") {
           changed(
             props.conf.key,
-            actualData
-              .map((data) => data.data[refColumn])
+            actualData.data
+              .map((data) => data[refColumn])
               .filter((val, index, arr) => arr.indexOf(val) === index)
               .join(",")
           );
@@ -656,7 +661,16 @@ function CreatedCell(props) {
           !props.disabled &&
           (props.conf.referData || props.conf.referApi ? (
             <Multiselect
-              style={config.multiSelectStyle}
+              style={
+                (props.values == undefined
+                  ? refMulData.selected
+                  : props.values != null && props.values.length > 0
+                  ? props.values.split(",")
+                  : ""
+                )?.length == 0
+                  ? config.multiSelectStyle
+                  : config.platformMultiSelectStyle
+              }
               avoidHighlightFirstOption={true}
               disabled={props.disabled}
               onSelect={(e) => {
@@ -671,7 +685,13 @@ function CreatedCell(props) {
                   : ""
               }
               isObject={false}
-              options={refMulData.all == undefined ? [] : refMulData.all}
+              options={
+                props.conf.referApi
+                  ? refMulData.all == undefined
+                    ? []
+                    : refMulData.all
+                  : refData
+              }
             ></Multiselect>
           ) : (
             <Multiselect

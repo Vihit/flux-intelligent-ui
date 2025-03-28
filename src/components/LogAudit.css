@@ -66,7 +66,7 @@
   align-self: center;
   height: 3rem;
   padding: 0.2rem 0.5rem;
-  color: var(--dark);
+  color: var(--black);
   font-size: 1.2rem;
   align-items: center;
   font-style: italic;
@@ -89,23 +89,23 @@
 
 .a-actor {
   background-color: var(--accent);
-  color: var(--dark);
+  color: var(--black);
   padding: 0rem 1rem;
   font-size: 1.4rem;
 }
 
 .a-at {
   background-color: var(--main);
-  color: white;
+  color: var(--black);
   padding: 0rem 1rem;
   font-size: 1.4rem;
 }
 
 .a-sub-head {
   background-color: var(--grey);
-  color: var(--dark);
+  color: var(--black);
   height: 3rem;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .m-top {
@@ -122,7 +122,7 @@
 }
 
 .a-f-name {
-  background-color: var(--main);
+  /* background-color: var(--main); */
   color: var(--accent);
   padding: 0rem 1rem;
   font-style: italic;
@@ -130,12 +130,12 @@
 
 .download-btn {
   background-color: var(--accent);
-  color: white;
+  color: var(--black);
   padding: 0.5rem 1rem;
   font-size: 1.4rem;
   margin-right: 4rem;
   cursor: pointer;
-  box-shadow: 0.05rem 0.05rem 0.5rem black;
+  box-shadow: 0.05rem 0.05rem 0.5rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
 }
 
@@ -178,7 +178,7 @@
 }
 
 .g-data-head {
-  background-color: var(--dark);
+  background-color: var(--black);
   color: white;
   text-align: center;
 
@@ -226,4 +226,15 @@
 
 .file-link:hover {
   color: dodgerblue;
+}
+
+.de-logo {
+  height: 5rem;
+  aspect-ratio: 1/1;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  content: url("./../../public/siq.png");
+  object-fit: fill;
+  margin-right: 1rem;
+  /* margin-bottom: 1.5rem;
+  margin-top: 1.5rem; */
 }

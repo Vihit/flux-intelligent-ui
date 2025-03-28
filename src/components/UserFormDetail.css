@@ -2,10 +2,11 @@
   display: flex;
   /* justify-content: center; */
   align-items: center;
-  background-color: var(--white);
-  width: 80%;
-  height: 100%;
+  /* background-color: var(--white); */
+  /* max-height: 20vh; */
+  width: 100%;
   flex-direction: column;
+  /* overflow: hidden; */
   overflow-y: auto;
 }
 
@@ -64,9 +65,11 @@
 .f-table {
   display: flex;
   width: 100%;
+  /* flex-grow: 1; */
   /* height: 90%; */
+  /* margin: 2rem; */
   justify-content: center;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
 }
 
 .f-dept-table {
@@ -100,11 +103,11 @@ table {
   text-align: center;
 }
 
-.a-icon > path {
-  stroke: var(--accent);
-  fill: var(--accent);
+/* .a-icon > path {
+  stroke: var(--black);
+  fill: var(--black);
   stroke-width: 0.1;
-}
+} */
 
 .btns {
   display: flex;

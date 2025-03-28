@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
 import { config } from "./config";
 import jwt from "jwt-decode";
@@ -7,6 +7,22 @@ import fi from "./../fi.png";
 function Login(props) {
   const [username, setUsername] = useState("");
   const [pwd, setPwd] = useState("");
+
+  useEffect(() => {
+    if (
+      window.name === "" ||
+      JSON.parse(window.name).access_token == undefined
+    ) {
+    } else {
+      let accessToken = JSON.parse(window.name);
+      localStorage.setItem("access", window.name);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(jwt(accessToken.access_token))
+      );
+      props.onLogin();
+    }
+  });
 
   function loginHandler() {
     let user = { username, pwd };
@@ -29,7 +45,6 @@ function Login(props) {
       .then((response) => {
         if (response.ok) return response.json();
         else {
-          props.raiseAlert("red", "Username or Password incorrect!", 3000);
           throw new Error("Login unsuccessful!");
         }
       })
@@ -41,6 +56,9 @@ function Login(props) {
           JSON.stringify(jwt(actualData["access_token"]))
         );
         props.onLogin();
+      })
+      .catch((err) => {
+        props.raiseAlert("red", "Username or Password incorrect!", 3000);
       });
   }
 

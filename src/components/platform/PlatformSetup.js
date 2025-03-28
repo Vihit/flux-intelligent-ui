@@ -13,53 +13,63 @@ function PlatformSetup(props) {
   return (
     <div className="dashboard-container">
       <div className="u-d-container">
-        <div className="u-menu p-menu-sidebar">
-          {!JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_QA"
-          ) && (
+        <div className="f-a-options">
+          <div className="f-options">
+            {!JSON.parse(localStorage.getItem("user")).role.includes(
+              "ROLE_QA"
+            ) && (
+              <div
+                className={
+                  "f-option " + (itemClicked === "user" ? "f-sel" : "")
+                }
+                onClick={() => setItemClicked("user")}
+              >
+                Users
+              </div>
+            )}
+            {!JSON.parse(localStorage.getItem("user")).role.includes(
+              "ROLE_QA"
+            ) && (
+              <div
+                className={
+                  "f-option " + (itemClicked === "role" ? "f-sel" : "")
+                }
+                onClick={() => setItemClicked("role")}
+              >
+                Roles
+              </div>
+            )}
+            {!JSON.parse(localStorage.getItem("user")).role.includes(
+              "ROLE_QA"
+            ) && (
+              <div
+                className={
+                  "f-option " + (itemClicked === "department" ? "f-sel" : "")
+                }
+                onClick={() => setItemClicked("department")}
+              >
+                Departments
+              </div>
+            )}
             <div
-              className="u-menu-head p-menu"
-              onClick={() => setItemClicked("user")}
+              className={"f-option " + (itemClicked === "audit" ? "f-sel" : "")}
+              onClick={() => setItemClicked("audit")}
             >
-              User Management
+              Audit
             </div>
-          )}
-          {!JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_QA"
-          ) && (
-            <div
-              className="u-menu-head p-menu"
-              onClick={() => setItemClicked("role")}
-            >
-              Role Management
-            </div>
-          )}
-          {!JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_QA"
-          ) && (
-            <div
-              className="u-menu-head p-menu"
-              onClick={() => setItemClicked("department")}
-            >
-              Departments
-            </div>
-          )}
-          <div
-            className="u-menu-head p-menu"
-            onClick={() => setItemClicked("audit")}
-          >
-            Audit Trail
+            {JSON.parse(localStorage.getItem("user")).role.includes(
+              "ROLE_ADMIN"
+            ) && (
+              <div
+                className={
+                  "f-option " + (itemClicked === "settings" ? "f-sel" : "")
+                }
+                onClick={() => setItemClicked("settings")}
+              >
+                Settings
+              </div>
+            )}
           </div>
-          {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_ADMIN"
-          ) && (
-            <div
-              className="u-menu-head p-menu"
-              onClick={() => setItemClicked("settings")}
-            >
-              Settings
-            </div>
-          )}
         </div>
         {itemClicked === "department" && (
           <DepartmentMgmt raiseAlert={props.raiseAlert}></DepartmentMgmt>

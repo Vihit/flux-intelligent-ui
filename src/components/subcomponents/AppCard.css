@@ -1,61 +1,15 @@
-.app-card-wrapper {
-  display: flex;
-  width: 20rem;
-  height: 25%;
-  /* background-color: var(--main); */
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 2rem;
-  transition: 1s;
-}
-
 .app-card {
   display: flex;
-  width: 100%;
-  height: 80%;
   /* background-color: var(--white) !important; */
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.458);
-  border-radius: 2rem;
   cursor: pointer;
   transition: 1s;
-}
-
-.ac-icon {
-  height: 75%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 5rem;
-  text-shadow: 0rem 0.2rem 0.5rem #00000070;
-  color: var(--dark);
-}
-
-.app-card:hover {
-  transform: translate(0, -0.5em);
-}
-
-.app-card:hover > .ac-icon {
-  font-size: 6rem;
-  -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-}
-
-.ac-name {
-  /* height: 20%; */
-  width: 18rem;
-  font-weight: bold;
-  color: var(--dark);
-  text-align: center;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  display: block;
-  font-size: 1.4rem;
+  font-size: 4rem;
+  /* text-shadow: 0rem 0.2rem 0.5rem #00000070; */
+  color: var(--black);
+  -webkit-text-stroke: 0.1rem var(--main);
 }
 
 .settings-container {
@@ -65,13 +19,14 @@
   top: 30%;
   left: 30%;
   width: 40%;
-  background-color: var(--main);
+  background-color: var(--dark);
   /* justify-content: center; */
   align-items: center;
   gap: 1rem;
   padding-bottom: 3%;
   box-shadow: 0 0 0 9999.9rem rgba(255, 255, 255, 0.8);
   z-index: 10;
+  border-radius: 4rem;
 }
 
 .grow-20 {
@@ -88,8 +43,8 @@
 
 .set-label {
   width: 25%;
-  color: white;
-  font-size: 1.4rem;
+  color: var(--black);
+  font-size: 1.6rem;
 }
 
 .set-text {
@@ -98,33 +53,38 @@
 
 .set-head {
   font-size: 2.5rem;
-  color: white;
+  color: var(--black);
   margin-top: 5%;
 }
 
 .set-text > input {
-  border-radius: 0rem;
-  height: 80%;
+  border-radius: 4rem;
+  /* height: 80%; */
   width: 100%;
   font-size: 1.3rem;
   font-style: italic;
   font-weight: normal;
+  padding-right: 0;
 }
 
 .set-text > select {
-  border-radius: 0rem;
-  height: 80%;
-  width: 101%;
+  border-radius: 4rem;
+  /* height: 80%; */
+  width: 100%;
   font-size: 1.4rem;
   font-weight: normal;
 }
 
 .set-close {
-  color: white;
+  color: var(--white);
+  font-size: 1.6rem;
   position: fixed;
   top: 31%;
   left: 68%;
   cursor: pointer;
+  padding: 0rem 0.6rem;
+  background-color: var(--red);
+  border-radius: 100%;
 }
 
 .inactive {
@@ -132,24 +92,27 @@
 }
 
 .set-icon {
-  width: 61%;
+  width: calc(60% - 2rem);
   /* overflow-x: auto; */
+  height: 7rem;
   flex-wrap: wrap;
   display: flex;
   align-items: center;
   background-color: white;
   /* height: 6.0rem; */
-  padding-bottom: 0.5rem;
+  /* padding-bottom: 0.5rem; */
   /* gap: .5rem; */
   justify-content: flex-start;
+  border-radius: 3rem;
+  padding: 0.5rem 1rem;
 }
 
 .set-icon-option {
-  background-color: var(--main);
+  background-color: var(--black);
   height: 5rem;
   width: 5rem;
   margin-left: 0.5rem;
-  margin-top: 0.5rem;
+  /* margin-top: 0.5rem; */
   display: flex;
   justify-content: center;
   align-items: center;

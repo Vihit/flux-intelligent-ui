@@ -89,9 +89,6 @@ function SettingsMgmt(props) {
 
   return (
     <div className="f-dtl-container">
-      <div className="f-dtl-head">
-        <div className="f-dtl-name">Settings</div>
-      </div>
       <div className="f-setting-table">
         <div className="f-head">
           {settingHeads.map((head, inx) => {
@@ -111,7 +108,6 @@ function SettingsMgmt(props) {
         </div>
         {selectedSetting != "" && (
           <div className="f-set-container">
-            <div className="f-head-set">{selectedSetting + " Settings"}</div>
             <div className="set-ctrls">
               {settings
                 .filter((s) => s.type === selectedSetting)

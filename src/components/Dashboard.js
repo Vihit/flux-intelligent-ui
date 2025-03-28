@@ -3,13 +3,33 @@ import { config } from "./config";
 import "./Dashboard.css";
 import AppCard from "./subcomponents/AppCard";
 import UserDashboard from "./UserDashboard";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import AppDashboard from "./AppDashboard";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 function Dashboard(props) {
+  let location = useParams();
+  let history = useHistory();
+  console.log(location);
   const [apps, setApps] = useState([]);
+  const [open, setOpen] = useState("");
+  const [app, setApp] = useState(location?.appId);
+  const [form, setForm] = useState(location?.formId);
 
   useEffect(() => {
+    console.log(JSON.stringify(location));
+    props.raiseAlert("loading", "start");
     getApps();
-  }, []);
+    getPendingEntries();
+    if (location?.formId > 0) {
+      console.log("Setting form");
+      setForm(location?.formId);
+    } else setForm(0);
+    if (location?.appId > 0) {
+      setApp(location?.appId);
+      openApp(location?.appId);
+    } else setApp(0);
+  }, [location.appId]);
 
   function getApps() {
     fetch(config.apiUrl + "apps/", {
@@ -27,39 +47,70 @@ function Dashboard(props) {
         }
       })
       .then((actualData) => {
-        setApps(actualData);
+        setApps(actualData.filter((a) => a.type === "Logever"));
+        props.raiseAlert("loading", "end");
       });
   }
 
-  function appAdded(app) {
-    setApps((prev) => {
-      let prevApps = [...prev];
-      prevApps.push(app);
-      return prevApps;
-    });
+  function getPendingEntries() {
+    fetch(config.apiUrl + "entry/logever/all-pending", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        props.setNotifications(
+          actualData.map((a) => {
+            return {
+              msg: JSON.parse(a.payload)["msg"],
+              primaryId: a.primaryId,
+              app: a.app,
+            };
+          })
+        );
+      });
+  }
+
+  function openApp(appId) {
+    // setApp((prev) => {
+    //   return appId;
+    // });
+    console.log("Clicked");
+    let x = location?.formId > 0 ? location.formId : 0;
+    history.push("/dashboard/" + appId + "/" + x + "");
+    setOpen("fill");
   }
 
   return (
-    <div
-      className="dashboard-container"
-      style={{
-        padding: "0 1% 0 1%",
-      }}
-    >
-      {apps.map((app, ind) => {
-        return <AppCard key={ind} app={app}></AppCard>;
-      })}
-      {JSON.parse(localStorage.getItem("user")).role.includes("ROLE_ADMIN") && (
-        <AppCard
-          app={{ name: "Create an App!", icon: "fa-square-plus" }}
-          raiseAlert={props.raiseAlert}
-          appAdded={appAdded}
-        ></AppCard>
-      )}
-      {false &&
-        !JSON.parse(localStorage.getItem("user")).role.includes(
-          "ROLE_ADMIN"
-        ) && <UserDashboard raiseAlert={props.raiseAlert}></UserDashboard>}
+    <div className="dashboard-container">
+      <div className="dash-nav">
+        <div className="app-nav">
+          {apps.map((app, ind) => {
+            return <AppCard key={ind} app={app} openApp={openApp}></AppCard>;
+          })}
+        </div>
+      </div>
+      <div className="dash-cont">
+        {apps.length > 0 && app > 0 && (
+          <UserDashboard
+            name={apps.filter((a) => a.id == app)[0]?.name}
+            id={app}
+            icon={apps.filter((a) => a.id == app)[0]?.icon}
+            raiseAlert={props.raiseAlert}
+            selectedFormId={location?.formId}
+            setNotifications={props.setNotifications}
+          ></UserDashboard>
+        )}
+      </div>
     </div>
   );
 }

@@ -207,34 +207,32 @@ function Reports(props) {
   return (
     <div className="dashboard-container">
       <div className="u-d-container">
-        <div className="u-menu p-menu-sidebar">
-          {reports.map((report, idx) => {
-            return (
-              <div className="u-menu-head r-menu" key={idx}>
+        <div className="f-a-options">
+          <div className="f-options">
+            {reports.map((report, idx) => {
+              return (
                 <div
-                  className="r-name"
+                  className={
+                    "f-option " + (activeReport.id == report.id ? "f-sel" : "")
+                  }
+                  key={idx}
                   onClick={() => setReportClicked(report.id)}
                 >
+                  {/* <div
+                  className="r-name"
+                  onClick={() => setReportClicked(report.id)}
+                > */}
                   {report.name}
+                  {/* </div> */}
                 </div>
-                {JSON.parse(localStorage.getItem("user")).role.includes(
-                  "ROLE_ADMIN"
-                ) && (
-                  <div>
-                    <i
-                      className="fa-solid fa-edit"
-                      onClick={() => editReport(report)}
-                    ></i>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
           {JSON.parse(localStorage.getItem("user")).role.includes(
             "ROLE_ADMIN"
           ) && (
-            <div className="i-a-btn" onClick={() => addReport()}>
-              Add New Report
+            <div className="f-init-option" onClick={() => addReport()}>
+              Add
             </div>
           )}
         </div>

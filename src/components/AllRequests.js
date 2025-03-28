@@ -9,60 +9,165 @@ import LogAudit from "./LogAudit";
 import { Typography } from "@mui/material/";
 import { jsPDF } from "jspdf";
 
-function UserFormDetail(props) {
-  const [pagination, setPagination] = useState(props.pagination);
-  const [initiated, setInitiated] = useState(
-    props.type === "initiate" ? true : false
-  );
+function AllRequests(props) {
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [totalRows, setTotalRows] = useState(-1);
+  const [initiated, setInitiated] = useState(false);
   const [entry, setEntry] = useState({ id: -1 });
   const [allEntries, setAllEntries] = useState([]);
   const [gridEntries, setGridEntries] = useState([]);
   const [initiatedAudit, setInitiatedAudit] = useState(false);
-  const hiddenFileInput = useRef(null);
-  const [type, setType] = useState(props.type);
-  const handleClick = (event) => {
-    hiddenFileInput.current.click();
-  };
-  const [file, setFile] = useState();
+  const [tableData, setTableData] = useState({ rows: [], header: [] });
 
   useEffect(() => {
-    setType(props.type);
-    setInitiated(props.type === "initiate" ? true : false);
-    setPagination(props.pagination);
-  }, [props.type, props.pagination]);
+    props.raiseAlert("loading", "start");
+    getAllLogEntries(props.form);
+  }, [pagination, columnFilters]);
 
-  function handleFileChange(e) {
-    if (e.target.files) {
-      const f = new FormData();
-      f.append("file", e.target.files[0]);
-      fetch(config.apiUrl + "master/entry/bulk/upload/" + props.form.id, {
+  function getAllLogEntries(f) {
+    fetch(
+      config.apiUrl +
+        "entry/" +
+        f.id +
+        "/last-state/?pageSize=" +
+        pagination.pageSize +
+        "&pageNumber=" +
+        pagination.pageIndex +
+        "&totalRows=" +
+        totalRows,
+      {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
           Authorization:
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
-        body: f,
+        body: JSON.stringify(columnFilters),
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            return null;
-          } else {
-            return response.text();
-          }
-        })
-        .then((actualData) => {
-          if (actualData != null)
-            props.raiseAlert("red", "Error occurred : " + actualData, 5000);
-          props.raiseAlert("green", "Data Uploaded");
-          props.updateData(props.type, props.form);
+      .then((actualData) => {
+        props.raiseAlert("green", "Fetched Entries");
+        var fCols =
+          "id," +
+          f.columns +
+          ",state,created_by,log_create_dt,updated_by,log_update_dt";
+        var fLabels = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.label)
+          .concat([
+            "ID",
+            "State",
+            "Created By",
+            "Log Create Dt",
+            "Updated By",
+            "Log Update Dt",
+          ]);
+        var matCols = [];
+        var fKeys = JSON.parse(f.template)
+          ["controls"].flatMap((ctrl) => ctrl)
+          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+          .map((c) => c.key)
+          .concat([
+            "id",
+            "state",
+            "created_by",
+            "log_create_dt",
+            "updated_by",
+            "log_update_dt",
+          ]);
+        var settings = JSON.parse(f.settings);
+        var filterColumns = settings.view.filters;
+        fKeys.forEach((element, inx) => {
+          matCols.push({
+            accessorKey: element,
+            header: fLabels[inx],
+            enableColumnFilter: filterColumns.split(",").includes(element),
+          });
         });
-    }
+
+        // actualData.forEach((data) => {
+        //   let obj = {};
+        //   fCols.split(",").forEach((col) => {
+        //     obj[col] = data.data[col];
+        //   });
+        //   rows.push(obj);
+        // });
+        setTableData({ rows: actualData.data, header: matCols });
+        setTotalRows(actualData.totalRows);
+        props.raiseAlert("loading", "end");
+      });
   }
+
+  const detailPanel =
+    props.detailColumns.length > 0
+      ? (row, table) => {
+          return (
+            <Box
+              sx={{
+                backgroundColor: "var(--main)",
+                padding: "2rem",
+                fontSize: "1.4rem",
+                fontFamily: "Poppins",
+                letterSpacing: "-0.06rem",
+                display: "flex",
+                gap: "2rem",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              {props.detailColumns.map((c, i) => {
+                return (
+                  <Box
+                    key={i}
+                    sx={{
+                      display: "flex",
+                      gap: "1rem",
+                      borderRadius: "2rem",
+                      border: "0.1rem solid var(--black)",
+                      boxShadow: "0.05rem 0.05rem 0.5rem rgba(0, 0, 0, 0.2)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontWeight: 400,
+                        padding: "0.5rem 1rem",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      {c.label}
+                    </Box>
+                    <Box
+                      sx={{
+                        backgroundColor: "var(--accent)",
+                        padding: "0.5rem 2rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {row.row.original[c.key]}
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          );
+        }
+      : false;
 
   const handleExportRows = (rows, table) => {
     const columnVisibility = table.getState().columnVisibility;
     const doc = new jsPDF("p", "pt");
-    const tableHeaders = props.tableData.header
+    const tableHeaders = tableData.header
       .filter(
         (c) => columnVisibility[c.id] == undefined || columnVisibility[c.id]
       )
@@ -178,7 +283,7 @@ function UserFormDetail(props) {
 
       if (response.ok) {
         const actualData = await response.json();
-        setAllEntries(actualData);
+        setAllEntries(actualData.data);
       }
     } catch (error) {
       // Handle errors here
@@ -206,100 +311,23 @@ function UserFormDetail(props) {
       });
   }
 
-  function updateAndCloseInit(f) {
-    setInitiated(false);
-    props.setInitiated();
-    props.updateData(props.type === "initiate" ? "view" : props.type, f);
-  }
-
   function closeLogAudit() {
     setInitiatedAudit(false);
   }
 
-  const detailPanel =
-    props.detailColumns.length > 0
-      ? (row, table) => {
-          return (
-            <Box
-              sx={{
-                backgroundColor: "var(--main)",
-                padding: "2rem",
-                fontSize: "1.4rem",
-                fontFamily: "Poppins",
-                letterSpacing: "-0.06rem",
-                display: "flex",
-                gap: "2rem",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              {props.detailColumns.map((c, i) => {
-                return (
-                  <Box
-                    key={i}
-                    sx={{
-                      display: "flex",
-                      gap: "1rem",
-                      borderRadius: "2rem",
-                      border: "0.1rem solid var(--black)",
-                      boxShadow: "0.05rem 0.05rem 0.5rem rgba(0, 0, 0, 0.2)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        fontWeight: 400,
-                        padding: "0.5rem 1rem",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      {c.label}
-                    </Box>
-                    <Box
-                      sx={{
-                        backgroundColor: "var(--accent)",
-                        padding: "0.5rem 2rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {row.row.original[c.key]}
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-          );
-        }
-      : false;
-
   return (
-    <div className="f-dtl-container">
+    <div className="f-dtl-container" style={{ marginTop: "0rem" }}>
       <div className="f-table">
         <MaterialReactTable
-          columns={props.tableData.header}
-          data={props.tableData.rows}
+          columns={tableData.header}
+          data={tableData.rows}
           enableStickyHeader
           enableStickyFooter
           enableTopToolbar={false}
-          // detail
-          state={{ pagination }}
-          renderDetailPanel={detailPanel}
-          onPaginationChange={props.setPagination}
-          rowCount={12}
-          manualPagination
-          pageCount={Math.ceil(12 / props.pagination.pageSize)}
-          enableRowActions={
-            type === "pending" || type === "view" || type === "view-all"
-          }
+          enableRowActions
           renderRowActions={({ row }) => (
             <Box className="c-actions">
-              {type === "pendings" ? (
-                <IconButton onClick={() => openFormView(row)}>
-                  <Fullscreen sx={{ fontSize: "3rem" }} />
-                </IconButton>
-              ) : (
+              {
                 <div>
                   <IconButton onClick={() => openAuditView(row)}>
                     <AccessTime
@@ -312,15 +340,23 @@ function UserFormDetail(props) {
                     <Fullscreen sx={{ fontSize: "3rem" }} />
                   </IconButton>
                 </div>
-              )}
+              }
             </Box>
           )}
+          renderDetailPanel={detailPanel}
           initialState={{
             density: "compact",
             columnVisibility: {
               ...props.hiddenColumns,
             },
           }}
+          onColumnFiltersChange={setColumnFilters}
+          onPaginationChange={setPagination}
+          state={{ pagination }}
+          rowCount={totalRows}
+          manualPagination={true}
+          pageCount={Math.ceil(totalRows / pagination.pageSize)}
+          muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
           muiTableBodyRowProps={({ row }) => ({
             onClick: (event) => {
               getGridEntriesFor(props.form.id, row.original.id);
@@ -336,7 +372,6 @@ function UserFormDetail(props) {
           muiTableHeadCellFilterTextFieldProps={
             config.mrtStyle.muiTableHeadCellFilterTextFieldProps
           }
-          muiTableContainerProps={config.mrtStyle.muiTableContainerProps}
           muiTableHeadCellProps={config.mrtStyle.muiTableHeadCellProps}
           muiTableBodyCellProps={config.mrtStyle.muiTableBodyCellProps}
           muiTableBodyProps={config.mrtStyle.muiTableBodyProps}
@@ -355,10 +390,10 @@ function UserFormDetail(props) {
           });
           var rows = [];
 
-          data.data.forEach((dt) => {
+          data.data.data.forEach((dt) => {
             let obj = {};
             data.columns.split(",").forEach((col) => {
-              obj[col] = dt.data[col];
+              obj[col] = dt[col];
             });
             rows.push(obj);
           });
@@ -429,11 +464,13 @@ function UserFormDetail(props) {
       {initiated && (
         <Form
           form={props.form}
-          closeInit={updateAndCloseInit}
-          cancel={props.setInitiated}
+          closeInit={() => {
+            setInitiated(false);
+          }}
+          cancel={setInitiated}
           entry={{ ...entry, grids: gridEntries }}
           entries={allEntries.sort((a, b) => {
-            return a.data.id > b.data.id ? 1 : -1;
+            return a.id > b.id ? 1 : -1;
           })}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
@@ -444,7 +481,7 @@ function UserFormDetail(props) {
         <LogAudit
           form={props.form}
           entries={allEntries.sort((a, b) => {
-            return a.data.id > b.data.id ? 1 : -1;
+            return a.id > b.id ? 1 : -1;
           })}
           closeInit={closeLogAudit}
         ></LogAudit>
@@ -453,4 +490,4 @@ function UserFormDetail(props) {
   );
 }
 
-export default UserFormDetail;
+export default AllRequests;

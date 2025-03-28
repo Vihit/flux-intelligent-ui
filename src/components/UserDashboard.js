@@ -1,26 +1,19 @@
 import "./UserDashboard.css";
 import { config } from "./config";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import UserFormDetail from "./UserFormDetail";
 import { useParams } from "react-router-dom";
+import MyRequests from "./MyRequests";
+import Pending from "./Pending";
+import AllRequests from "./AllRequests";
+import Form from "./Form";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 function UserDashboard(props) {
   console.log(props);
-  let params = useParams();
-  const appId = params.id;
-  const [iClicked, setIClicked] = useState(false);
-  const [pClicked, setPClicked] = useState(false);
-  const [aClicked, setAClicked] = useState(false);
-  const [laClicked, setLAClicked] = useState(false);
-  const [iSelection, setISelection] = useState("");
-  const [pSelection, setPSelection] = useState("");
+  let history = useHistory();
   const [forms, setForms] = useState([]);
-  const [iApps, setIApps] = useState([]);
-  const [aApps, setAApps] = useState([]);
-  const [pApps, setPApps] = useState([]);
-  const [lsaApps, setLSAApps] = useState([]);
   const [selectedForm, setSelectedForm] = useState({});
-  const [selectedType, setSelectedType] = useState("");
   const [tableData, setTableData] = useState({ rows: [], header: [] });
   const [logEntries, setLogEntries] = useState([]);
   const [pendingEntries, setPendingEntries] = useState([]);
@@ -28,13 +21,22 @@ function UserDashboard(props) {
   const [accessibleForms, setAccessibleForms] = useState([]);
   const [lastStateAccessibleForms, setLastStateAccessibleForms] = useState([]);
   const [selectionUpdate, setSelectionUpdate] = useState(110);
+  const [hiddenColumns, setHiddenColumns] = useState({});
+  const [detailColumns, setDetailColumns] = useState([]);
+  const [prevIndex, setPrevIndex] = useState(0);
+  const [option, setOption] = useState("");
+  const [initiated, setInitiated] = useState(false);
+  const [entry, setEntry] = useState({ id: -1 });
+  const [gridEntries, setGridEntries] = useState([]);
 
   useEffect(() => {
     getAllForms();
     getInitForms();
     getAccessibleForms();
     getLastStateAccessibleForms();
-  }, []);
+    setOption("");
+    setSelectedForm({});
+  }, [props.id, props.selectedFormId]);
 
   function getAllForms() {
     fetch(config.apiUrl + "forms/", {
@@ -52,8 +54,49 @@ function UserDashboard(props) {
         }
       })
       .then((actualData) => {
-        setAllForms(actualData);
-        getPendingEntries(actualData);
+        setAllForms(actualData.filter((f) => f.status === "Published"));
+        if (props.selectedFormId > 0) {
+          var f = actualData.filter((a) => a.id == props.selectedFormId)[0];
+          setSelectedForm(f);
+          var fKeys = JSON.parse(f.template)
+            ["controls"].flatMap((ctrl) => ctrl)
+            .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+            .map((c) => c.key)
+            .concat([
+              "id",
+              "state",
+              "created_by",
+              "log_create_dt",
+              "updated_by",
+              "log_update_dt",
+            ]);
+          var settings = JSON.parse(f.settings);
+          var viewColumns = settings?.view?.columns;
+          var filterColumns = settings?.view?.filters;
+          var detailCols = settings?.view?.details;
+          var fLabels = JSON.parse(f.template)
+            ["controls"].flatMap((ctrl) => ctrl)
+            .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+            .map((c) => c.label)
+            .concat([
+              "ID",
+              "State",
+              "Created By",
+              "Log Create Dt",
+              "Updated By",
+              "Log Update Dt",
+            ]);
+          var hiddenColumns = {};
+          var detailColumns = [];
+          fKeys.forEach((element, inx) => {
+            if (!viewColumns?.split(",").includes(element))
+              hiddenColumns[element] = false;
+            if (detailCols?.split(",").includes(element))
+              detailColumns.push({ key: element, label: fLabels[inx] });
+          });
+          setHiddenColumns(hiddenColumns);
+          setDetailColumns(detailColumns);
+        }
       });
   }
 
@@ -74,15 +117,16 @@ function UserDashboard(props) {
       })
       .then((actualData) => {
         setForms(actualData);
-        let apps = actualData
-          .map((f) => f.app)
-          .reduce((op, a) => {
-            if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-            return op;
-          }, []);
-        setIApps(apps);
+        // let apps = actualData
+        //   .map((f) => f.app)
+        //   .reduce((op, a) => {
+        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
+        //     return op;
+        //   }, []);
+        // setIApps(apps);
       });
   }
+
   function getAccessibleForms() {
     fetch(config.apiUrl + "forms/accessible-forms/", {
       method: "GET",
@@ -101,15 +145,16 @@ function UserDashboard(props) {
       .then((actualData) => {
         setAccessibleForms(actualData);
 
-        let apps = actualData
-          .map((f) => f.app)
-          .reduce((op, a) => {
-            if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-            return op;
-          }, []);
-        setAApps(apps);
+        // let apps = actualData
+        //   .map((f) => f.app)
+        //   .reduce((op, a) => {
+        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
+        //     return op;
+        //   }, []);
+        // setAApps(apps);
       });
   }
+
   function getLastStateAccessibleForms() {
     fetch(config.apiUrl + "forms/last-state-accessible-forms/", {
       method: "GET",
@@ -128,463 +173,183 @@ function UserDashboard(props) {
       .then((actualData) => {
         setLastStateAccessibleForms(actualData);
 
-        let apps = actualData
-          .map((f) => f.app)
-          .reduce((op, a) => {
-            if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-            return op;
-          }, []);
-        setLSAApps(apps);
-      });
-  }
-  function getPendingEntries(fs) {
-    fetch(config.apiUrl + "entry/all-pending", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        let apps = fs
-          .filter((f) => actualData.map((aD) => aD.formId).includes(f.id))
-          .map((f) => f.app)
-          .reduce((op, a) => {
-            if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-            return op;
-          }, []);
-        setPendingEntries(actualData);
-        setPApps(apps);
+        // let apps = actualData
+        //   .map((f) => f.app)
+        //   .reduce((op, a) => {
+        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
+        //     return op;
+        //   }, []);
+        // setLSAApps(apps);
       });
   }
 
-  function getLogEntries(f) {
-    fetch(config.apiUrl + "entry/" + f.id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        props.raiseAlert("green", "Fetched Entries");
-        var fCols =
-          "id," +
-          f.columns +
-          ",state,created_by,log_create_dt,updated_by,log_update_dt";
-        var fLabels = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.label)
-          .concat([
-            "ID",
-            "State",
-            "Created By",
-            "Log Create Dt",
-            "Updated By",
-            "Log Update Dt",
-          ]);
-
-        setLogEntries(actualData);
-        var matCols = [];
-        var rows = [];
-        var fKeys = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.key)
-          .concat([
-            "id",
-            "state",
-            "created_by",
-            "log_create_dt",
-            "updated_by",
-            "log_update_dt",
-          ]);
-        fKeys.forEach((element, inx) => {
-          matCols.push({
-            accessorKey: element,
-            header: fLabels[inx],
-          });
-        });
-        actualData.forEach((data) => {
-          let obj = {};
-          fCols.split(",").forEach((col) => {
-            obj[col] = data.data[col];
-          });
-          rows.push(obj);
-        });
-        setTableData({ rows: rows, header: matCols });
-        setSelectedForm(f);
-        setSelectionUpdate((prev) => prev + 1);
-      });
-  }
-
-  function getAllLogEntries(f) {
-    fetch(config.apiUrl + "entry/" + f.id + "/last-state/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        props.raiseAlert("green", "Fetched Entries");
-        var fCols =
-          "id," +
-          f.columns +
-          ",state,created_by,log_create_dt,updated_by,log_update_dt";
-        var fLabels = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.label)
-          .concat([
-            "ID",
-            "State",
-            "Created By",
-            "Log Create Dt",
-            "Updated By",
-            "Log Update Dt",
-          ]);
-        setLogEntries(actualData);
-        var matCols = [];
-        var rows = [];
-        var fKeys = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.key)
-          .concat([
-            "id",
-            "state",
-            "created_by",
-            "log_create_dt",
-            "updated_by",
-            "log_update_dt",
-          ]);
-        fKeys.forEach((element, inx) => {
-          matCols.push({
-            accessorKey: element,
-            header: fLabels[inx],
-          });
-        });
-        // fCols
-        //   .split(",")
-        //   .filter((col) =>
-        //     fLabels
-        //       .map((l) => l.toLowerCase().replaceAll(" ", "_"))
-        //       .includes(col)
-        //   )
-        //   .map((c) => {
-        //     return fLabels.filter(
-        //       (l) => l.toLowerCase().replaceAll(" ", "_") === c
-        //     )[0];
-        //   })
-        //   .forEach((element) => {
-        //     matCols.push({
-        //       accessorKey: element.toLowerCase().replaceAll(" ", "_"),
-        //       header: element,
-        //     });
-        //   });
-        actualData.forEach((data) => {
-          let obj = {};
-          fCols.split(",").forEach((col) => {
-            obj[col] = data.data[col];
-          });
-          rows.push(obj);
-        });
-        setTableData({ rows: rows, header: matCols });
-        setSelectedForm(f);
-        setSelectionUpdate((prev) => prev + 1);
-      });
-  }
-
-  function getPendingLogEntries(f) {
-    fetch(config.apiUrl + "entry/" + f.id + "/pending", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        props.raiseAlert("green", "Fetched Pending Entries");
-        var fCols =
-          "id," +
-          f.columns +
-          ",state,created_by,log_create_dt,updated_by,log_update_dt";
-        var fLabels = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => ctrl.type !== "grid")
-          .map((c) => c.label)
-          .concat([
-            "ID",
-            "State",
-            "Created By",
-            "Log Create Dt",
-            "Updated By",
-            "Log Update Dt",
-          ]);
-        setLogEntries(actualData);
-        var matCols = [];
-        var rows = [];
-        // fCols
-        //   .split(",")
-        //   .filter((col) =>
-        //     fLabels
-        //       .map((l) => l.toLowerCase().replaceAll(" ", "_"))
-        //       .includes(col)
-        //   )
-        //   .map((c) => {
-        //     return fLabels.filter(
-        //       (l) => l.toLowerCase().replaceAll(" ", "_") === c
-        //     )[0];
-        //   })
-        //   .forEach((element) => {
-        //     matCols.push({
-        //       accessorKey: element.toLowerCase().replaceAll(" ", "_"),
-        //       header: element,
-        //     });
-        //   });
-        var fKeys = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.key)
-          .concat([
-            "id",
-            "state",
-            "created_by",
-            "log_create_dt",
-            "updated_by",
-            "log_update_dt",
-          ]);
-        fKeys.forEach((element, inx) => {
-          matCols.push({
-            accessorKey: element,
-            header: fLabels[inx],
-          });
-        });
-        actualData.forEach((data) => {
-          let obj = {};
-          fCols.split(",").forEach((col) => {
-            obj[col] = data.data[col];
-          });
-          rows.push(obj);
-        });
-        setTableData({ rows: rows, header: matCols });
-        setSelectedForm(f);
-        setSelectionUpdate((prev) => prev + 1);
-      });
-  }
-
-  function handleFormClick(type, f) {
-    setSelectedType(type);
-    if (type === "initiate" || type === "view") {
-      getLogEntries(f);
-    } else if (type === "view-all") {
-      getAllLogEntries(f);
-    } else {
-      getPendingEntries(allForms);
-      getPendingLogEntries(f);
-    }
-  }
-
-  function handleTypeClicked(type) {
-    if (type === "initiate") {
-      setIClicked(!iClicked);
-      setPClicked(false);
-      setAClicked(false);
-      setLAClicked(false);
-    } else if (type === "pending") {
-      setIClicked(false);
-      setPClicked(!pClicked);
-      setAClicked(false);
-      setLAClicked(false);
-    } else if (type === "my") {
-      setIClicked(false);
-      setPClicked(false);
-      setAClicked(!aClicked);
-      setLAClicked(false);
-    } else if (type === "all") {
-      setIClicked(false);
-      setPClicked(false);
-      setAClicked(false);
-      setLAClicked(!laClicked);
-    }
-  }
   return (
-    <div className="dashboard-container">
-      <div className="u-d-container">
-        <div className="u-menu p-menu-sidebar">
-          <div
-            className="u-menu-head"
-            onClick={() => handleTypeClicked("initiate")}
-          >
-            Initiate Request
+    <>
+      <div className="app-main-c">
+        <div className="app-dtl-c">
+          <div className="app-dtl-i">
+            <i className={"fa-solid " + props.icon}></i>
           </div>
-          <div className={"u-menu-part " + (iClicked ? "" : "close-flex")}>
-            {iApps
-              .filter((a) => a.id == appId)
-              .map((a, inx) => {
-                return (
-                  <div key={inx} className="u-menu-i-head">
-                    {a.name}
-                    {forms
-                      .filter((f) => f.app.id == a.id)
-                      .map((f, idx) => {
-                        return (
-                          <div
-                            key={idx}
-                            className="u-menu-i"
-                            onClick={() => handleFormClick("initiate", f)}
-                          >
-                            {f.name}
-                          </div>
-                        );
-                      })}
-                  </div>
-                );
-              })}
-          </div>
-          <div
-            className="u-menu-head"
-            onClick={() => handleTypeClicked("pending")}
-          >
-            Pending Requests{" "}
-            {pApps.filter((a) => a.id == appId).length > 0 && (
-              <div className="p-not"></div>
-            )}
-          </div>
-          <div className={"u-menu-part " + (pClicked ? "" : "close-flex")}>
-            {pApps
-              .filter((a) => a.id == appId)
-              .map((a, inx) => {
-                return (
-                  <div key={inx} className="u-menu-i-head">
-                    {a.name}
-                    {allForms
-                      .filter(
-                        (f) =>
-                          f.app.id == a.id &&
-                          pendingEntries.map((p) => p.formId).includes(f.id)
-                      )
-                      .map((f, idx) => {
-                        return (
-                          <div
-                            key={idx}
-                            className="u-menu-i"
-                            onClick={() => {
-                              handleFormClick("pending", f);
-                            }}
-                          >
-                            {f.name}
-                          </div>
-                        );
-                      })}
-                  </div>
-                );
-              })}
-          </div>
-          <div className="u-menu-head" onClick={() => handleTypeClicked("my")}>
-            My Requests
-          </div>
-          <div className={"u-menu-part " + (aClicked ? "" : "close-flex")}>
-            {aApps
-              .filter((a) => a.id == appId)
-              .map((a, inx) => {
-                return (
-                  <div key={inx} className="u-menu-i-head">
-                    {a.name}
-                    {allForms
-                      .filter((f) => f.app.id == a.id)
-                      .map((f, idx) => {
-                        return (
-                          <div
-                            key={idx}
-                            className="u-menu-i"
-                            onClick={() => {
-                              handleFormClick("view", f);
-                            }}
-                          >
-                            {f.name}
-                          </div>
-                        );
-                      })}
-                  </div>
-                );
-              })}
-          </div>
-          {lsaApps.length > 0 && (
-            <div
-              className="u-menu-head"
-              onClick={() => handleTypeClicked("all")}
-            >
-              All Requests
-            </div>
-          )}
-          <div className={"u-menu-part " + (laClicked ? "" : "close-flex")}>
-            {lsaApps.map((a, inx) => {
-              return (
-                <div key={inx} className="u-menu-i-head">
-                  {a.name}
-                  {allForms
-                    .filter((f) => f.app.id == a.id)
-                    .map((f, idx) => {
-                      return (
-                        <div
-                          key={idx}
-                          className="u-menu-i"
-                          onClick={() => {
-                            handleFormClick("view-all", f);
-                          }}
-                        >
-                          {f.name}
-                        </div>
-                      );
-                    })}
-                </div>
-              );
-            })}
+          <div className="app-dtl-n">
+            {props.name?.split(" ").map((a, ij) => (
+              <Fragment key={ij}>
+                {a}
+                <br key={ij} />
+              </Fragment>
+            ))}
           </div>
         </div>
-        {selectedForm.id != undefined && selectedType !== "" && (
-          <UserFormDetail
-            type={selectedType}
-            form={selectedForm}
-            raiseAlert={props.raiseAlert}
-            key={selectionUpdate}
-            tableData={tableData}
-            updateData={handleFormClick}
-          ></UserFormDetail>
-        )}
+        <div className="app-logs-c">
+          {allForms
+            .filter((f) => f.appId == props.id)
+            .map((f) => (
+              <div
+                key={f.id}
+                className={
+                  "app-log-c " + (selectedForm.id == f.id ? "sel-app-log" : "")
+                }
+                onClick={() => {
+                  history.push("/dashboard/" + props.id + "/" + f.id + "");
+                  console.log("/dashboard/" + props.id + "/" + f.id + "");
+                  setSelectedForm(f);
+                  var fKeys = JSON.parse(f.template)
+                    ["controls"].flatMap((ctrl) => ctrl)
+                    .filter(
+                      (ctrl) => !["grid", "section-heading"].includes(ctrl.type)
+                    )
+                    .map((c) => c.key)
+                    .concat([
+                      "id",
+                      "state",
+                      "created_by",
+                      "log_create_dt",
+                      "updated_by",
+                      "log_update_dt",
+                    ]);
+                  var settings = JSON.parse(f.settings);
+                  var viewColumns = settings?.view?.columns;
+                  var filterColumns = settings?.view?.filters;
+                  var detailCols = settings?.view?.details;
+                  var fLabels = JSON.parse(f.template)
+                    ["controls"].flatMap((ctrl) => ctrl)
+                    .filter(
+                      (ctrl) => !["grid", "section-heading"].includes(ctrl.type)
+                    )
+                    .map((c) => c.label)
+                    .concat([
+                      "ID",
+                      "State",
+                      "Created By",
+                      "Log Create Dt",
+                      "Updated By",
+                      "Log Update Dt",
+                    ]);
+                  var hiddenColumns = {};
+                  var detailColumns = [];
+                  fKeys.forEach((element, inx) => {
+                    if (!viewColumns?.split(",").includes(element))
+                      hiddenColumns[element] = false;
+                    if (detailCols?.split(",").includes(element))
+                      detailColumns.push({ key: element, label: fLabels[inx] });
+                  });
+                  setHiddenColumns(hiddenColumns);
+                  setDetailColumns(detailColumns);
+                }}
+              >
+                {f.name}
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
+      {selectedForm.id > 0 && (
+        <div className="f-a-options">
+          {accessibleForms.filter((a) => a.id == selectedForm.id).length >
+            0 && (
+            <div className="f-options">
+              {
+                <div
+                  className={"f-option " + (option === "my" ? "f-sel" : "")}
+                  onClick={() => setOption("my")}
+                >
+                  My Requests
+                </div>
+              }
+              {
+                <div
+                  className={
+                    "f-option " + (option === "pending" ? "f-sel" : "")
+                  }
+                  onClick={() => setOption("pending")}
+                >
+                  Pending Requests
+                </div>
+              }
+              {selectedForm?.id > 0 &&
+                lastStateAccessibleForms.filter((a) => a.id == selectedForm.id)
+                  .length > 0 && (
+                  <div
+                    className={"f-option " + (option === "all" ? "f-sel" : "")}
+                    onClick={() => setOption("all")}
+                  >
+                    All Requests
+                  </div>
+                )}
+            </div>
+          )}
+          {selectedForm?.id > 0 &&
+            forms.filter((a) => a.id == selectedForm.id).length > 0 && (
+              <div className="f-init-option" onClick={() => setInitiated(true)}>
+                {
+                  selectedForm.workflow.states.filter((s) => s.firstState)[0]
+                    .label
+                }
+              </div>
+            )}
+          {lastStateAccessibleForms.filter((a) => a.id == selectedForm.id)
+            .length == 0 &&
+            accessibleForms.filter((a) => a.id == selectedForm.id).length ==
+              0 && (
+              <div className="unauth-msg">You do not have access to this!</div>
+            )}
+        </div>
+      )}
+      {option === "my" && (
+        <MyRequests
+          detailColumns={detailColumns}
+          hiddenColumns={hiddenColumns}
+          form={selectedForm}
+          raiseAlert={props.raiseAlert}
+        ></MyRequests>
+      )}
+      {option === "all" && (
+        <AllRequests
+          detailColumns={detailColumns}
+          hiddenColumns={hiddenColumns}
+          form={selectedForm}
+          raiseAlert={props.raiseAlert}
+        ></AllRequests>
+      )}
+      {option === "pending" && (
+        <Pending
+          detailColumns={detailColumns}
+          hiddenColumns={hiddenColumns}
+          form={selectedForm}
+          raiseAlert={props.raiseAlert}
+        ></Pending>
+      )}
+      {initiated && (
+        <Form
+          form={selectedForm}
+          closeInit={(a, b) => setInitiated(false)}
+          cancel={setInitiated}
+          entry={{ ...entry, grids: gridEntries }}
+          entries={[]}
+          raiseAlert={props.raiseAlert}
+          key={selectedForm.id}
+          type={"initiate"}
+        ></Form>
+      )}
+    </>
   );
 }
 

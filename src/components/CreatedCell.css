@@ -2,7 +2,7 @@
   /* height: 100%; */
   /* border: .1rem solid red; */
   margin: 0.1rem;
-  background-color: #ebebeb;
+  background-color: var(--main);
   display: flex;
   justify-content: center;
   align-items: center;

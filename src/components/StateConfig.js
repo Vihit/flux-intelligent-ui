@@ -4,7 +4,6 @@ import { config } from "./config.js";
 import ColSelectionWindow from "./ColSelectionWindow.js";
 
 function StateConfig(props) {
-  console.log(props);
   const [toggleBasicDetails, setToggleBasicDetails] = useState(false);
   const [toggleDataDetails, setToggleDataDetails] = useState(false);
   const [toggleAccessDetails, setToggleAccessDetails] = useState(false);
@@ -31,13 +30,6 @@ function StateConfig(props) {
     props.conf.viewableColumns !== undefined
       ? props.conf.viewableColumns
       : props.formColumnKeys
-  );
-  console.log(
-    props.conf.stConf != null
-      ? typeof props.conf.stConf == "string"
-        ? JSON.parse(props.conf.stConf)
-        : props.conf.stConf
-      : {}
   );
   const [stCnf, setStCnf] = useState(
     props.conf.stConf != null

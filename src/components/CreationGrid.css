@@ -19,6 +19,7 @@
   width: 98%;
   display: flex;
   align-items: center;
+  color: var(--black);
 }
 
 .grid-controls {

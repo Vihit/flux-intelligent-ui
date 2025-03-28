@@ -2,7 +2,7 @@ import "./LogAudit.css";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import delogo from "../delogo1.png";
+import delogo from "../siq.png";
 import { useEffect, useState } from "react";
 import { config } from "./config.js";
 
@@ -26,9 +26,9 @@ function LogAudit(props) {
   const gridKeys = gridControls.map((c) => c.key);
   const [gridLogs, setGridLogs] = useState([]);
   const sortedEntries = props.entries
-    .filter((entry) => !entry.data["state"].endsWith("-INPA"))
+    .filter((entry) => !entry["state"].endsWith("-INPA"))
     .sort(function (a, b) {
-      return new Date(a.data.log_create_dt) - new Date(b.data.log_create_dt);
+      return new Date(a.log_create_dt) - new Date(b.log_create_dt);
     });
   const [normalGridLogs, setNormalGridLogs] = useState([]);
   const [customGridLogs, setCustomGridLogs] = useState([]);
@@ -75,7 +75,7 @@ function LogAudit(props) {
         "Audit_trail_" +
         props.form.name.replaceAll(" ", "_") +
         "_" +
-        props.entries[0].data.log_entry_id +
+        props.entries[0].log_entry_id +
         ".pdf";
       const pageCount = pdf.internal.getNumberOfPages();
       for (var i = 1; i <= pageCount; i++) {
@@ -100,12 +100,12 @@ function LogAudit(props) {
     doc.setFillColor("#0f2938");
     doc.rect(0, 0, 210, 20, "F", [204, 204, 204]);
     var img = new Image();
-    img.src = "delogo1.png";
+    img.src = "siq.png";
     doc.addImage(img, "png", 5, 2, 20, 15);
     doc.setFontSize(12);
     doc.setTextColor("#FFFFFF");
     doc.text(
-      `Audit for ${props.form.name} Entry #${props.entries[0].data.log_entry_id}`,
+      `Audit for ${props.form.name} Entry #${props.entries[0].log_entry_id}`,
       100,
       12,
       { align: "center" }
@@ -117,15 +117,10 @@ function LogAudit(props) {
     doc.setTextColor(0, 0, 0);
     var finalY = doc.lastAutoTable.finalY || 30;
     doc.text(`Form Name  : ${props.form.name}`, 14, finalY);
-    doc.text(
-      `Request Id  : ${props.entries[0].data.log_entry_id}`,
-      14,
-      finalY + 10
-    );
+    doc.text(`Request Id  : ${props.entries[0].log_entry_id}`, 14, finalY + 10);
 
     sortedEntries.forEach((element, index) => {
-      let currentData = element["data"];
-      console.log(currentData);
+      let currentData = element;
       finalY = finalY + 20;
       doc.text(`Target State : ${currentData["state"]}`, 14, finalY);
       finalY = finalY + 5;
@@ -139,7 +134,7 @@ function LogAudit(props) {
       doc.setFontSize(12);
       let oldData = {};
       if (index > 0) {
-        oldData = sortedEntries[index - 1]["data"];
+        oldData = sortedEntries[index - 1];
       }
       const keyValueArray = fLabels
         .map((key, inx) => {
@@ -188,7 +183,7 @@ function LogAudit(props) {
       "Audit_trail_" +
       props.form.name.replaceAll(" ", "_") +
       "_" +
-      props.entries[0].data.log_entry_id +
+      props.entries[0].log_entry_id +
       ".pdf";
     doc.save(file_name);
   }
@@ -199,7 +194,7 @@ function LogAudit(props) {
         "attachment/" +
         props.form.id +
         "/" +
-        props.entries[0].data.log_entry_id +
+        props.entries[0].log_entry_id +
         "/" +
         history_id +
         "/" +
@@ -244,7 +239,7 @@ function LogAudit(props) {
         "entry/grid/metadata/" +
         props.form.id +
         "/" +
-        props.entries[0].data.log_entry_id,
+        props.entries[0].log_entry_id,
       {
         method: "GET",
         headers: {
@@ -271,14 +266,14 @@ function LogAudit(props) {
                   .includes(aD.grid)
             )
             .map((aD, inx) =>
-              aD.data
+              aD.data.data
                 .map((d) => {
                   return {
-                    ...d.data,
+                    ...d,
                     grid: aD.grid,
                     state: props.entries.filter(
-                      (e) => e.data.id === d.data.history_log_entry_id
-                    )[0].data.state,
+                      (e) => e.id === d.history_log_entry_id
+                    )[0].state,
                   };
                 })
                 .reduce((x, y) => {
@@ -294,17 +289,17 @@ function LogAudit(props) {
             let stateGroups = actualData
               .filter((aD) => element.key === aD.grid)
               .map((aD, inx) =>
-                aD.data
+                aD.data.data
                   .map((d) => {
                     return {
                       ...d.data,
                       grid: aD.grid,
                       state: props.entries.filter(
-                        (e) => e.data.id === d.data.history_log_entry_id
-                      )[0].data.state,
+                        (e) => e.id === d.history_log_entry_id
+                      )[0].state,
                       created_by: props.entries.filter(
-                        (e) => e.data.id === d.data.history_log_entry_id
-                      )[0].data.created_by,
+                        (e) => e.id === d.history_log_entry_id
+                      )[0].created_by,
                     };
                   })
                   .reduce((x, y) => {
@@ -313,13 +308,99 @@ function LogAudit(props) {
                   }, {})
               );
 
-            eval(
-              "(function(){customLogs=customLogs.concat(" +
-                element.customAuditCode
-                  .replaceAll("\n", "")
-                  .replaceAll('"', "'") +
-                ");})()"
+            customLogs = customLogs.concat(
+              actualData
+                .filter((aD) => element.key === aD.grid)
+                .map((aD, inx) =>
+                  aD.data.data
+                    .map((d) => {
+                      return {
+                        ...d,
+                        grid: aD.grid,
+                        state: props.entries.filter(
+                          (e) => e.id === d.history_log_entry_id
+                        )[0].state,
+                        created_by: props.entries.filter(
+                          (e) => e.id === d.history_log_entry_id
+                        )[0].created_by,
+                      };
+                    })
+                    .reduce((x, y) => {
+                      (x[y.state] = x[y.state] || []).push(y);
+                      return x;
+                    }, {})
+                )
+                .flatMap((a) =>
+                  Object.keys(a).map((key) => {
+                    console.log(a[key]);
+                    let groups = a[key].reduce((x, y) => {
+                      (x[y.equipment_id] = x[y.equipment_id] || []).push(y);
+                      return x;
+                    }, {});
+                    return {
+                      state: key,
+                      logs: Object.keys(groups).map((key) => {
+                        return {
+                          name: key,
+                          logs: groups[key].map((val, inx) => {
+                            if (inx == 0) {
+                              if (val.start === "1") {
+                                return {
+                                  grid: val.grid,
+                                  msg: "Started at " + val.log_create_dt,
+                                };
+                              } else if (val.stop === "1") {
+                                return {
+                                  grid: val.grid,
+                                  msg: "Stopped at " + val.log_create_dt,
+                                };
+                              } else {
+                                return { grid: val.grid, msg: "" };
+                              }
+                            } else {
+                              if (
+                                val.start !== groups[key][inx - 1].start &&
+                                val.start !== "null" &&
+                                val.start !== ""
+                              ) {
+                                return {
+                                  grid: val.grid,
+                                  msg: "Started at " + val.log_create_dt,
+                                };
+                              } else if (
+                                val.stop !== groups[key][inx - 1].stop &&
+                                val.stop !== "null" &&
+                                val.stop !== ""
+                              ) {
+                                return {
+                                  grid: val.grid,
+                                  msg: "Stopped at " + val.log_create_dt,
+                                };
+                              } else {
+                                return { grid: val.grid, msg: "" };
+                              }
+                            }
+                          }),
+                        };
+                      }),
+                    };
+                  })
+                )
             );
+            // console.log(
+            //   "(function(){customLogs=customLogs.concat(" +
+            //     element.customAuditCode
+            //       .replaceAll("\n", "")
+            //       .replaceAll('"', "'") +
+            //     ");})()"
+            // );
+            // eval(
+            //   "(function(){customLogs=customLogs.concat(" +
+            //     element.customAuditCode
+            //       .replaceAll("\n", "")
+            //       .replaceAll('"', "'") +
+            //     ");})()"
+            // );
           }
         });
 
@@ -330,13 +411,21 @@ function LogAudit(props) {
   }
   return (
     <div className="audit-window a-w-shadow height-limit" id="audit-window">
-      <div className="viz-preview-details dark-bg">
+      <div
+        className="viz-preview-details"
+        style={{
+          background: "var(--black)",
+          borderRadius: "0",
+          paddingBottom: "1rem",
+          paddingTop: "1rem",
+        }}
+      >
         <div className="de-logo">
           <img src={delogo}></img>
         </div>
         <div className="viz-name m-top">
           Audit for <div className="a-f-name">{props.form.name}</div> Entry
-          <div className="a-id">{"#" + props.entries[0].data.log_entry_id}</div>
+          <div className="a-id">{"#" + props.entries[0].log_entry_id}</div>
         </div>
         <div className="grow"></div>
         <div className="download-btn" onClick={newAuditReportDownload}>
@@ -356,20 +445,14 @@ function LogAudit(props) {
             td.push(
               <div className="a-row-head" key={"rh" + i}>
                 Sent to
-                <div className="a-row-head-state">
-                  {sortedEntries[i].data.state}
-                </div>
+                <div className="a-row-head-state">{sortedEntries[i].state}</div>
                 <div className="a-row-head-actor">
                   by
-                  <div className="a-actor">
-                    {sortedEntries[i].data.created_by}
-                  </div>
+                  <div className="a-actor">{sortedEntries[i].created_by}</div>
                 </div>
                 <div className="a-row-head-actor">
                   at{" "}
-                  <div className="a-at">
-                    {sortedEntries[i].data.log_create_dt}
-                  </div>
+                  <div className="a-at">{sortedEntries[i].log_create_dt}</div>
                 </div>
               </div>
             );
@@ -381,7 +464,7 @@ function LogAudit(props) {
               </div>
             );
             for (let j = 0; j < fLabels.length; j++) {
-              if (i == 0 && sortedEntries[i].data[fKeys[j]] != null) {
+              if (i == 0 && sortedEntries[i][fKeys[j]] != null) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
@@ -390,24 +473,24 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i].data[fKeys[j]]
+                        sortedEntries[i][fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
-                              sortedEntries[i].data["id"],
-                              sortedEntries[i].data[fKeys[j]]
+                              sortedEntries[i]["id"],
+                              sortedEntries[i][fKeys[j]]
                             )
                           }
                         >
-                          {sortedEntries[i].data[fKeys[j]]}
+                          {sortedEntries[i][fKeys[j]]}
                         </div>
                       )}
                     </div>
                   </div>
                 );
-              } else if (i != 0 && sortedEntries[i].data[fKeys[j]] != null) {
+              } else if (i != 0 && sortedEntries[i][fKeys[j]] != null) {
                 td.push(
                   <div className="a-row" key={i + "2" + j}>
                     <div className="a-e-cell">{fLabels[j]}</div>
@@ -415,18 +498,18 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i - 1].data[fKeys[j]]
+                        sortedEntries[i - 1][fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
-                              sortedEntries[i - 1].data["id"],
-                              sortedEntries[i - 1].data[fKeys[j]]
+                              sortedEntries[i - 1]["id"],
+                              sortedEntries[i - 1][fKeys[j]]
                             )
                           }
                         >
-                          {sortedEntries[i - 1].data[fKeys[j]]}
+                          {sortedEntries[i - 1][fKeys[j]]}
                         </div>
                       )}
                     </div>
@@ -434,18 +517,18 @@ function LogAudit(props) {
                       {!attachments
                         .map((ctrl) => ctrl.label)
                         .includes(fLabels[j]) ? (
-                        sortedEntries[i].data[fKeys[j]]
+                        sortedEntries[i][fKeys[j]]
                       ) : (
                         <div
                           className="file-link"
                           onClick={() =>
                             downloadAttachment(
-                              sortedEntries[i].data["id"],
-                              sortedEntries[i].data[fKeys[j]]
+                              sortedEntries[i]["id"],
+                              sortedEntries[i][fKeys[j]]
                             )
                           }
                         >
-                          {sortedEntries[i].data[fKeys[j]]}
+                          {sortedEntries[i][fKeys[j]]}
                         </div>
                       )}
                     </div>
@@ -462,9 +545,8 @@ function LogAudit(props) {
                       {gridLogs
                         .filter((gL) =>
                           i == 0
-                            ? gL.state === sortedEntries[i].data.state + "-INPA"
-                            : gL.state ===
-                              sortedEntries[i - 1].data.state + "-INPA"
+                            ? gL.state === sortedEntries[i].state + "-INPA"
+                            : gL.state === sortedEntries[i - 1].state + "-INPA"
                         )
                         .flatMap((f) => f.logs)
                         .filter(
@@ -487,7 +569,7 @@ function LogAudit(props) {
                           );
                         })}
                       {normalGridLogs
-                        .map((nL) => nL[sortedEntries[i].data.state])
+                        .map((nL) => nL[sortedEntries[i].state])
                         .flatMap((f) => f)
                         .filter(
                           (data) =>

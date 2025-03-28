@@ -128,7 +128,7 @@
   box-sizing: border-box;
   font-style: italic;
   font-weight: normal;
-  color: #0552cc;
+  /* color: #0552cc; */
   border-radius: 0rem;
   background-color: var(--grey);
 }
@@ -150,7 +150,7 @@
   border-bottom: 0.1rem solid black;
   cursor: pointer;
   font-size: 1.4rem;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .dtls {
@@ -165,7 +165,8 @@
 
 .viz-conf-header {
   display: flex;
-  color: var(--white);
+  color: var(--black);
+  font-weight: 500;
   justify-content: space-between;
   width: 92%;
   align-items: center;

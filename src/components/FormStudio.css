@@ -42,7 +42,7 @@
   width: 100%;
   border-radius: 0rem;
   color: var(--white);
-  background-color: black;
+  background-color: var(--black);
 }
 
 .layout-container {
@@ -134,7 +134,7 @@
 
 .component-header {
   color: black;
-  font-weight: bold;
+  font-weight: 400;
   padding: 0.5rem 0rem;
   cursor: pointer;
   display: flex;
@@ -163,8 +163,9 @@
 
 .big-font {
   font-size: 2.2rem !important;
-  font-weight: bold;
+  font-weight: 300;
   font-family: "Poppins";
+  letter-spacing: -0.09rem;
   /* color: white; */
 }
 
@@ -182,7 +183,7 @@
   width: 8%;
 }
 .viz-name > input {
-  background-color: #bcc1c56f;
+  background-color: var(--main);
   color: #0055c2;
   width: 100%;
 }
@@ -192,9 +193,11 @@
 }
 
 .form-viz-name > input {
-  background-color: #bcc1c56f;
-  color: #0055c2;
+  background-color: var(--main);
+  color: var(--black);
   width: 100%;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .form-viz-name > input::placeholder {
@@ -263,7 +266,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  /* gap: rem; */
   width: 100%;
   /* background-color: var(--white); */
   height: 4rem;
@@ -276,12 +279,14 @@
   width: 50%;
   height: 100%;
   cursor: pointer;
+  color: var(--black);
+  background-color: var(--dark);
   /* height: 5.0rem; */
 }
 
 .fw-option-selected {
-  background-color: var(--accent);
-  color: var(--dark);
+  background-color: var(--black);
+  color: var(--accent);
 }
 
 .workflow-creation-container {
@@ -401,9 +406,9 @@ path {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  background-color: #0055c2;
+  background-color: var(--accent);
   padding: 0rem 1rem;
-  color: white;
+  color: var(--black);
   border-radius: 1rem;
   cursor: pointer;
   font-size: 1.4rem;
