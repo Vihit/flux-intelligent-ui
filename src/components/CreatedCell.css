@@ -159,3 +159,7 @@
   background-color: white;
   opacity: 0;
 }
+
+.error-cell {
+  background-color: var(--red);
+}

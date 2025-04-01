@@ -52,32 +52,30 @@ function MyRequests(props) {
       })
       .then((actualData) => {
         props.raiseAlert("green", "Fetched Entries");
-        var fLabels = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.label)
-          .concat([
-            "ID",
-            "State",
-            "Created By",
-            "Log Create Dt",
-            "Updated By",
-            "Log Update Dt",
-          ]);
+        var fKL = reduceLabels(
+          JSON.parse(f.template)
+            ["controls"].flatMap((ctrl) => ctrl)
+            .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+        );
+        console.log(fKL);
+        var fLabels = fKL.fLabels.concat([
+          "ID",
+          "State",
+          "Created By",
+          "Log Create Dt",
+          "Updated By",
+          "Log Update Dt",
+        ]);
 
         var matCols = [];
-        var fKeys = JSON.parse(f.template)
-          ["controls"].flatMap((ctrl) => ctrl)
-          .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-          .map((c) => c.key)
-          .concat([
-            "id",
-            "state",
-            "created_by",
-            "log_create_dt",
-            "updated_by",
-            "log_update_dt",
-          ]);
+        var fKeys = fKL.fKeys.concat([
+          "id",
+          "state",
+          "created_by",
+          "log_create_dt",
+          "updated_by",
+          "log_update_dt",
+        ]);
         var settings = JSON.parse(f.settings);
         var filterColumns = settings?.view?.filters;
         fKeys.forEach((element, inx) => {
@@ -91,6 +89,23 @@ function MyRequests(props) {
         setTotalRows(actualData.totalRows);
         props.raiseAlert("loading", "end");
       });
+  }
+
+  function reduceLabels(arr) {
+    let keyMap = new Map();
+
+    arr.forEach(({ key, label }) => {
+      if (keyMap.has(key)) {
+        keyMap.set(key, keyMap.get(key) + "/" + label);
+      } else {
+        keyMap.set(key, label);
+      }
+    });
+
+    let fKeys = Array.from(keyMap.keys());
+    let fLabels = Array.from(keyMap.values());
+
+    return { fKeys, fLabels };
   }
 
   const handleExportRows = (rows, table) => {

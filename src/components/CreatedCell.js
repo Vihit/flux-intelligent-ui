@@ -40,6 +40,7 @@ function CreatedCell(props) {
       : props.formData
   );
   const [usersData, setUsersData] = useState([]);
+  const [error, setError] = useState(false);
 
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
@@ -210,6 +211,7 @@ function CreatedCell(props) {
         });
       });
   }
+
   useEffect(() => {
     let aData = props.gridControl
       ? props.formData[props.gridKey] != undefined
@@ -324,6 +326,28 @@ function CreatedCell(props) {
       if (value !== props.values && !isNaN(value))
         changed(props.conf.key, value);
     }
+    if (props.conf.errorCondition?.length > 0) {
+      let data = props.formData; //this data is used within eval
+      let isError = eval(props.conf.errorCondition);
+      if (isError) {
+        props.updateFormErrors({
+          key: props.conf.key,
+          preventSubmission: true,
+        });
+        props.raiseAlert(
+          "red",
+          eval('"' + props.conf.errorMessage + '"'),
+          5000
+        );
+      } else {
+        props.updateFormErrors({
+          key: props.conf.key,
+          preventSubmission: false,
+          label: props.conf.label,
+        });
+      }
+      setError(isError);
+    }
   }, [props.dataUpdated]);
 
   function fetchReferenceData(refForm, refColumn, refCondition) {
@@ -391,6 +415,8 @@ function CreatedCell(props) {
               : "grid-creation-cell "
             : props.conf.type === ""
             ? "trans-cell"
+            : error
+            ? "created-cell error-cell"
             : "created-cell "
           : "empty-created-cell"
       }

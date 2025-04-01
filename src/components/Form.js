@@ -41,6 +41,8 @@ function Form(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [esigned, setESigned] = useState(false);
+  const [formErrors, setFormErrors] = useState([]);
+
   useEffect(() => {
     if (props.entry.id != -1) {
       props.entry.grids.forEach((grid) => {
@@ -58,6 +60,18 @@ function Form(props) {
 
   function esign() {
     verifyESign();
+  }
+
+  function updateFormErrors(data) {
+    setFormErrors((prev) => {
+      let toBeUpdated = [...prev];
+      if (toBeUpdated.filter((d) => d.key === data.key).length > 0) {
+        toBeUpdated = toBeUpdated.filter((d) => d.key !== data.key);
+      }
+      toBeUpdated.push(data);
+      console.log(toBeUpdated);
+      return toBeUpdated;
+    });
   }
 
   function verifyESign() {
@@ -122,6 +136,17 @@ function Form(props) {
     finalData["_files"] = Object.keys(data)
       .filter((k) => k.startsWith("_files_"))
       .map((k) => data[k]);
+
+    let error = formErrors.filter((d) => d.preventSubmission).length > 0;
+
+    if (error) {
+      check = true;
+      props.raiseAlert(
+        "red",
+        "Error with : " + formErrors.filter((d) => d.preventSubmission)[0].key,
+        5000
+      );
+    }
     if (!check) sendEntry(finalData, to);
     else console.log("Check true");
   }
@@ -208,6 +233,19 @@ function Form(props) {
         }
       });
     finalData = { ...finalData, ...updatedParam };
+    let error = formErrors.filter((d) => d.preventSubmission).length > 0;
+    if (error) {
+      check = true;
+      props.raiseAlert(
+        "red",
+        "Unable to submit. Please resolve error on " +
+          formErrors
+            .filter((d) => d.preventSubmission)
+            .map((d) => d.label)
+            .join(","),
+        5000
+      );
+    }
     if (!check) sendEntry(finalData, currState + "-INPA");
     else console.log("Check true");
   }
@@ -267,6 +305,7 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
+    console.log(`${what} changed ${value}`);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -277,15 +316,15 @@ function Form(props) {
       }
       let finalProp = splitWhat[i];
       obj[finalProp] = value;
-      conf
-        .flatMap((f) => f)
-        .forEach((ctrl) => {
-          if (!checkConditionalVisibilityAgainst(ctrl, obj)) {
-            delete obj[ctrl.key];
-          } else if (checkDependency(ctrl, finalProp)) {
-            delete obj[ctrl.key];
-          }
-        });
+      var controls = conf.flatMap((f) => f);
+      controls.forEach((ctrl) => {
+        if (!checkConditionalVisibilityAgainst(ctrl, obj, controls)) {
+          console.log(`Deleting ${ctrl.key}`);
+          delete obj[ctrl.key];
+        } else if (checkDependency(ctrl, finalProp)) {
+          delete obj[ctrl.key];
+        }
+      });
       return currData;
     });
     setUpdateCount((prev) => prev + 1);
@@ -332,24 +371,34 @@ function Form(props) {
       return true;
     }
   }
-  function checkConditionalVisibilityAgainst(controlConf, updData) {
+
+  function checkConditionalVisibilityAgainst(controlConf, updData, controls) {
     var check = false;
-    if (JSON.parse(controlConf.conditionalVisibility)) {
-      let dep = controlConf.conditionalControl
-        .toLowerCase()
-        .replaceAll(" ", "_");
-      let op = controlConf.conditionalCondition;
-      let value = controlConf.conditionalValue;
-      if (op === "==") return updData[dep] === value;
-      else if (op === "!=") return updData[dep] !== value;
-      else if (op === ">") return updData[dep] > value;
-      else if (op === ">=") return updData[dep] >= value;
-      else if (op === "<") return updData[dep] < value;
-      else if (op === "<=") return updData[dep] <= value;
-      else if (op === "in") return value.split(",").includes(updData[dep]);
-    } else {
-      return true;
-    }
+    return (
+      controls
+        .filter((c) => c.key === controlConf.key)
+        .filter((controlConf) => {
+          if (JSON.parse(controlConf.conditionalVisibility)) {
+            let dep = controlConf.conditionalControl
+              .toLowerCase()
+              .replaceAll(" ", "_");
+            let op = controlConf.conditionalCondition;
+            let value = controlConf.conditionalValue;
+            console.log(`${dep} checked for ${value}`);
+            if (op === "==") return updData[dep] === value;
+            else if (op === "!=") return updData[dep] !== value;
+            else if (op === ">") return updData[dep] > value;
+            else if (op === ">=") return updData[dep] >= value;
+            else if (op === "<") return updData[dep] < value;
+            else if (op === "<=") return updData[dep] <= value;
+            else if (op === "in")
+              return value.split(",").includes(updData[dep]);
+          } else {
+            console.log(`Returning true for ${controlConf.label}`);
+            return true;
+          }
+        }).length > 0
+    );
   }
 
   async function exportToPDF() {
@@ -510,6 +559,7 @@ function Form(props) {
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
+                      updateFormErrors={updateFormErrors}
                       raiseAlert={props.raiseAlert}
                     ></CreatedCell>
                   ) : (
