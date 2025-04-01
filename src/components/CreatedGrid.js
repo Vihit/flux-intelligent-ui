@@ -123,6 +123,7 @@ function CreatedGrid(props) {
                     gridKey={props.conf.key}
                     dataUpdated={props.dataUpdated}
                     formId={props.formId}
+                    updateFormErrors={props.updateFormErrors}
                     raiseAlert={props.raiseAlert}
                   ></CreatedCell>
                 );

@@ -95,7 +95,7 @@ function MyRequests(props) {
     let keyMap = new Map();
 
     arr.forEach(({ key, label }) => {
-      if (keyMap.has(key)) {
+      if (keyMap.has(key) && keyMap.get(key) === label) {
         keyMap.set(key, keyMap.get(key) + "/" + label);
       } else {
         keyMap.set(key, label);
@@ -392,12 +392,24 @@ function MyRequests(props) {
         .controls.flatMap((f) => f)
         .filter((ctrl) => ctrl.type === "grid").length > 0 &&
         gridEntries.map((data, indx) => {
-          var matCols = data.columns.split(",").map((col, inx) => {
-            return {
-              accessorKey: col,
-              header: data.labels.split(",")[inx],
-            };
+          var matCols = [];
+          var fKL = reduceLabels(
+            data.columns.split(",").map((c, i) => {
+              return { key: c, label: data.labels.split(",")[i] };
+            })
+          );
+          fKL.fKeys.forEach((element, inx) => {
+            matCols.push({
+              accessorKey: element,
+              header: fKL.fLabels[inx],
+            });
           });
+          // var matCols = data.columns.split(",").map((col, inx) => {
+          //   return {
+          //     accessorKey: col,
+          //     header: data.labels.split(",")[inx],
+          //   };
+          // });
           var rows = [];
           console.log(data);
           data.data.data.forEach((dt) => {

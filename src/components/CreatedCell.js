@@ -328,7 +328,15 @@ function CreatedCell(props) {
     }
     if (props.conf.errorCondition?.length > 0) {
       let data = props.formData; //this data is used within eval
+      let grData =
+        props.gridControl && props.formData[props.gridKey] != undefined
+          ? { ...props.formData[props.gridKey][props.rowNum] }
+          : {};
       let isError = eval(props.conf.errorCondition);
+      console.log(props.conf.errorCondition);
+      console.log(isError);
+      console.log(data);
+      console.log(grData);
       if (isError) {
         props.updateFormErrors({
           key: props.conf.key,
@@ -411,7 +419,11 @@ function CreatedCell(props) {
         props.conf.label !== undefined
           ? props.gridControl
             ? props.rowNum > 0
-              ? "grid-creation-cell-wh"
+              ? error
+                ? "grid-creation-cell-wh error-cell"
+                : "grid-creation-cell-wh"
+              : error
+              ? "grid-creation-cell error-cell "
               : "grid-creation-cell "
             : props.conf.type === ""
             ? "trans-cell"

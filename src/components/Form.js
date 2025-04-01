@@ -590,6 +590,7 @@ function Form(props) {
                       dataUpdated={updateCount}
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
+                      updateFormErrors={updateFormErrors}
                       raiseAlert={props.raiseAlert}
                     ></CreatedGrid>
                   );
