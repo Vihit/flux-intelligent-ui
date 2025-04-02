@@ -13,6 +13,7 @@ function CreatedGrid(props) {
     props.values != null ? props.values.length : 1
   );
   const [updateCount, setUpdateCount] = useState(1);
+  console.log(props);
 
   function checkConditionalVisibility(row, col) {
     let controlConf = props.conf.controls[col];
@@ -40,6 +41,7 @@ function CreatedGrid(props) {
   }
 
   function changed(index, what, value) {
+    console.log(`${index} - ${what} - ${value}`);
     let gridKey = props.conf.key;
     if (props.type === "form") {
       // props.dataChanged(what, value);
@@ -47,11 +49,12 @@ function CreatedGrid(props) {
       if (gridData == undefined || gridData.length == 0) {
         gridData = [];
       }
-      if (gridData.length - 1 < index) {
+      while (gridData.length - 1 < index) {
         gridData.push({});
       }
       let obj = gridData[index];
-      obj[what] = value;
+      console.log(obj);
+      if (what != null) obj[what] = value;
       gridData.splice(index, 1, obj);
       props.dataChanged(gridKey, gridData);
     }
@@ -109,9 +112,6 @@ function CreatedGrid(props) {
                     rowNum={j}
                     disabled={props.disabled}
                     values={
-                      // props.values == null || props.values[inx] == null
-                      //   ? null
-                      //   : props.values[inx].data[props.conf.controls[idx].key]
                       props.formData == null ||
                       props.formData[props.conf.key] == undefined
                         ? null

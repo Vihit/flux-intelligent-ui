@@ -750,7 +750,7 @@ function CreatedCell(props) {
         {props.conf.type === "multiselect" && props.disabled && (
           <Multiselect
             avoidHighlightFirstOption={true}
-            style={config.multiSelectStyle}
+            style={config.platformMultiSelectStyle}
             disable={props.disabled}
             selectedValues={
               props.values == undefined ? [] : props.values.split(",")

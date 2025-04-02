@@ -29,8 +29,8 @@
   color: white;
   border-radius: 0.5rem;
   cursor: pointer;
-  padding: 0.2rem 1rem;
-  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
 }
 
 .gr-default-control {
@@ -44,12 +44,14 @@
 .delete-gr {
   font-size: 2rem;
   height: 5rem;
+  aspect-ratio: 1/1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #bcc1c56f;
+  background-color: var(--red);
   margin-left: 0.2rem;
   cursor: pointer;
+  color: white;
 }
 
 .filler {
