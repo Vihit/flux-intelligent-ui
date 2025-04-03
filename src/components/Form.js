@@ -294,6 +294,7 @@ function Form(props) {
       body: formData,
     }).then((response) => {
       if (response.ok) {
+        props.setUpdate(Math.random() * Math.random() * 100);
         props.raiseAlert("loading", "end");
         props.closeInit(props.form);
         props.raiseAlert("green", "Entry submitted!");

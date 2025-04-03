@@ -103,7 +103,7 @@ function Dashboard(props) {
             icon={apps.filter((a) => a.id == app)[0]?.icon}
             raiseAlert={props.raiseAlert}
             selectedFormId={location?.formId}
-            setNotifications={props.setNotifications}
+            refreshNotifications={getPendingEntries}
           ></UserDashboard>
         )}
       </div>

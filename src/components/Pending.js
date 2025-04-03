@@ -24,10 +24,16 @@ function Pending(props) {
   const [tableData, setTableData] = useState({ rows: [], header: [] });
   const [gridLogEntryId, setGridLogEntryId] = useState(-1);
   const [logEntryId, setLogEntryId] = useState(-1);
+  const [update, setUpdate] = useState(0);
 
   useEffect(() => {
     getPendingLogEntries(props.form);
-  }, []);
+  }, [update, props.reload]);
+
+  function refresh(x) {
+    setUpdate(x);
+    props.refreshNotifications();
+  }
 
   function getPendingLogEntries(f) {
     fetch(config.apiUrl + "entry/" + f.id + "/pending", {
@@ -608,6 +614,7 @@ function Pending(props) {
           raiseAlert={props.raiseAlert}
           key={props.form.id}
           type={props.type}
+          setUpdate={refresh}
         ></Form>
       )}
       {gridLogEntryId == logEntryId &&

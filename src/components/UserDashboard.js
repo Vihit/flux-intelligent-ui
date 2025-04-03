@@ -13,9 +13,6 @@ function UserDashboard(props) {
   let history = useHistory();
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState({});
-  const [tableData, setTableData] = useState({ rows: [], header: [] });
-  const [logEntries, setLogEntries] = useState([]);
-  const [pendingEntries, setPendingEntries] = useState([]);
   const [allForms, setAllForms] = useState([]);
   const [accessibleForms, setAccessibleForms] = useState([]);
   const [lastStateAccessibleForms, setLastStateAccessibleForms] = useState([]);
@@ -27,6 +24,7 @@ function UserDashboard(props) {
   const [initiated, setInitiated] = useState(false);
   const [entry, setEntry] = useState({ id: -1 });
   const [gridEntries, setGridEntries] = useState([]);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     getAllForms();
@@ -182,6 +180,11 @@ function UserDashboard(props) {
       });
   }
 
+  function refresh(x) {
+    props.refreshNotifications();
+    setReload(x);
+  }
+
   return (
     <>
       <div className="app-main-c">
@@ -317,6 +320,8 @@ function UserDashboard(props) {
           hiddenColumns={hiddenColumns}
           form={selectedForm}
           raiseAlert={props.raiseAlert}
+          reload={reload}
+          refreshNotifications={props.refreshNotifications}
         ></MyRequests>
       )}
       {option === "all" && (
@@ -325,6 +330,8 @@ function UserDashboard(props) {
           hiddenColumns={hiddenColumns}
           form={selectedForm}
           raiseAlert={props.raiseAlert}
+          reload={reload}
+          refreshNotifications={props.refreshNotifications}
         ></AllRequests>
       )}
       {option === "pending" && (
@@ -333,6 +340,8 @@ function UserDashboard(props) {
           hiddenColumns={hiddenColumns}
           form={selectedForm}
           raiseAlert={props.raiseAlert}
+          reload={reload}
+          refreshNotifications={props.refreshNotifications}
         ></Pending>
       )}
       {initiated && (
@@ -345,6 +354,7 @@ function UserDashboard(props) {
           raiseAlert={props.raiseAlert}
           key={selectedForm.id}
           type={"initiate"}
+          setUpdate={refresh}
         ></Form>
       )}
     </>

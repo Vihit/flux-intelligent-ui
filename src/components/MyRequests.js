@@ -27,11 +27,17 @@ function MyRequests(props) {
   const [tableData, setTableData] = useState({ rows: [], header: [] });
   const [gridLogEntryId, setGridLogEntryId] = useState(-1);
   const [logEntryId, setLogEntryId] = useState(-1);
+  const [update, setUpdate] = useState(0);
 
   useEffect(() => {
     props.raiseAlert("loading", "start");
     getLogEntries(props.form);
-  }, [pagination, columnFilters]);
+  }, [pagination, columnFilters, update, props.reload]);
+
+  function refresh(x) {
+    setUpdate(x);
+    props.refreshNotifications();
+  }
 
   function getLogEntries(f) {
     fetch(
@@ -531,6 +537,7 @@ function MyRequests(props) {
           raiseAlert={props.raiseAlert}
           key={props.form.id}
           type={props.type}
+          setUpdate={refresh}
         ></Form>
       )}
       {gridLogEntryId == logEntryId &&
