@@ -10,19 +10,16 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 function Dashboard(props) {
   let location = useParams();
   let history = useHistory();
-  console.log(location);
   const [apps, setApps] = useState([]);
   const [open, setOpen] = useState("");
   const [app, setApp] = useState(location?.appId);
   const [form, setForm] = useState(location?.formId);
 
   useEffect(() => {
-    console.log(JSON.stringify(location));
     props.raiseAlert("loading", "start");
     getApps();
     getPendingEntries();
     if (location?.formId > 0) {
-      console.log("Setting form");
       setForm(location?.formId);
     } else setForm(0);
     if (location?.appId > 0) {
@@ -84,7 +81,6 @@ function Dashboard(props) {
     // setApp((prev) => {
     //   return appId;
     // });
-    console.log("Clicked");
     let x = location?.formId > 0 ? location.formId : 0;
     history.push("/dashboard/" + appId + "/" + x + "");
     setOpen("fill");

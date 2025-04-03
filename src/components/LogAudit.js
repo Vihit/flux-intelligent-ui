@@ -40,8 +40,6 @@ function LogAudit(props) {
     );
   });
 
-  console.log(sCtrls);
-
   const [normalGridLogs, setNormalGridLogs] = useState([]);
   const [customGridLogs, setCustomGridLogs] = useState([]);
 
@@ -114,7 +112,6 @@ function LogAudit(props) {
     var img = new Image();
     img.src = logo;
     img.onload = () => {
-      console.log(logo);
       doc.addImage(img, "png", 5, 2, 20, 15);
       doc.setFontSize(12);
       doc.setTextColor("#FFFFFF");
@@ -255,7 +252,6 @@ function LogAudit(props) {
         .replaceAll(" ", "_");
       let op = controlConf.conditionalCondition;
       let value = controlConf.conditionalValue;
-      console.log(`${dep} checked for ${value}`);
       if (op === "==") return updData[dep] === value;
       else if (op === "!=") return updData[dep] !== value;
       else if (op === ">") return updData[dep] > value;
@@ -264,7 +260,6 @@ function LogAudit(props) {
       else if (op === "<=") return updData[dep] <= value;
       else if (op === "in") return value.split(",").includes(updData[dep]);
     } else {
-      console.log(`Returning true for ${controlConf.label}`);
       return true;
     }
   }
@@ -368,7 +363,6 @@ function LogAudit(props) {
                 )
                 .flatMap((a) =>
                   Object.keys(a).map((key) => {
-                    console.log(a[key]);
                     let groups = a[key].reduce((x, y) => {
                       (x[y.equipment_id] = x[y.equipment_id] || []).push(y);
                       return x;

@@ -10,7 +10,6 @@ import Form from "./Form";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 function UserDashboard(props) {
-  console.log(props);
   let history = useHistory();
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState({});
@@ -210,7 +209,6 @@ function UserDashboard(props) {
                 }
                 onClick={() => {
                   history.push("/dashboard/" + props.id + "/" + f.id + "");
-                  console.log("/dashboard/" + props.id + "/" + f.id + "");
                   setSelectedForm(f);
                   var fKeys = JSON.parse(f.template)
                     ["controls"].flatMap((ctrl) => ctrl)

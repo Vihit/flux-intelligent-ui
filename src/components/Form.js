@@ -69,7 +69,6 @@ function Form(props) {
         toBeUpdated = toBeUpdated.filter((d) => d.key !== data.key);
       }
       toBeUpdated.push(data);
-      console.log(toBeUpdated);
       return toBeUpdated;
     });
   }
@@ -305,7 +304,6 @@ function Form(props) {
     });
   }
   function dataChanged(what, value) {
-    console.log(`${what} changed ${value}`);
     setData((prev) => {
       let currData = { ...prev };
       var obj = currData;
@@ -319,7 +317,6 @@ function Form(props) {
       var controls = conf.flatMap((f) => f);
       controls.forEach((ctrl) => {
         if (!checkConditionalVisibilityAgainst(ctrl, obj, controls)) {
-          console.log(`Deleting ${ctrl.key}`);
           delete obj[ctrl.key];
         } else if (checkDependency(ctrl, finalProp)) {
           delete obj[ctrl.key];
@@ -384,7 +381,6 @@ function Form(props) {
               .replaceAll(" ", "_");
             let op = controlConf.conditionalCondition;
             let value = controlConf.conditionalValue;
-            console.log(`${dep} checked for ${value}`);
             if (op === "==") return updData[dep] === value;
             else if (op === "!=") return updData[dep] !== value;
             else if (op === ">") return updData[dep] > value;
@@ -394,7 +390,6 @@ function Form(props) {
             else if (op === "in")
               return value.split(",").includes(updData[dep]);
           } else {
-            console.log(`Returning true for ${controlConf.label}`);
             return true;
           }
         }).length > 0

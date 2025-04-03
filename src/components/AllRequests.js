@@ -4,7 +4,7 @@ import "./UserFormDetail.css";
 import { config } from "./config";
 import MaterialReactTable from "material-react-table";
 import { Box, IconButton, Button } from "@mui/material";
-import { AccessTime, Fullscreen, GetApp } from "@mui/icons-material";
+import { AccessTime, Fullscreen, Add, Remove } from "@mui/icons-material";
 import LogAudit from "./LogAudit";
 import { Typography } from "@mui/material/";
 import { jsPDF } from "jspdf";
@@ -19,6 +19,8 @@ function AllRequests(props) {
   const [gridEntries, setGridEntries] = useState([]);
   const [initiatedAudit, setInitiatedAudit] = useState(false);
   const [tableData, setTableData] = useState({ rows: [], header: [] });
+  const [gridLogEntryId, setGridLogEntryId] = useState(-1);
+  const [logEntryId, setLogEntryId] = useState(-1);
 
   useEffect(() => {
     props.raiseAlert("loading", "start");
@@ -59,7 +61,6 @@ function AllRequests(props) {
             ["controls"].flatMap((ctrl) => ctrl)
             .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
         );
-        console.log(fKL);
         var fLabels = fKL.fLabels.concat([
           "ID",
           "State",
@@ -111,7 +112,10 @@ function AllRequests(props) {
   }
 
   const detailPanel =
-    props.detailColumns.length > 0
+    props.detailColumns.length > 0 &&
+    JSON.parse(props.form.template)
+      .controls.flatMap((f) => f)
+      .filter((ctrl) => ctrl.type === "grid").length > 0
       ? (row, table) => {
           return (
             <Box
@@ -163,6 +167,114 @@ function AllRequests(props) {
                   </Box>
                 );
               })}
+              <Box sx={{ width: "100%" }}>
+                {logEntryId == gridLogEntryId &&
+                  JSON.parse(props.form.template)
+                    .controls.flatMap((f) => f)
+                    .filter((ctrl) => ctrl.type === "grid").length > 0 &&
+                  gridEntries.map((data, indx) => {
+                    var matCols = [];
+                    var fKL = reduceLabels(
+                      data.columns.split(",").map((c, i) => {
+                        return { key: c, label: data.labels.split(",")[i] };
+                      })
+                    );
+                    fKL.fKeys.forEach((element, inx) => {
+                      matCols.push({
+                        accessorKey: element,
+                        header: fKL.fLabels[inx],
+                      });
+                    });
+                    // var matCols = data.columns.split(",").map((col, inx) => {
+                    //   return {
+                    //     accessorKey: col,
+                    //     header: data.labels.split(",")[inx],
+                    //   };
+                    // });
+                    var rows = [];
+                    data.data.data.forEach((dt) => {
+                      let obj = {};
+                      data.columns.split(",").forEach((col) => {
+                        obj[col] = dt[col];
+                      });
+                      rows.push(obj);
+                    });
+
+                    return (
+                      <div className="f-table" key={indx}>
+                        <div className="f-table">
+                          <MaterialReactTable
+                            columns={matCols}
+                            data={rows}
+                            enableStickyHeader
+                            enableStickyFooter
+                            enableToolbarInternalActions={false}
+                            enableBottomToolbar={false}
+                            renderTopToolbarCustomActions={({ table }) => (
+                              <Typography
+                                variant="h10"
+                                style={{
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  fontFamily: "Poppins",
+                                  fontSize: "1.6rem",
+                                  alignSelf: "center",
+                                  padding: "1rem",
+                                  background: "var(--main)",
+                                  borderRadius: "1rem",
+                                  fontWeight: "500",
+                                  letterSpacing: "-0.05rem",
+                                }}
+                              >
+                                {data.gridLabel}
+                              </Typography>
+                            )}
+                            muiTableBodyProps={{
+                              sx: {
+                                margin: "2rem",
+                              },
+                            }}
+                            muiTableContainerProps={{
+                              sx: {
+                                maxHeight: "550px",
+                                maxWidth: "100%",
+                                overflowX: "auto",
+                              },
+                            }}
+                            initialState={{
+                              density: "compact",
+                              columnVisibility: {
+                                id: false,
+                                log_entry_id: false,
+                              },
+                            }}
+                            muiTableHeadCellProps={{
+                              sx: {
+                                fontWeight: "500",
+                                fontSize: "1.3rem",
+                                backgroundColor: "var(--dark)",
+                                color: "var(--black)",
+                                border: "1px solid var(--dark)`",
+                                fontFamily: "Poppins",
+                                height: "3rem",
+                                lineHeight: "3.2rem",
+                              },
+                            }}
+                            muiTableBodyCellProps={{
+                              sx: {
+                                backgroundColor: "var(--white)",
+                                borderRight: "0.1px solid var(--main)",
+                                fontFamily: "Poppins",
+                                fontSize: "1.3rem",
+                              },
+                            }}
+                          ></MaterialReactTable>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </Box>
             </Box>
           );
         }
@@ -259,12 +371,14 @@ function AllRequests(props) {
   };
 
   async function openFormView(row) {
+    setLogEntryId(row.original.id);
     setEntry(row.original);
     await getAllForEntry(props.form.id, row.original.id);
     setInitiated(true);
   }
 
   async function openAuditView(row) {
+    setLogEntryId(row.original.id);
     await getAllForEntry(props.form.id, row.original.id);
     setInitiatedAudit(true);
   }
@@ -296,6 +410,7 @@ function AllRequests(props) {
   }
 
   function getGridEntriesFor(formId, entryId) {
+    props.raiseAlert("loading", "start");
     fetch(config.apiUrl + "entry/grid/" + formId + "/" + entryId, {
       method: "GET",
       headers: {
@@ -312,6 +427,8 @@ function AllRequests(props) {
       })
       .then((actualData) => {
         setGridEntries(actualData);
+        setGridLogEntryId(entryId);
+        props.raiseAlert("loading", "end");
       });
   }
 
@@ -354,6 +471,20 @@ function AllRequests(props) {
               ...props.hiddenColumns,
             },
           }}
+          muiExpandButtonProps={({ row, table }) => ({
+            onClick: () =>
+              table.setExpanded({ [row.id]: !row.getIsExpanded() }),
+            children: row.getIsExpanded() ? (
+              <Remove />
+            ) : (
+              <Add
+                onClick={() => {
+                  setLogEntryId(row.original.id);
+                  getGridEntriesFor(props.form.id, row.original.id);
+                }}
+              />
+            ),
+          })}
           onColumnFiltersChange={setColumnFilters}
           onPaginationChange={setPagination}
           state={{ pagination }}
@@ -382,90 +513,7 @@ function AllRequests(props) {
           muiBottomToolbarProps={config.mrtStyle.muiBottomToolbarProps}
         ></MaterialReactTable>
       </div>
-      {JSON.parse(props.form.template)
-        .controls.flatMap((f) => f)
-        .filter((ctrl) => ctrl.type === "grid").length > 0 &&
-        gridEntries.map((data, indx) => {
-          var matCols = data.columns.split(",").map((col, inx) => {
-            return {
-              accessorKey: col,
-              header: data.labels.split(",")[inx],
-            };
-          });
-          var rows = [];
-
-          data.data.data.forEach((dt) => {
-            let obj = {};
-            data.columns.split(",").forEach((col) => {
-              obj[col] = dt[col];
-            });
-            rows.push(obj);
-          });
-
-          return (
-            <div className="f-table" key={indx}>
-              <div className="f-table">
-                <MaterialReactTable
-                  columns={matCols}
-                  data={rows}
-                  enableStickyHeader
-                  enableStickyFooter
-                  enableTopToolbar={true}
-                  renderTopToolbarCustomActions={({ table }) => (
-                    <Typography
-                      variant="h10"
-                      style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontFamily: "Poppins",
-                        fontSize: "1.6rem",
-                        alignSelf: "center",
-                      }}
-                    >
-                      {data.gridLabel}
-                    </Typography>
-                  )}
-                  muiTableBodyProps={{
-                    sx: {
-                      margin: "20px",
-                    },
-                  }}
-                  muiTableContainerProps={{
-                    sx: {
-                      maxHeight: "550px",
-                      maxWidth: "100%",
-                      overflowX: "auto",
-                    },
-                  }}
-                  initialState={{
-                    density: "compact",
-                    columnVisibility: { id: false, log_entry_id: false },
-                  }}
-                  muiTableHeadCellProps={{
-                    sx: {
-                      fontWeight: "bold",
-                      fontSize: "12px",
-                      backgroundColor: "var(--white)",
-                      color: "var(--dark)",
-                      border: "1px solid",
-                      fontFamily: "Poppins",
-                    },
-                  }}
-                  muiTableBodyCellProps={{
-                    sx: {
-                      backgroundColor: "var(--grey)",
-                      borderRight: "0.1px solid var(--white)",
-                      fontFamily: "Poppins",
-                      fontSize: "1.3rem",
-                    },
-                  }}
-                ></MaterialReactTable>
-              </div>
-            </div>
-          );
-        })}
-      {initiated && (
+      {gridLogEntryId == logEntryId && initiated && (
         <Form
           form={props.form}
           closeInit={() => {
@@ -481,15 +529,17 @@ function AllRequests(props) {
           type={props.type}
         ></Form>
       )}
-      {initiatedAudit && allEntries.length > 0 && (
-        <LogAudit
-          form={props.form}
-          entries={allEntries.sort((a, b) => {
-            return a.id > b.id ? 1 : -1;
-          })}
-          closeInit={closeLogAudit}
-        ></LogAudit>
-      )}
+      {gridLogEntryId == logEntryId &&
+        initiatedAudit &&
+        allEntries.length > 0 && (
+          <LogAudit
+            form={props.form}
+            entries={allEntries.sort((a, b) => {
+              return a.id > b.id ? 1 : -1;
+            })}
+            closeInit={closeLogAudit}
+          ></LogAudit>
+        )}
     </div>
   );
 }

@@ -14,7 +14,6 @@ import StateConfig from "./StateConfig";
 // import * as d3 from "d3";
 
 function FormStudio(props) {
-  console.log("Yo");
   const [layout, setLayout] = useState([]);
   const [confVisible, setConfVisible] = useState(false);
   const [gridClicked, setGridClicked] = useState(false);

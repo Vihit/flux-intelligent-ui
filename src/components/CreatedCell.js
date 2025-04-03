@@ -5,7 +5,6 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreatedCell(props) {
-  console.log(props);
   const now = new Date();
   const dateMax =
     props.conf.dateMaxValue != undefined &&
@@ -243,7 +242,6 @@ function CreatedCell(props) {
               aData[variable.split(/{|}/)[1]] == undefined ||
               aData[variable.split(/{|}/)[1]] === ""
             ) {
-              console.log(aData);
               check = true;
             }
             conds = conds.replace(variable, aData[variable.split(/{|}/)[1]]);
@@ -333,10 +331,7 @@ function CreatedCell(props) {
           ? { ...props.formData[props.gridKey][props.rowNum] }
           : {};
       let isError = eval(props.conf.errorCondition);
-      console.log(props.conf.errorCondition);
-      console.log(isError);
-      console.log(data);
-      console.log(grData);
+
       if (isError) {
         props.updateFormErrors({
           key: props.conf.key,
