@@ -251,7 +251,7 @@ function MyRequests(props) {
   }
 
   const detailPanel =
-    props.detailColumns.length > 0 &&
+    props.detailColumns.length > 0 ||
     JSON.parse(props.form.template)
       .controls.flatMap((f) => f)
       .filter((ctrl) => ctrl.type === "grid").length > 0
