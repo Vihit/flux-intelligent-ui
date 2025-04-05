@@ -55,15 +55,31 @@
   display: none !important;
 }
 
+.f-btn-inactive {
+  /* width: 90%; */
+  height: 5rem;
+  padding: 0rem 1rem;
+  min-width: 5rem;
+  font-size: 1.6rem;
+  font-family: Poppins;
+  border-radius: 1rem;
+  cursor: not-allowed;
+  border: none;
+  box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.2);
+  background-color: var(--dark-grey) !important;
+}
+
 .f-btn-active {
-  width: 90%;
-  height: 4rem;
+  /* width: 90%; */
+  height: 5rem;
+  padding: 0rem 1rem;
+  min-width: 5rem;
   font-size: 1.6rem;
   font-family: Poppins;
   border-radius: 1rem;
   cursor: pointer;
   border: none;
-  box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.466);
+  box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.2);
 }
 
 .optionListContainer {

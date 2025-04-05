@@ -5,14 +5,17 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  const [vals, setVals] = useState([]);
-  var values = "";
-  const [refData, setRefData] = useState([]);
-  const [externalInputActivated, setExternalInputActivated] = useState(false);
-  const [gridRows, setGridRows] = useState(
-    props.values != null ? props.values.length : 1
-  );
-  const [updateCount, setUpdateCount] = useState(1);
+  console.log(props);
+  // const [vals, setVals] = useState([]);
+  // var values = "";
+  // const [refData, setRefData] = useState([]);
+  // const [externalInputActivated, setExternalInputActivated] = useState(false);
+  // const [gridRows, setGridRows] = useState(
+  //   props.values != null ? props.values.length : 1
+  // );
+  // const [updateCount, setUpdateCount] = useState(1);
+  const [showHistoryTab, setShowHistoryTab] = useState(false);
+  const [histories, setHistories] = useState([]);
 
   function checkConditionalVisibility(row, col) {
     let controlConf = props.conf.controls[col];
@@ -65,6 +68,99 @@ function CreatedGrid(props) {
       props.dataChanged(props.conf.key, gridData);
     }
   }
+
+  function showHistory(indx) {
+    var gridData = props.formData[props.conf.key];
+    console.log(gridData[indx]);
+    fetchHistory(gridData[indx]);
+    setShowHistoryTab(true);
+  }
+
+  function fetchHistory(grData) {
+    props.raiseAlert("loading", "start");
+    var where = props.conf.historyBasedOn
+      .split(",")
+      .map((c) => c + "='" + grData[c] + "'");
+    where.push("1=1");
+
+    fetch(
+      config.apiUrl +
+        "entry/grid/" +
+        props.formId +
+        "/?logEntryId=" +
+        props.formData.id +
+        "&numPrevHistory=" +
+        props.conf.numPrevHistory +
+        "&gridKey=" +
+        props.conf.key +
+        "&where=" +
+        where.join(" and "),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        const uniqueKeys = props.conf.uniqueHistoryColumns?.split(",");
+        const uData = removeConsecutiveDuplicates(actualData.data, uniqueKeys);
+        setHistories(
+          uData.map((d) => {
+            var stmt = props.conf.historyFormat;
+            return transformStringToJSX(stmt, d);
+          })
+        );
+        props.raiseAlert("loading", "end");
+      });
+  }
+
+  const removeConsecutiveDuplicates = (data, uniqueKeys) => {
+    if (uniqueKeys == undefined || uniqueKeys.length === 0) return data; // No uniqueness constraints, return original list
+
+    const seen = new Set();
+    const result = [];
+
+    // Traverse from last to first
+    for (let i = data.length - 1; i >= 0; i--) {
+      const key = uniqueKeys.map((k) => data[i][k]).join("-");
+
+      if (!seen.has(key)) {
+        seen.add(key);
+        result.push(data[i]);
+      }
+    }
+
+    return result.reverse(); // Reverse back to maintain original order
+  };
+
+  const transformStringToJSX = (template, values) => {
+    return template.split(/(\$\{\w+\})/g).map((part, index) => {
+      if (part.match(/\$\{(\w+)\}/)) {
+        const key = part.replace(/\$\{|\}/g, "");
+        return (
+          <span
+            key={index}
+            style={{
+              backgroundColor: config.borderColors[index],
+              padding: "0 1rem",
+            }}
+          >
+            {values[key]}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
 
   useEffect(() => {}, []);
 
@@ -125,11 +221,37 @@ function CreatedGrid(props) {
                   ></CreatedCell>
                 );
               })}
-              {!props.disabled && (
-                <div className="gr-default-control">
-                  {j == 0 && <div className="filler"></div>}
-                  <div className="delete-gr" onClick={() => deleteRow(j)}>
-                    <i className="fa-solid fa-close"></i>
+
+              {(!props.disabled || props.conf.showHistory) && (
+                <div
+                  className={
+                    j > 0 ? "grid-creation-cell-wh" : "grid-creation-cell "
+                  }
+                  style={{
+                    flexGrow: "0",
+                    minWidth: "1rem",
+                    width: "auto",
+                    background: "none",
+                  }}
+                >
+                  <div className="cell-name-grid"></div>
+                  <div className="gr-default-control">
+                    {!props.disabled && j == 0 && (
+                      <div className="filler"></div>
+                    )}
+                    {props.conf.showHistory && (
+                      <div
+                        className="history-gr"
+                        onClick={() => showHistory(j)}
+                      >
+                        <i className="fa-solid fa-history"></i>
+                      </div>
+                    )}
+                    {!props.disabled && (
+                      <div className="delete-gr" onClick={() => deleteRow(j)}>
+                        <i className="fa-solid fa-close"></i>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -139,6 +261,27 @@ function CreatedGrid(props) {
       {!props.disabled && (
         <div className="add-new-gr" onClick={addRow}>
           Add New
+        </div>
+      )}
+      {showHistoryTab && (
+        <div className="history-tab">
+          <div className="h-hdr">{props.conf.label + " history"}</div>
+          <div
+            className="h-close"
+            onClick={() => {
+              setShowHistoryTab(false);
+              setHistories([]);
+            }}
+          >
+            <i className="fa-solid fa-close"></i>
+          </div>
+          <div className="h-content">
+            {histories.map((h, i) => (
+              <div key={i} className="h-msg">
+                {h}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

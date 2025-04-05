@@ -40,6 +40,11 @@ function CreatedCell(props) {
   );
   const [usersData, setUsersData] = useState([]);
   const [error, setError] = useState(false);
+  const [showESign, setShowESign] = useState(false);
+  const [esignPwd, setESignPwd] = useState("");
+  const [comment, setComment] = useState("");
+
+  let user = JSON.parse(localStorage.getItem("user"))["sub"];
 
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
@@ -127,7 +132,21 @@ function CreatedCell(props) {
       });
   }
 
-  function handleButtonClick(what) {
+  function handleBClick() {
+    if (props.conf.eSignRequired) {
+      setShowESign(true);
+    } else {
+      handleButtonClick();
+    }
+  }
+
+  function pressedKey(e) {
+    if (e.key === "Enter") {
+      esign();
+    }
+  }
+
+  function handleButtonClick() {
     let updatedValue =
       props.values == undefined ||
       props.values == null ||
@@ -135,7 +154,7 @@ function CreatedCell(props) {
         ? "1"
         : props.values + "1";
     var obj = {};
-    obj[what] = updatedValue;
+    obj[props.conf.key] = updatedValue;
     if (props.conf.apiCall) {
       let url = props.conf.apiUrl;
       var reg = /\${(\w+)}/g;
@@ -155,7 +174,7 @@ function CreatedCell(props) {
         body: props.conf.apiBody,
       }).then((response) => {
         if (response.ok) {
-          props.dataChanged(what, updatedValue);
+          props.dataChanged(props.conf.key, updatedValue);
           if (props.conf.sendToDraftState) {
             const timer = setTimeout(() => {
               props.sendEntry(obj);
@@ -165,7 +184,7 @@ function CreatedCell(props) {
         }
       });
     } else {
-      props.dataChanged(what, updatedValue);
+      props.dataChanged(props.conf.key, updatedValue);
       if (props.conf.sendToDraftState) {
         props.sendEntry(obj);
       }
@@ -209,6 +228,12 @@ function CreatedCell(props) {
             });
         });
       });
+  }
+
+  function cancelESign() {
+    setESignPwd("");
+    setShowESign(false);
+    setComment("");
   }
 
   useEffect(() => {
@@ -408,6 +433,45 @@ function CreatedCell(props) {
     changed(props.conf.key, decodedText);
   }
 
+  function esign(what) {
+    if (comment?.length > 0 || props.conf.eSignType === "Normal") {
+      var formBody = [];
+      formBody.push(
+        encodeURIComponent("username") +
+          "=" +
+          encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"])
+      );
+      formBody.push(
+        encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd)
+      );
+      formBody = formBody.join("&");
+      fetch(config.apiUrl + "esign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          username: user,
+          password: esignPwd,
+          comment: "",
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          setShowESign(false);
+          setESignPwd("");
+          setComment("");
+          props.raiseAlert("green", "E-signed Successfully!");
+          handleButtonClick();
+        } else {
+          props.raiseAlert("red", "Error while authenticating!", 3000);
+        }
+      });
+    } else {
+      props.raiseAlert("red", "Please add comments to e-sign!", 5000);
+    }
+  }
+
   return (
     <div
       className={
@@ -427,6 +491,15 @@ function CreatedCell(props) {
             : "created-cell "
           : "empty-created-cell"
       }
+      style={{
+        minWidth: props.conf.type === "button" ? "4rem" : "20%",
+        width:
+          props.conf.type === "button"
+            ? "auto"
+            : "calc(100%/" + props.totalCells + ")",
+        flexGrow: props.conf.type === "button" ? "0" : "1",
+        background: props.conf.type === "button" ? "none" : "var(--main)",
+      }}
     >
       <div
         className={
@@ -457,6 +530,10 @@ function CreatedCell(props) {
             ? "btn-cell-control"
             : "cell-control"
         }
+        style={{
+          height:
+            props.conf.type === "button" && props.rowNum == 0 ? "50%" : "100%",
+        }}
       >
         {props.conf.type === "text" && (
           <input
@@ -624,15 +701,29 @@ function CreatedCell(props) {
         )}
         {props.conf.type === "button" && (
           <button
-            className="f-btn-active"
+            className={
+              props.disabled ||
+              (props.conf.buttonClickPattern === "once" &&
+                props.values?.length > 0)
+                ? "f-btn-inactive"
+                : "f-btn-active"
+            }
             style={{
               color: props.conf.fontColor,
               background: props.conf.color,
             }}
-            onClick={(e) => handleButtonClick(props.conf.key)}
-            disabled={props.disabled}
+            onClick={(e) => handleBClick()}
+            disabled={
+              props.disabled ||
+              (props.conf.buttonClickPattern === "once" &&
+                props.values?.length > 0)
+            }
           >
-            {props.conf.label}
+            {props.conf.buttonIcon?.length > 0 ? (
+              <i className={"fa-solid fa-" + props.conf.buttonIcon}></i>
+            ) : (
+              props.conf.label
+            )}
           </button>
         )}
         {props.conf.type === "user" && (
@@ -796,6 +887,64 @@ function CreatedCell(props) {
         {props.conf.type === "section-heading" && (
           <div className="section-heading-ctrl">{props.conf.label}</div>
         )}
+      </div>
+      <div className={"esign-modal " + (showESign ? " " : " close-flex")}>
+        <div className="create-job-header">
+          <div className="flex-row-title margin-btm">
+            <i className="fa-solid fa-signature new-job-icon"></i>
+            <div className="new-job-head">E-Sign</div>
+          </div>
+          <div className="new-esign-input">
+            <div className="new-esign-label">Username</div>
+            <div className="new-job-ta">
+              <input type="text" value={user} disabled></input>
+            </div>
+          </div>
+          <div className="new-esign-input">
+            <div className="new-esign-label">Password</div>
+            <div className="new-job-ta">
+              <input
+                type="password"
+                value={esignPwd}
+                onChange={(e) => setESignPwd(e.target.value)}
+                onKeyDown={(e) => pressedKey(e)}
+              ></input>
+            </div>
+          </div>
+          {props.conf.eSignType !== "Normal" && (
+            <div className="new-esign-input">
+              <div className="new-esign-label">Comment</div>
+              <div className="new-job-ta">
+                {props.conf.eSignType === "Freetext" && (
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  ></textarea>
+                )}
+                {props.conf.eSignType === "Dropdown" && (
+                  <select
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  >
+                    {props.conf.eSignOptions.split(",").map((o, i) => (
+                      <option key={i} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="flex-row-title">
+            <div className="btn-save" onClick={esign}>
+              E-Sign
+            </div>
+            <div className="btn-cancel" onClick={cancelESign}>
+              Cancel
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

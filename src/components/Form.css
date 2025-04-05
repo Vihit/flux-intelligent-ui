@@ -74,6 +74,7 @@
 .new-job-ta {
   width: 100%;
   text-align: left;
+  display: flex;
 }
 .btn-save {
   background-color: #00cc83;
@@ -98,6 +99,7 @@
   font-size: 1.4rem;
   box-shadow: 0.05rem 0.05rem 0.5rem black;
 }
+
 .esign-modal {
   position: fixed;
   top: 30%;
