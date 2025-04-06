@@ -304,6 +304,7 @@ function Form(props) {
       }
     });
   }
+
   function dataChanged(what, value) {
     setData((prev) => {
       let currData = { ...prev };
@@ -556,6 +557,7 @@ function Form(props) {
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
                       updateFormErrors={updateFormErrors}
+                      formErrors={formErrors}
                       raiseAlert={props.raiseAlert}
                     ></CreatedCell>
                   ) : (
@@ -587,6 +589,7 @@ function Form(props) {
                       sendEntry={prepareFinalDataAndSendEntry}
                       formId={props.form.id}
                       updateFormErrors={updateFormErrors}
+                      formErrors={formErrors}
                       raiseAlert={props.raiseAlert}
                     ></CreatedGrid>
                   );

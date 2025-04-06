@@ -17,6 +17,9 @@ function CreatedGrid(props) {
   const [showHistoryTab, setShowHistoryTab] = useState(false);
   const [histories, setHistories] = useState([]);
 
+  const gridRowDetails = getMessages();
+  const gridRowDeleteDisabled = getDisabledRows();
+
   function checkConditionalVisibility(row, col) {
     let controlConf = props.conf.controls[col];
     let rowData =
@@ -162,6 +165,51 @@ function CreatedGrid(props) {
     });
   };
 
+  function getMessages() {
+    let data =
+      props.formData[props.conf.key] != undefined
+        ? [...props.formData[props.conf.key]]
+        : [];
+    if (props.conf.gridRowDetailFormat?.length > 0) {
+      var msg = props.conf.gridRowDetailFormat;
+      var msgs = [...Array(props.values.length).keys()].map((a, i) => msg);
+      var reg = /\${(\w+)}/g;
+      var matches = msg.match(reg);
+      if (matches != null)
+        matches.forEach((variable) => {
+          data.forEach((d, i) => {
+            msgs[i] = msgs[i].replace(
+              variable,
+              data[i][variable.split(/{|}/)[1]]
+            );
+          });
+        });
+
+      return msgs;
+    } else {
+      return [];
+    }
+  }
+
+  function getDisabledRows() {
+    let dataa =
+      props.formData[props.conf.key] != undefined
+        ? [...props.formData[props.conf.key]]
+        : [];
+    var gridRowDisabledLogic = props.conf.disableRowLogic;
+    var gridRowStats = [...Array(props.values.length).keys()].map((a, i) => {
+      if (props.values[i]["id"] > 0) {
+        let data = dataa[i];
+        data["state"] = props.formData["state"];
+        return eval(gridRowDisabledLogic);
+      } else {
+        return false;
+      }
+    });
+
+    return gridRowStats;
+  }
+
   useEffect(() => {}, []);
 
   function addRow() {
@@ -182,80 +230,89 @@ function CreatedGrid(props) {
         props.values != undefined &&
         [...Array(props.values.length).keys()].map((j, inx) => {
           return (
-            <div className="grid-controls" key={inx}>
-              {[...Array(parseInt(props.conf.numCols)).keys()].map((i, idx) => {
-                return (
-                  <CreatedCell
-                    rowId={props.rowId}
-                    colId={idx}
-                    totalCells={props.conf.numCols}
-                    showConf={props.showConf}
-                    conf={
-                      checkConditionalVisibility(inx, idx)
-                        ? props.conf.controls[idx]
-                        : {}
-                    }
-                    key={"11" + props.rowId + "" + idx}
-                    clicked={false}
-                    vizChosen={props.vizChosen}
-                    gridControl={true}
-                    dataChanged={(a, b) => changed(j, a, b)}
-                    formData={props.formData}
-                    type={props.type}
-                    rowNum={j}
-                    disabled={props.disabled}
-                    values={
-                      props.formData == null ||
-                      props.formData[props.conf.key] == undefined
-                        ? null
-                        : props.formData[props.conf.key][inx][
-                            props.conf.controls[idx].key
-                          ]
-                    }
-                    sendEntry={props.sendEntry}
-                    gridKey={props.conf.key}
-                    dataUpdated={props.dataUpdated}
-                    formId={props.formId}
-                    updateFormErrors={props.updateFormErrors}
-                    raiseAlert={props.raiseAlert}
-                  ></CreatedCell>
-                );
-              })}
-
-              {(!props.disabled || props.conf.showHistory) && (
-                <div
-                  className={
-                    j > 0 ? "grid-creation-cell-wh" : "grid-creation-cell "
+            <>
+              <div className="grid-controls" key={inx}>
+                {[...Array(parseInt(props.conf.numCols)).keys()].map(
+                  (i, idx) => {
+                    return (
+                      <CreatedCell
+                        rowId={props.rowId}
+                        colId={idx}
+                        totalCells={props.conf.numCols}
+                        showConf={props.showConf}
+                        conf={
+                          checkConditionalVisibility(inx, idx)
+                            ? props.conf.controls[idx]
+                            : {}
+                        }
+                        key={"11" + props.rowId + "" + idx}
+                        clicked={false}
+                        vizChosen={props.vizChosen}
+                        gridControl={true}
+                        dataChanged={(a, b) => changed(j, a, b)}
+                        formData={props.formData}
+                        type={props.type}
+                        rowNum={j}
+                        disabled={props.disabled}
+                        values={
+                          props.formData == null ||
+                          props.formData[props.conf.key] == undefined
+                            ? null
+                            : props.formData[props.conf.key][inx][
+                                props.conf.controls[idx].key
+                              ]
+                        }
+                        sendEntry={props.sendEntry}
+                        gridKey={props.conf.key}
+                        dataUpdated={props.dataUpdated}
+                        formId={props.formId}
+                        updateFormErrors={props.updateFormErrors}
+                        raiseAlert={props.raiseAlert}
+                        formErrors={props.formErrors}
+                      ></CreatedCell>
+                    );
                   }
-                  style={{
-                    flexGrow: "0",
-                    minWidth: "1rem",
-                    width: "auto",
-                    background: "none",
-                  }}
-                >
-                  <div className="cell-name-grid"></div>
-                  <div className="gr-default-control">
-                    {!props.disabled && j == 0 && (
-                      <div className="filler"></div>
-                    )}
-                    {props.conf.showHistory && (
-                      <div
-                        className="history-gr"
-                        onClick={() => showHistory(j)}
-                      >
-                        <i className="fa-solid fa-history"></i>
-                      </div>
-                    )}
-                    {!props.disabled && (
-                      <div className="delete-gr" onClick={() => deleteRow(j)}>
-                        <i className="fa-solid fa-close"></i>
-                      </div>
-                    )}
+                )}
+
+                {(!props.disabled || props.conf.showHistory) && (
+                  <div
+                    className={
+                      j > 0 ? "grid-creation-cell-wh" : "grid-creation-cell "
+                    }
+                    style={{
+                      flexGrow: "0",
+                      minWidth: "1rem",
+                      width: "auto",
+                      background: "none",
+                    }}
+                  >
+                    <div className="cell-name-grid"></div>
+                    <div className="gr-default-control">
+                      {!props.disabled && j == 0 && (
+                        <div className="filler"></div>
+                      )}
+                      {props.conf.showHistory && (
+                        <div
+                          className="history-gr"
+                          onClick={() => showHistory(j)}
+                        >
+                          <i className="fa-solid fa-history"></i>
+                        </div>
+                      )}
+                      {!props.disabled && !gridRowDeleteDisabled[inx] && (
+                        <div className="delete-gr" onClick={() => deleteRow(j)}>
+                          <i className="fa-solid fa-close"></i>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+              {props.values[inx]["id"] > 0 &&
+                props.conf.gridRowDetailFormat?.length > 0 && (
+                  <div className="grid-row-detail">{gridRowDetails[inx]}</div>
+                )}
+            </>
           );
         })}
       {!props.disabled && (

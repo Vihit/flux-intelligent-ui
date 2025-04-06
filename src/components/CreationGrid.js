@@ -5,6 +5,9 @@ import CreationCell from "./CreationCell";
 
 function CreationGrid(props) {
   const [viz, setViz] = useState(props.conf.type);
+  const [gridDetailMessage, setGridDetailMessage] = useState(
+    props.conf.gridRowDetailFormat?.length > 0 ? {} : ""
+  );
 
   const [{ isOver }, drop] = useDrop({
     accept: "control-option",

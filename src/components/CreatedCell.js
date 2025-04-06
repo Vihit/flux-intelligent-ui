@@ -308,7 +308,10 @@ function CreatedCell(props) {
         .then((actualData) => {
           if (props.conf.type === "multiselect" && actualData != []) {
             setRefMulData(actualData);
-          } else if (props.conf.type === "text") {
+          } else if (
+            props.conf.type === "text" ||
+            props.conf.type === "hidden"
+          ) {
             const arr = [];
             arr.push(actualData.value);
             changed(props.conf.key, actualData.value);
@@ -362,11 +365,7 @@ function CreatedCell(props) {
           key: props.conf.key,
           preventSubmission: true,
         });
-        props.raiseAlert(
-          "red",
-          eval('"' + props.conf.errorMessage + '"'),
-          5000
-        );
+        props.raiseAlert("red", eval(props.conf.errorMessage), 5000);
       } else {
         props.updateFormErrors({
           key: props.conf.key,
@@ -413,7 +412,11 @@ function CreatedCell(props) {
           return ad;
         });
         let inputType = props.conf.type;
-        if (inputType === "text" || inputType === "textarea") {
+        if (
+          inputType === "text" ||
+          inputType === "textarea" ||
+          inputType === "hidden"
+        ) {
           changed(
             props.conf.key,
             actualData.data
@@ -472,7 +475,7 @@ function CreatedCell(props) {
     }
   }
 
-  return (
+  return props.conf.type !== "hidden" ? (
     <div
       className={
         props.conf.label !== undefined
@@ -712,7 +715,22 @@ function CreatedCell(props) {
               color: props.conf.fontColor,
               background: props.conf.color,
             }}
-            onClick={(e) => handleBClick()}
+            onClick={(e) => {
+              if (
+                props.formErrors.filter((e) => e.preventSubmission).length == 0
+              ) {
+                handleBClick();
+              } else {
+                props.raiseAlert(
+                  "red",
+                  "Please resolve form error with : " +
+                    props.formErrors
+                      .filter((e) => e.preventSubmission)
+                      .map((e) => e.key)
+                      .join(",")
+                );
+              }
+            }}
             disabled={
               props.disabled ||
               (props.conf.buttonClickPattern === "once" &&
@@ -947,6 +965,8 @@ function CreatedCell(props) {
         </div>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }
 

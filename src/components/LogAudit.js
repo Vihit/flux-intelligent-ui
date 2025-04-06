@@ -32,7 +32,9 @@ function LogAudit(props) {
   sortedEntries.forEach((entry) => {
     sCtrls.push(
       controls
-        .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+        .filter(
+          (ctrl) => !["hidden", "grid", "section-heading"].includes(ctrl.type)
+        )
         .filter((ctrl) => checkConditionalVisibilityAgainst(ctrl, entry))
         .map((c) => {
           return { key: c.key, label: c.label };
@@ -612,7 +614,8 @@ function LogAudit(props) {
                                 <div className="n-g-a-head">
                                   {gridControls
                                     .filter((c) => c.key === data.grid)[0]
-                                    .controls.map((c) => c.label)
+                                    .controls.filter((c) => c.type !== "hidden")
+                                    .map((c) => c.label)
                                     .map((k) => (
                                       <div className="n-g-a-cell">{k}</div>
                                     ))}
@@ -620,7 +623,8 @@ function LogAudit(props) {
                                 <div className="n-g-a-log">
                                   {gridControls
                                     .filter((c) => c.key === data.grid)[0]
-                                    .controls.map((c) => c.key)
+                                    .controls.filter((c) => c.type !== "hidden")
+                                    .map((c) => c.key)
                                     .map((k) => (
                                       <div className="n-g-a-cell">
                                         {data[k]}
@@ -635,7 +639,8 @@ function LogAudit(props) {
                                 <div className="n-g-a-log">
                                   {gridControls
                                     .filter((c) => c.key === data.grid)[0]
-                                    .controls.map((c) => c.key)
+                                    .controls.filter((c) => c.type !== "hidden")
+                                    .map((c) => c.key)
                                     .map((k) => (
                                       <div className="n-g-a-cell">
                                         {data[k]}
