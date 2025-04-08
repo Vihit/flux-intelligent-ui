@@ -10,13 +10,6 @@ import logo from "./../siq.png";
 function LogAudit(props) {
   const parsedForm = JSON.parse(props.form.template);
   const controls = parsedForm["controls"].flatMap((ctrl) => ctrl);
-  // const fLabels = controls
-  //   .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-  //   .map((c) => c.label);
-  // const fKeys = controls
-  //   .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-  //   .map((c) => c.key);
-
   const attachments = controls.filter((ctrl) => ctrl.type === "attachment");
   const gridControls = controls.filter((ctrl) => ctrl.type === "grid");
   const gridLabels = gridControls.map((c) => c.label);
@@ -571,7 +564,7 @@ function LogAudit(props) {
             for (let g = 0; g < gridLabels.length; g++)
               if ((sortedEntries.length == 1 && i == 0) || i > 0) {
                 td.push(
-                  <div className="g-row">
+                  <div className="g-row" key={i + "3" + g}>
                     <div className="g-row-head">{gridLabels[g]}</div>
                     <div className="g-data-container">
                       {gridLogs

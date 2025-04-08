@@ -39,6 +39,7 @@ function CreatedGrid(props) {
       else if (op === ">=") return rowData[dep] >= value;
       else if (op === "<") return rowData[dep] < value;
       else if (op === "<=") return rowData[dep] <= value;
+      else if (op === "in") return value.split(",").includes(rowData[dep]);
     } else {
       return true;
     }

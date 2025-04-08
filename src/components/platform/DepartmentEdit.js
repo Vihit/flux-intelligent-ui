@@ -137,7 +137,7 @@ function DepartmentEdit(props) {
                     ? config.multiSelectStyle
                     : config.platformMultiSelectStyle
                 }
-                disabled={props.disabled}
+                disable={props.disabled}
                 onSelect={(e) => {
                   deptChanged("hod", e[0]["username"]);
                 }}
@@ -168,7 +168,7 @@ function DepartmentEdit(props) {
                     ? config.multiSelectStyle
                     : config.platformMultiSelectStyle
                 }
-                disabled={props.disabled}
+                disable={props.disabled}
                 onSelect={(e) => {
                   deptChanged("designee1", e[0]["username"]);
                 }}
@@ -196,7 +196,7 @@ function DepartmentEdit(props) {
                     ? config.multiSelectStyle
                     : config.platformMultiSelectStyle
                 }
-                disabled={props.disabled}
+                disable={props.disabled}
                 onSelect={(e) => {
                   deptChanged("designee2", e[0]["username"]);
                 }}

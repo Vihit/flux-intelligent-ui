@@ -43,6 +43,7 @@ function CreatedCell(props) {
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [comment, setComment] = useState("");
+  const [userDetailOptions, setUserDetailOptions] = useState([]);
 
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
 
@@ -325,12 +326,18 @@ function CreatedCell(props) {
         });
     }
     if (props.conf.type === "user" && !props.disabled && props.values == null) {
-      changed(
-        props.conf.key,
-        JSON.parse(localStorage.getItem("user"))[
-          props.conf.userDetail === "username" ? "sub" : props.conf.userDetail
-        ]
-      );
+      if (!props.conf.allowSelection)
+        changed(
+          props.conf.key,
+          JSON.parse(localStorage.getItem("user"))[
+            props.conf.userDetail === "username" ? "sub" : props.conf.userDetail
+          ]
+        );
+      else {
+        setUserDetailOptions(
+          JSON.parse(localStorage.getItem("user"))[props.conf.userDetail]
+        );
+      }
     }
     if (props.conf.type === "all-users" && !props.disabled) {
       fetchUsersData();
@@ -360,7 +367,7 @@ function CreatedCell(props) {
           : {};
       let isError = eval(props.conf.errorCondition);
 
-      if (isError) {
+      if (isError && !props.conf.allowSubmitOnError) {
         props.updateFormErrors({
           key: props.conf.key,
           preventSubmission: true,
@@ -744,7 +751,37 @@ function CreatedCell(props) {
             )}
           </button>
         )}
-        {props.conf.type === "user" && (
+        {props.conf.type === "user" && props.conf.allowSelection && (
+          <Multiselect
+            style={
+              (props.values == undefined
+                ? refMulData.selected
+                : props.values != null && props.values.length > 0
+                ? props.values.split(",")
+                : ""
+              )?.length == 0
+                ? config.multiSelectStyle
+                : config.platformMultiSelectStyle
+            }
+            avoidHighlightFirstOption={true}
+            disable={props.disabled}
+            onSelect={(e) => {
+              changed(props.conf.key, e.join(","));
+            }}
+            onRemove={(e) => changed(props.conf.key, e.join(","))}
+            selectedValues={
+              props.values == undefined
+                ? refMulData.selected
+                : props.values != null && props.values.length > 0
+                ? props.values.split(",")
+                : ""
+            }
+            isObject={false}
+            options={userDetailOptions}
+            selectionLimit={props.conf.selectionLimit}
+          ></Multiselect>
+        )}
+        {props.conf.type === "user" && !props.conf.allowSelection && (
           <input
             type="text"
             placeholder={props.conf.placeholder}
@@ -757,7 +794,7 @@ function CreatedCell(props) {
           <Multiselect
             style={config.multiSelectStyle}
             avoidHighlightFirstOption={true}
-            disabled={props.disabled}
+            disable={props.disabled}
             onSelect={(e) => {
               changed(
                 props.conf.key,
@@ -816,7 +853,7 @@ function CreatedCell(props) {
                   : config.platformMultiSelectStyle
               }
               avoidHighlightFirstOption={true}
-              disabled={props.disabled}
+              disable={props.disabled}
               onSelect={(e) => {
                 changed(props.conf.key, e.join(","));
               }}
@@ -836,12 +873,13 @@ function CreatedCell(props) {
                     : refMulData.all
                   : refData
               }
+              selectionLimit={props.conf.selectionLimit}
             ></Multiselect>
           ) : (
             <Multiselect
               style={config.multiSelectStyle}
               avoidHighlightFirstOption={true}
-              disabled={props.disabled}
+              disable={props.disabled}
               onSelect={(e) => changed(props.conf.key, e.join(","))}
               onRemove={(e) => changed(props.conf.key, e.join(","))}
               selectedValues={
@@ -849,6 +887,7 @@ function CreatedCell(props) {
               }
               isObject={false}
               options={props.conf.selectValues.split(",")}
+              selectionLimit={props.conf.selectionLimit}
             ></Multiselect>
           ))}
         {props.conf.type === "multiselect" && props.disabled && (
