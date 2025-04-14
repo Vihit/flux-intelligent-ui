@@ -25,10 +25,39 @@ function Pending(props) {
   const [gridLogEntryId, setGridLogEntryId] = useState(-1);
   const [logEntryId, setLogEntryId] = useState(-1);
   const [update, setUpdate] = useState(0);
+  const timeZone = JSON.parse(localStorage.getItem("user"))["timezone"];
+  const userTimezone = timeZone?.length > 0 ? timeZone : "Asia/Kolkata";
 
   useEffect(() => {
     getPendingLogEntries(props.form);
   }, [update, props.reload]);
+
+  function convertUTCToTimeZone(utcString, timeZone) {
+    console.log(utcString + "Z");
+    const date = new Date(utcString != null ? utcString + "Z" : null); // Treats as UTC if string has "Z" or uses Date.UTC
+
+    const options = {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    // Format using the target timezone
+    const formatter = new Intl.DateTimeFormat("en-GB", options);
+    const parts = formatter.formatToParts(date);
+
+    const extract = (type) => parts.find((p) => p.type === type)?.value;
+    const formatted = `${extract("year")}-${extract("month")}-${extract(
+      "day"
+    )} ${extract("hour")}:${extract("minute")}:${extract("second")}`;
+
+    return formatted;
+  }
 
   function refresh(x) {
     setUpdate(x);
@@ -100,13 +129,26 @@ function Pending(props) {
         var settings = JSON.parse(f.settings);
         var filterColumns = settings.view.filters;
         fKeys.forEach((element, inx) => {
-          matCols.push({
-            accessorKey: element,
-            header: fLabels[inx],
-            enableColumnFilter: filterColumns.split(",").includes(element),
-          });
+          if (matCols.filter((m) => m.accessorKey === element).length == 0) {
+            matCols.push({
+              accessorKey: element,
+              header: fLabels[inx],
+              enableColumnFilter: filterColumns.split(",").includes(element),
+            });
+          }
         });
-        setTableData({ rows: actualData, header: matCols });
+        setTableData({
+          rows: actualData.map((d) => {
+            let data = { ...d };
+            Object.keys(d)
+              .filter((k) => k.endsWith("_dt"))
+              .forEach((k) => {
+                data[k] = convertUTCToTimeZone(data[k], userTimezone);
+              });
+            return data;
+          }),
+          header: matCols,
+        });
       });
   }
 
@@ -231,7 +273,17 @@ function Pending(props) {
 
       if (response.ok) {
         const actualData = await response.json();
-        setAllEntries(actualData.data);
+        setAllEntries(
+          actualData.data.map((d) => {
+            let data = { ...d };
+            Object.keys(d)
+              .filter((k) => k.endsWith("_dt"))
+              .forEach((k) => {
+                data[k] = convertUTCToTimeZone(data[k], userTimezone);
+              });
+            return data;
+          })
+        );
       }
     } catch (error) {
       // Handle errors here

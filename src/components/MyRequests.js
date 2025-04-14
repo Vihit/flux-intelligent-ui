@@ -28,6 +28,8 @@ function MyRequests(props) {
   const [gridLogEntryId, setGridLogEntryId] = useState(-1);
   const [logEntryId, setLogEntryId] = useState(-1);
   const [update, setUpdate] = useState(0);
+  const timeZone = JSON.parse(localStorage.getItem("user"))["timezone"];
+  const userTimezone = timeZone?.length > 0 ? timeZone : "Asia/Kolkata";
 
   useEffect(() => {
     props.raiseAlert("loading", "start");
@@ -37,6 +39,33 @@ function MyRequests(props) {
   function refresh(x) {
     setUpdate(x);
     props.refreshNotifications();
+  }
+
+  function convertUTCToTimeZone(utcString, timeZone) {
+    console.log(utcString + "Z");
+    const date = new Date(utcString != null ? utcString + "Z" : null); // Treats as UTC if string has "Z" or uses Date.UTC
+
+    const options = {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    // Format using the target timezone
+    const formatter = new Intl.DateTimeFormat("en-GB", options);
+    const parts = formatter.formatToParts(date);
+
+    const extract = (type) => parts.find((p) => p.type === type)?.value;
+    const formatted = `${extract("year")}-${extract("month")}-${extract(
+      "day"
+    )} ${extract("hour")}:${extract("minute")}:${extract("second")}`;
+
+    return formatted;
   }
 
   function getLogEntries(f) {
@@ -98,7 +127,18 @@ function MyRequests(props) {
             enableColumnFilter: filterColumns?.split(",").includes(element),
           });
         });
-        setTableData({ rows: actualData.data, header: matCols });
+        setTableData({
+          rows: actualData.data.map((d) => {
+            let data = { ...d };
+            Object.keys(d)
+              .filter((k) => k.endsWith("_dt"))
+              .forEach((k) => {
+                data[k] = convertUTCToTimeZone(data[k], userTimezone);
+              });
+            return data;
+          }),
+          header: matCols,
+        });
         setTotalRows(actualData.totalRows);
         props.raiseAlert("loading", "end");
       });
@@ -242,7 +282,17 @@ function MyRequests(props) {
 
       if (response.ok) {
         const actualData = await response.json();
-        setAllEntries(actualData.data);
+        setAllEntries(
+          actualData.data.map((d) => {
+            let data = { ...d };
+            Object.keys(d)
+              .filter((k) => k.endsWith("_dt"))
+              .forEach((k) => {
+                data[k] = convertUTCToTimeZone(data[k], userTimezone);
+              });
+            return data;
+          })
+        );
       }
     } catch (error) {
       // Handle errors here
@@ -536,7 +586,7 @@ function MyRequests(props) {
           })}
           raiseAlert={props.raiseAlert}
           key={props.form.id}
-          type={props.type}
+          type={"view"}
           setUpdate={refresh}
         ></Form>
       )}

@@ -20,19 +20,26 @@ function UserDashboard(props) {
   const [hiddenColumns, setHiddenColumns] = useState({});
   const [detailColumns, setDetailColumns] = useState([]);
   const [prevIndex, setPrevIndex] = useState(0);
-  const [option, setOption] = useState("");
+  const [option, setOption] = useState("pending");
   const [initiated, setInitiated] = useState(false);
   const [entry, setEntry] = useState({ id: -1 });
   const [gridEntries, setGridEntries] = useState([]);
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
-    getAllForms();
-    getInitForms();
-    getAccessibleForms();
-    getLastStateAccessibleForms();
-    setOption("");
-    setSelectedForm({});
+    console.log(selectedForm);
+    console.log(allForms);
+    if (allForms.length == 0) {
+      getInitForms();
+      getAccessibleForms();
+      getLastStateAccessibleForms();
+      getAllForms();
+      setSelectedForm({});
+      console.log(selectedForm);
+    } else {
+      setReload((prev) => prev + 1);
+    }
+    setOption("pending");
   }, [props.id, props.selectedFormId]);
 
   function getAllForms() {
@@ -61,7 +68,6 @@ function UserDashboard(props) {
             .map((c) => c.key)
             .concat([
               "id",
-              "state",
               "created_by",
               "log_create_dt",
               "updated_by",
@@ -69,7 +75,6 @@ function UserDashboard(props) {
             ]);
           var settings = JSON.parse(f.settings);
           var viewColumns = settings?.view?.columns;
-          var filterColumns = settings?.view?.filters;
           var detailCols = settings?.view?.details;
           var fLabels = JSON.parse(f.template)
             ["controls"].flatMap((ctrl) => ctrl)
@@ -77,7 +82,6 @@ function UserDashboard(props) {
             .map((c) => c.label)
             .concat([
               "ID",
-              "State",
               "Created By",
               "Log Create Dt",
               "Updated By",
@@ -91,6 +95,7 @@ function UserDashboard(props) {
             if (detailCols?.split(",").includes(element))
               detailColumns.push({ key: element, label: fLabels[inx] });
           });
+          console.log(hiddenColumns);
           setHiddenColumns(hiddenColumns);
           setDetailColumns(detailColumns);
         }
@@ -114,13 +119,6 @@ function UserDashboard(props) {
       })
       .then((actualData) => {
         setForms(actualData);
-        // let apps = actualData
-        //   .map((f) => f.app)
-        //   .reduce((op, a) => {
-        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-        //     return op;
-        //   }, []);
-        // setIApps(apps);
       });
   }
 
@@ -141,14 +139,6 @@ function UserDashboard(props) {
       })
       .then((actualData) => {
         setAccessibleForms(actualData);
-
-        // let apps = actualData
-        //   .map((f) => f.app)
-        //   .reduce((op, a) => {
-        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-        //     return op;
-        //   }, []);
-        // setAApps(apps);
       });
   }
 
@@ -169,14 +159,6 @@ function UserDashboard(props) {
       })
       .then((actualData) => {
         setLastStateAccessibleForms(actualData);
-
-        // let apps = actualData
-        //   .map((f) => f.app)
-        //   .reduce((op, a) => {
-        //     if (op.filter((oA) => oA.id == a.id).length == 0) op.push(a);
-        //     return op;
-        //   }, []);
-        // setLSAApps(apps);
       });
   }
 
@@ -221,7 +203,6 @@ function UserDashboard(props) {
                     .map((c) => c.key)
                     .concat([
                       "id",
-                      "state",
                       "created_by",
                       "log_create_dt",
                       "updated_by",
@@ -229,7 +210,6 @@ function UserDashboard(props) {
                     ]);
                   var settings = JSON.parse(f.settings);
                   var viewColumns = settings?.view?.columns;
-                  var filterColumns = settings?.view?.filters;
                   var detailCols = settings?.view?.details;
                   var fLabels = JSON.parse(f.template)
                     ["controls"].flatMap((ctrl) => ctrl)
@@ -239,7 +219,6 @@ function UserDashboard(props) {
                     .map((c) => c.label)
                     .concat([
                       "ID",
-                      "State",
                       "Created By",
                       "Log Create Dt",
                       "Updated By",
@@ -253,6 +232,7 @@ function UserDashboard(props) {
                     if (detailCols?.split(",").includes(element))
                       detailColumns.push({ key: element, label: fLabels[inx] });
                   });
+                  console.log(hiddenColumns);
                   setHiddenColumns(hiddenColumns);
                   setDetailColumns(detailColumns);
                 }}
@@ -334,7 +314,7 @@ function UserDashboard(props) {
           refreshNotifications={props.refreshNotifications}
         ></AllRequests>
       )}
-      {option === "pending" && (
+      {selectedForm.id > 0 && option === "pending" && (
         <Pending
           detailColumns={detailColumns}
           hiddenColumns={hiddenColumns}

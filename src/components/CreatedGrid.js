@@ -233,6 +233,39 @@ function CreatedGrid(props) {
           return (
             <>
               <div className="grid-controls" key={inx}>
+                {(!props.disabled || props.conf.showHistory) && (
+                  <div
+                    className={
+                      j > 0 ? "grid-creation-cell-wh" : "grid-creation-cell "
+                    }
+                    style={{
+                      flexGrow: "0",
+                      minWidth: "2.5rem",
+                      width: "auto",
+                      background: "none",
+                    }}
+                  >
+                    <div className="cell-name-grid"></div>
+                    <div className="gr-default-control">
+                      {/* {!props.disabled && j == 0 && (
+                        <div className="filler"></div>
+                      )} */}
+                      {props.conf.showHistory && (
+                        <div
+                          className="history-gr"
+                          onClick={() => showHistory(j)}
+                        >
+                          <i className="fa-solid fa-history"></i>
+                        </div>
+                      )}
+                      {!props.disabled && !gridRowDeleteDisabled[inx] && (
+                        <div className="delete-gr" onClick={() => deleteRow(j)}>
+                          <i className="fa-solid fa-close"></i>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 {[...Array(parseInt(props.conf.numCols)).keys()].map(
                   (i, idx) => {
                     return (
@@ -273,40 +306,6 @@ function CreatedGrid(props) {
                       ></CreatedCell>
                     );
                   }
-                )}
-
-                {(!props.disabled || props.conf.showHistory) && (
-                  <div
-                    className={
-                      j > 0 ? "grid-creation-cell-wh" : "grid-creation-cell "
-                    }
-                    style={{
-                      flexGrow: "0",
-                      minWidth: "1rem",
-                      width: "auto",
-                      background: "none",
-                    }}
-                  >
-                    <div className="cell-name-grid"></div>
-                    <div className="gr-default-control">
-                      {!props.disabled && j == 0 && (
-                        <div className="filler"></div>
-                      )}
-                      {props.conf.showHistory && (
-                        <div
-                          className="history-gr"
-                          onClick={() => showHistory(j)}
-                        >
-                          <i className="fa-solid fa-history"></i>
-                        </div>
-                      )}
-                      {!props.disabled && !gridRowDeleteDisabled[inx] && (
-                        <div className="delete-gr" onClick={() => deleteRow(j)}>
-                          <i className="fa-solid fa-close"></i>
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 )}
               </div>
               {props.values[inx]["id"] > 0 &&

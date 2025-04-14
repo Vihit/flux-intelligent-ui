@@ -40,10 +40,12 @@ function CreatedCell(props) {
   );
   const [usersData, setUsersData] = useState([]);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showESign, setShowESign] = useState(false);
   const [esignPwd, setESignPwd] = useState("");
   const [comment, setComment] = useState("");
   const [userDetailOptions, setUserDetailOptions] = useState([]);
+  const [cellValue, setCellValue] = useState(props.values);
 
   let user = JSON.parse(localStorage.getItem("user"))["sub"];
 
@@ -90,6 +92,7 @@ function CreatedCell(props) {
             } else {
               fVal = cVal;
             }
+            console.log(fVal);
             props.dataChanged(what, fVal);
           } else {
             props.dataChanged(what, value);
@@ -237,6 +240,55 @@ function CreatedCell(props) {
     setComment("");
   }
 
+  // const utcFormatted = localDate.toLocaleString("en-GB", {
+  //   timeZone: "UTC",
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "2-digit",
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  //   second: "2-digit",
+  //   hour12: false,
+  // });
+
+  function convertLocalToUtc(inputStr) {
+    const localDate = new Date(inputStr); // Interpreted as local time
+
+    const pad = (n) => String(n).padStart(2, "0");
+    console.log(localDate);
+    const utcFormatted = `${localDate.getUTCFullYear()}-${pad(
+      localDate.getUTCMonth() + 1
+    )}-${pad(localDate.getUTCDate())} ${pad(localDate.getUTCHours())}:${pad(
+      localDate.getUTCMinutes()
+    )}:${pad(localDate.getUTCSeconds())}`;
+
+    return utcFormatted;
+  }
+
+  function convertUtcToDatetimeLocal(utcStr) {
+    // Step 1: Parse UTC string to a Date object
+    console.log(utcStr);
+    const [datePart, timePart] = utcStr.split(/[T ]/);
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hour, minute, second] = timePart.split(":").map(Number);
+
+    // Use Date.UTC to treat it as UTC
+    const utcDate = new Date(
+      Date.UTC(year, month - 1, day, hour, minute, second)
+    );
+
+    // Step 2: Format to local datetime-local string
+    const pad = (n) => String(n).padStart(2, "0");
+
+    const localStr = `${utcDate.getFullYear()}-${pad(
+      utcDate.getMonth() + 1
+    )}-${pad(utcDate.getDate())} ${pad(utcDate.getHours())}:${pad(
+      utcDate.getMinutes()
+    )}:${pad(utcDate.getSeconds())}`;
+    console.log(localStr);
+    return localStr;
+  }
+
   useEffect(() => {
     let aData = props.gridControl
       ? props.formData[props.gridKey] != undefined
@@ -256,7 +308,10 @@ function CreatedCell(props) {
           : {}
         : props.formData
     );
-    if (props.conf.referData && !props.disabled) {
+    if (
+      props.conf.referData &&
+      (!props.disabled || props.conf.type === "hidden")
+    ) {
       var check = false;
       let conds = props.conf.referenceFilterQuery;
       if (props.conf.referenceFilterQuery.length > 0) {
@@ -281,7 +336,10 @@ function CreatedCell(props) {
           conds
         );
     }
-    if (props.conf.referApi && !props.disabled) {
+    if (
+      props.conf.referApi &&
+      (!props.disabled || props.conf.type === "hidden")
+    ) {
       let url = props.conf.apiUrl;
       var reg = /\${(\w+)}/g;
       var matches = url.match(reg);
@@ -345,14 +403,11 @@ function CreatedCell(props) {
     if (
       props.conf.type === "datetime" &&
       props.conf.dateDefaultValue === "sysdate" &&
-      props.values == null
+      !props.disabled
+      //&&
+      //props.values == null
     ) {
-      changed(
-        props.conf.key,
-        new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-          .toISOString()
-          .substring(0, 19)
-      );
+      changed(props.conf.key, new Date().toISOString().substring(0, 19));
     }
     if (props.conf.type === "formula" && !props.disabled) {
       var value = eval(props.conf.formula.replaceAll("data", "props.formData"));
@@ -365,21 +420,47 @@ function CreatedCell(props) {
         props.gridControl && props.formData[props.gridKey] != undefined
           ? { ...props.formData[props.gridKey][props.rowNum] }
           : {};
+      let allGrData =
+        props.gridControl && props.formData[props.gridKey] != undefined
+          ? [...props.formData[props.gridKey]]
+          : [];
+      let index = props.rowNum;
+      console.log(allGrData);
       let isError = eval(props.conf.errorCondition);
+      console.log("Evaluating " + props.conf.errorCondition);
+      console.log(eval(props.conf.errorCondition));
 
       if (isError && !props.conf.allowSubmitOnError) {
         props.updateFormErrors({
           key: props.conf.key,
           preventSubmission: true,
+          label: props.conf.label,
+          isError: true,
         });
-        props.raiseAlert("red", eval(props.conf.errorMessage), 5000);
+        let errMsg = eval(props.conf.errorMessage);
+        setErrorMessage(errMsg);
+        // props.raiseAlert("red", errMsg, 5000);
+      } else if (isError && props.conf.allowSubmitOnError) {
+        props.updateFormErrors({
+          key: props.conf.key,
+          preventSubmission: false,
+          label: props.conf.label,
+          isError: true,
+        });
+        let errMsg = eval(props.conf.errorMessage);
+        setErrorMessage(errMsg);
+        // props.raiseAlert("red", errMsg, 5000);
       } else {
         props.updateFormErrors({
           key: props.conf.key,
           preventSubmission: false,
           label: props.conf.label,
+          isError: false,
         });
+        setErrorMessage("");
+        // props.raiseAlert("green", "All fields are valid!");
       }
+      console.log(isError);
       setError(isError);
     }
   }, [props.dataUpdated]);
@@ -488,17 +569,20 @@ function CreatedCell(props) {
         props.conf.label !== undefined
           ? props.gridControl
             ? props.rowNum > 0
-              ? error
-                ? "grid-creation-cell-wh error-cell"
-                : "grid-creation-cell-wh"
-              : error
-              ? "grid-creation-cell error-cell "
-              : "grid-creation-cell "
+              ? // error
+                //   ? "grid-creation-cell-wh error-cell"
+                //   :
+                "grid-creation-cell-wh"
+              : // error
+                // ? "grid-creation-cell error-cell "
+                // :
+                "grid-creation-cell "
             : props.conf.type === ""
             ? "trans-cell"
-            : error
-            ? "created-cell error-cell"
-            : "created-cell "
+            : // error
+              // ? "created-cell error-cell"
+              // :
+              "created-cell "
           : "empty-created-cell"
       }
       style={{
@@ -511,6 +595,32 @@ function CreatedCell(props) {
         background: props.conf.type === "button" ? "none" : "var(--main)",
       }}
     >
+      {error &&
+        (props.conf.allowSubmitOnError ? (
+          <div className="err warn">
+            <div className="fa-stack-1x">
+              <i className="fa fa-play"></i>
+            </div>
+            <i className="fa-solid fa-triangle-exclamation fa-stack-2x"></i>
+          </div>
+        ) : (
+          <div className="err error">
+            <i className="fa-regular fa-circle-exclamation"></i>
+          </div>
+        ))}
+      {error && (
+        <div
+          className="err-msg"
+          style={{
+            // backgroundColor: props.conf.allowSubmitOnError
+            //   ? "#ffbf00"
+            //   : "#d2222d",
+            color: props.conf.allowSubmitOnError ? "#ffbf00" : "#d2222d",
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
       <div
         className={
           (props.gridControl
@@ -553,7 +663,10 @@ function CreatedCell(props) {
               props.conf.referApi && !props.disabled ? refData[0] : props.values
             }
             disabled={props.disabled}
-            onChange={(e) => changed(props.conf.key, e.target.value)}
+            onChange={(e) => {
+              if (!(props.conf.referData || props.conf.referApi))
+                changed(props.conf.key, e.target.value);
+            }}
           ></input>
         )}
         {props.conf.type === "formula" && (
@@ -569,9 +682,10 @@ function CreatedCell(props) {
           <input
             type="number"
             placeholder={props.conf.placeholder}
-            value={props.values}
+            value={cellValue}
             disabled={props.disabled}
-            onChange={(e) => changed(props.conf.key, e.target.value)}
+            onChange={(e) => setCellValue(e.target.value)}
+            onBlur={() => changed(props.conf.key, cellValue)}
           ></input>
         )}
         {props.conf.type === "select" && !props.disabled && (
@@ -695,18 +809,20 @@ function CreatedCell(props) {
               (props.values == undefined || props.values == null) &&
               props.conf.dateDefaultValue != ""
                 ? props.conf.dateDefaultValue === "sysdate"
-                  ? new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-                      .toISOString()
-                      .substring(0, 19)
-                  : new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-                      .toISOString()
-                      .substring(0, 19)
-                : props.values
+                  ? convertUtcToDatetimeLocal(
+                      new Date(now.getTime()).toISOString().substring(0, 19)
+                    )
+                  : convertUtcToDatetimeLocal(
+                      new Date(now.getTime()).toISOString().substring(0, 19)
+                    )
+                : convertUtcToDatetimeLocal(props.values)
             }
             disabled={
               props.conf.dateDefaultValue === "sysdate" ? true : props.disabled
             }
-            onChange={(e) => changed(props.conf.key, e.target.value)}
+            onChange={(e) =>
+              changed(props.conf.key, convertLocalToUtc(e.target.value))
+            }
           ></input>
         )}
         {props.conf.type === "button" && (

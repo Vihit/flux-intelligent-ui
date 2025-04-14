@@ -65,10 +65,15 @@ function Form(props) {
   function updateFormErrors(data) {
     setFormErrors((prev) => {
       let toBeUpdated = [...prev];
-      if (toBeUpdated.filter((d) => d.key === data.key).length > 0) {
+      if (data["isError"]) {
+        console.log("Adding error");
+        if (toBeUpdated.filter((d) => d.key === data.key).length == 0) {
+          toBeUpdated.push(data);
+        }
+      } else {
         toBeUpdated = toBeUpdated.filter((d) => d.key !== data.key);
       }
-      toBeUpdated.push(data);
+      console.log(toBeUpdated);
       return toBeUpdated;
     });
   }
@@ -105,11 +110,13 @@ function Form(props) {
   }
 
   function send() {
+    console.log(data);
     var finalData = {};
     var check = false;
     conf
       .flatMap((f) => f)
       .forEach((ctrl) => {
+        console.log(ctrl);
         if (
           stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
           JSON.parse(ctrl.isRequired || ctrl.isRequired == undefined) &&
@@ -119,6 +126,28 @@ function Form(props) {
         ) {
           props.raiseAlert("red", "Please fill up " + ctrl.label, 3000);
           check = true;
+        }
+        if (
+          stateConfig.visibleColumns.split(",").includes(ctrl.key) &&
+          ctrl.type === "grid" &&
+          data[ctrl.key]?.length > 0
+        ) {
+          ctrl.controls
+            .filter((gCtrl) => gCtrl.isRequired)
+            .forEach((gCtrl) => {
+              data[ctrl.key].forEach((datum) => {
+                console.log(datum);
+                if (datum[gCtrl.key] === "" || datum[gCtrl.key] == undefined) {
+                  check = true;
+                  console.log(`Missing ${gCtrl.key}`);
+                  props.raiseAlert(
+                    "red",
+                    "Please fill up " + gCtrl.label,
+                    3000
+                  );
+                }
+              });
+            });
         }
       });
     conf

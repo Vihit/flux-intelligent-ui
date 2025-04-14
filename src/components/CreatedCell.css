@@ -84,6 +84,8 @@
 
 .optionListContainer {
   position: relative !important;
+  /* top: 5rem;
+  z-index: 1000; */
 }
 
 .attachment-disabled {
@@ -178,4 +180,66 @@
 
 .error-cell {
   background-color: var(--red) !important;
+}
+
+.err {
+  position: absolute;
+  left: 0rem;
+  bottom: 0rem;
+  font-size: 2.4rem;
+  width: 15%;
+  height: 5rem;
+  /* border: 1px solid red; */
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.err-msg {
+  display: none;
+}
+
+.err:hover + .err-msg {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 600;
+  position: absolute;
+  left: 1%;
+  bottom: -5%;
+  /* background-color: #ffbf00; */
+  background-color: black;
+  /* color: #ffbf00; */
+  /* border-width: 0.1rem;
+  border-style: solid; */
+  padding: 1rem 2rem 1rem 4rem;
+  border-radius: 2rem;
+  z-index: 2;
+}
+
+.warn {
+  color: #ffbf00;
+}
+
+.error {
+  color: #d2222d;
+}
+
+.fa-stack-1x {
+  color: black;
+  z-index: 1;
+  font-size: 2.3rem;
+  /* -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg); */
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+.fa-stack-2x {
+  z-index: 2;
+  font-size: 2.4rem;
 }
