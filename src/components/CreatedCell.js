@@ -92,7 +92,6 @@ function CreatedCell(props) {
             } else {
               fVal = cVal;
             }
-            console.log(fVal);
             props.dataChanged(what, fVal);
           } else {
             props.dataChanged(what, value);
@@ -255,7 +254,6 @@ function CreatedCell(props) {
     const localDate = new Date(inputStr); // Interpreted as local time
 
     const pad = (n) => String(n).padStart(2, "0");
-    console.log(localDate);
     const utcFormatted = `${localDate.getUTCFullYear()}-${pad(
       localDate.getUTCMonth() + 1
     )}-${pad(localDate.getUTCDate())} ${pad(localDate.getUTCHours())}:${pad(
@@ -266,8 +264,6 @@ function CreatedCell(props) {
   }
 
   function convertUtcToDatetimeLocal(utcStr) {
-    // Step 1: Parse UTC string to a Date object
-    console.log(utcStr);
     const [datePart, timePart] = utcStr.split(/[T ]/);
     const [year, month, day] = datePart.split("-").map(Number);
     const [hour, minute, second] = timePart.split(":").map(Number);
@@ -285,7 +281,6 @@ function CreatedCell(props) {
     )}-${pad(utcDate.getDate())} ${pad(utcDate.getHours())}:${pad(
       utcDate.getMinutes()
     )}:${pad(utcDate.getSeconds())}`;
-    console.log(localStr);
     return localStr;
   }
 
@@ -425,10 +420,7 @@ function CreatedCell(props) {
           ? [...props.formData[props.gridKey]]
           : [];
       let index = props.rowNum;
-      console.log(allGrData);
       let isError = eval(props.conf.errorCondition);
-      console.log("Evaluating " + props.conf.errorCondition);
-      console.log(eval(props.conf.errorCondition));
 
       if (isError && !props.conf.allowSubmitOnError) {
         props.updateFormErrors({
@@ -460,7 +452,6 @@ function CreatedCell(props) {
         setErrorMessage("");
         // props.raiseAlert("green", "All fields are valid!");
       }
-      console.log(isError);
       setError(isError);
     }
   }, [props.dataUpdated]);

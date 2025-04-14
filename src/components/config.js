@@ -1,8 +1,6 @@
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
-
 export const config = {
-  // apiUrl: "http://localhost:8080/",
-  apiUrl: "http://ec2-13-234-24-38.ap-south-1.compute.amazonaws.com:8080/",
+  apiUrl: "http://localhost:8080/",
+  // apiUrl: "https://demo-app.digitedgy.com:8080/",
   // apiUrl: "http://180.190.51.15:8080/",
   // apiUrl: "https://backend1.digitedgy.com/",
   measures: ["sum", "avg", "max", "min", "count"],

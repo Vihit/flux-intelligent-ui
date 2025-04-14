@@ -33,7 +33,6 @@ function Pending(props) {
   }, [update, props.reload]);
 
   function convertUTCToTimeZone(utcString, timeZone) {
-    console.log(utcString + "Z");
     const date = new Date(utcString != null ? utcString + "Z" : null); // Treats as UTC if string has "Z" or uses Date.UTC
 
     const options = {
@@ -127,13 +126,13 @@ function Pending(props) {
             "log_update_dt",
           ]);
         var settings = JSON.parse(f.settings);
-        var filterColumns = settings.view.filters;
+        var filterColumns = settings?.view?.filters;
         fKeys.forEach((element, inx) => {
           if (matCols.filter((m) => m.accessorKey === element).length == 0) {
             matCols.push({
               accessorKey: element,
               header: fLabels[inx],
-              enableColumnFilter: filterColumns.split(",").includes(element),
+              enableColumnFilter: filterColumns?.split(",").includes(element),
             });
           }
         });

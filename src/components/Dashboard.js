@@ -14,11 +14,13 @@ function Dashboard(props) {
   const [open, setOpen] = useState("");
   const [app, setApp] = useState(location?.appId);
   const [form, setForm] = useState(location?.formId);
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
     props.raiseAlert("loading", "start");
     getApps();
     getPendingEntries();
+    getDetailedForms();
     if (location?.formId > 0) {
       setForm(location?.formId);
     } else setForm(0);
@@ -77,6 +79,26 @@ function Dashboard(props) {
       });
   }
 
+  function getDetailedForms() {
+    fetch(config.apiUrl + "forms/detailed/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization:
+          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((actualData) => {
+        setForms(actualData);
+      });
+  }
+
   function openApp(appId) {
     // setApp((prev) => {
     //   return appId;
@@ -96,7 +118,7 @@ function Dashboard(props) {
         </div>
       </div>
       <div className="dash-cont">
-        {apps.length > 0 && app > 0 && (
+        {forms.length > 0 && apps.length > 0 && app > 0 && (
           <UserDashboard
             name={apps.filter((a) => a.id == app)[0]?.name}
             id={app}
@@ -104,6 +126,7 @@ function Dashboard(props) {
             raiseAlert={props.raiseAlert}
             selectedFormId={location?.formId}
             refreshNotifications={getPendingEntries}
+            forms={forms}
           ></UserDashboard>
         )}
       </div>

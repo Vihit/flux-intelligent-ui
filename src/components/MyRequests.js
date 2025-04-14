@@ -42,7 +42,6 @@ function MyRequests(props) {
   }
 
   function convertUTCToTimeZone(utcString, timeZone) {
-    console.log(utcString + "Z");
     const date = new Date(utcString != null ? utcString + "Z" : null); // Treats as UTC if string has "Z" or uses Date.UTC
 
     const options = {

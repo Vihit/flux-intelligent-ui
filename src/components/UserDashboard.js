@@ -27,139 +27,71 @@ function UserDashboard(props) {
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
-    console.log(selectedForm);
-    console.log(allForms);
     if (allForms.length == 0) {
-      getInitForms();
-      getAccessibleForms();
-      getLastStateAccessibleForms();
-      getAllForms();
+      getInitForms(props.forms);
+      getAccessibleForms(props.forms);
+      getLastStateAccessibleForms(props.forms);
+      getAllForms(props.forms);
       setSelectedForm({});
-      console.log(selectedForm);
     } else {
       setReload((prev) => prev + 1);
     }
     setOption("pending");
   }, [props.id, props.selectedFormId]);
 
-  function getAllForms() {
-    fetch(config.apiUrl + "forms/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setAllForms(actualData.filter((f) => f.status === "Published"));
-        if (props.selectedFormId > 0) {
-          var f = actualData.filter((a) => a.id == props.selectedFormId)[0];
-          setSelectedForm(f);
-          var fKeys = JSON.parse(f.template)
-            ["controls"].flatMap((ctrl) => ctrl)
-            .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-            .map((c) => c.key)
-            .concat([
-              "id",
-              "created_by",
-              "log_create_dt",
-              "updated_by",
-              "log_update_dt",
-            ]);
-          var settings = JSON.parse(f.settings);
-          var viewColumns = settings?.view?.columns;
-          var detailCols = settings?.view?.details;
-          var fLabels = JSON.parse(f.template)
-            ["controls"].flatMap((ctrl) => ctrl)
-            .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
-            .map((c) => c.label)
-            .concat([
-              "ID",
-              "Created By",
-              "Log Create Dt",
-              "Updated By",
-              "Log Update Dt",
-            ]);
-          var hiddenColumns = {};
-          var detailColumns = [];
-          fKeys.forEach((element, inx) => {
-            if (!viewColumns?.split(",").includes(element))
-              hiddenColumns[element] = false;
-            if (detailCols?.split(",").includes(element))
-              detailColumns.push({ key: element, label: fLabels[inx] });
-          });
-          console.log(hiddenColumns);
-          setHiddenColumns(hiddenColumns);
-          setDetailColumns(detailColumns);
-        }
+  function getAllForms(fs) {
+    setAllForms(fs.filter((f) => f.status === "Published"));
+    if (props.selectedFormId > 0) {
+      var f = fs.filter((a) => a.id == props.selectedFormId)[0];
+      setSelectedForm(f);
+      var fKeys = JSON.parse(f.template)
+        ["controls"].flatMap((ctrl) => ctrl)
+        .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+        .map((c) => c.key)
+        .concat([
+          "id",
+          "created_by",
+          "log_create_dt",
+          "updated_by",
+          "log_update_dt",
+        ]);
+      var settings = JSON.parse(f.settings);
+      var viewColumns = settings?.view?.columns;
+      var detailCols = settings?.view?.details;
+      var fLabels = JSON.parse(f.template)
+        ["controls"].flatMap((ctrl) => ctrl)
+        .filter((ctrl) => !["grid", "section-heading"].includes(ctrl.type))
+        .map((c) => c.label)
+        .concat([
+          "ID",
+          "Created By",
+          "Log Create Dt",
+          "Updated By",
+          "Log Update Dt",
+        ]);
+      var hiddenColumns = {};
+      var detailColumns = [];
+      fKeys.forEach((element, inx) => {
+        if (!viewColumns?.split(",").includes(element))
+          hiddenColumns[element] = false;
+        if (detailCols?.split(",").includes(element))
+          detailColumns.push({ key: element, label: fLabels[inx] });
       });
+      setHiddenColumns(hiddenColumns);
+      setDetailColumns(detailColumns);
+    }
   }
 
-  function getInitForms() {
-    fetch(config.apiUrl + "forms/init-forms/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setForms(actualData);
-      });
+  function getInitForms(fs) {
+    setForms(fs.filter((f) => f.initiatable));
   }
 
-  function getAccessibleForms() {
-    fetch(config.apiUrl + "forms/accessible-forms/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setAccessibleForms(actualData);
-      });
+  function getAccessibleForms(fs) {
+    setAccessibleForms(fs.filter((f) => f.accessible));
   }
 
-  function getLastStateAccessibleForms() {
-    fetch(config.apiUrl + "forms/last-state-accessible-forms/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((actualData) => {
-        setLastStateAccessibleForms(actualData);
-      });
+  function getLastStateAccessibleForms(fs) {
+    setLastStateAccessibleForms(fs.filter((f) => f.lastStateAccessible));
   }
 
   function refresh(x) {
@@ -232,7 +164,6 @@ function UserDashboard(props) {
                     if (detailCols?.split(",").includes(element))
                       detailColumns.push({ key: element, label: fLabels[inx] });
                   });
-                  console.log(hiddenColumns);
                   setHiddenColumns(hiddenColumns);
                   setDetailColumns(detailColumns);
                 }}
@@ -314,16 +245,22 @@ function UserDashboard(props) {
           refreshNotifications={props.refreshNotifications}
         ></AllRequests>
       )}
-      {selectedForm.id > 0 && option === "pending" && (
-        <Pending
-          detailColumns={detailColumns}
-          hiddenColumns={hiddenColumns}
-          form={selectedForm}
-          raiseAlert={props.raiseAlert}
-          reload={reload}
-          refreshNotifications={props.refreshNotifications}
-        ></Pending>
-      )}
+      {!(
+        lastStateAccessibleForms.filter((a) => a.id == selectedForm.id)
+          .length == 0 &&
+        accessibleForms.filter((a) => a.id == selectedForm.id).length == 0
+      ) &&
+        selectedForm.id > 0 &&
+        option === "pending" && (
+          <Pending
+            detailColumns={detailColumns}
+            hiddenColumns={hiddenColumns}
+            form={selectedForm}
+            raiseAlert={props.raiseAlert}
+            reload={reload}
+            refreshNotifications={props.refreshNotifications}
+          ></Pending>
+        )}
       {initiated && (
         <Form
           form={selectedForm}

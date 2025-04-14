@@ -5,15 +5,6 @@ import Html5QrcodePlugin from "./Html5QrcodeScannerPlugin";
 import CreatedCell from "./CreatedCell";
 
 function CreatedGrid(props) {
-  console.log(props);
-  // const [vals, setVals] = useState([]);
-  // var values = "";
-  // const [refData, setRefData] = useState([]);
-  // const [externalInputActivated, setExternalInputActivated] = useState(false);
-  // const [gridRows, setGridRows] = useState(
-  //   props.values != null ? props.values.length : 1
-  // );
-  // const [updateCount, setUpdateCount] = useState(1);
   const [showHistoryTab, setShowHistoryTab] = useState(false);
   const [histories, setHistories] = useState([]);
 
@@ -75,7 +66,6 @@ function CreatedGrid(props) {
 
   function showHistory(indx) {
     var gridData = props.formData[props.conf.key];
-    console.log(gridData[indx]);
     fetchHistory(gridData[indx]);
     setShowHistoryTab(true);
   }
