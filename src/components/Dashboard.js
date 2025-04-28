@@ -47,7 +47,6 @@ function Dashboard(props) {
       })
       .then((actualData) => {
         setApps(actualData.filter((a) => a.type === "Logever"));
-        props.raiseAlert("loading", "end");
       });
   }
 
@@ -96,6 +95,8 @@ function Dashboard(props) {
       })
       .then((actualData) => {
         setForms(actualData);
+
+        props.raiseAlert("loading", "end");
       });
   }
 

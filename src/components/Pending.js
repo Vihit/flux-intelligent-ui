@@ -64,6 +64,7 @@ function Pending(props) {
   }
 
   function getPendingLogEntries(f) {
+    props.raiseAlert("loading", "start");
     fetch(config.apiUrl + "entry/" + f.id + "/pending", {
       method: "GET",
       headers: {
@@ -148,6 +149,7 @@ function Pending(props) {
           }),
           header: matCols,
         });
+        props.raiseAlert("loading", "end");
       });
   }
 

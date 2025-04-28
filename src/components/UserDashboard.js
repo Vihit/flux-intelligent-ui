@@ -27,6 +27,7 @@ function UserDashboard(props) {
   const [reload, setReload] = useState(0);
 
   useEffect(() => {
+    props.raiseAlert("loading", "start");
     if (allForms.length == 0) {
       getInitForms(props.forms);
       getAccessibleForms(props.forms);
@@ -35,6 +36,7 @@ function UserDashboard(props) {
       setSelectedForm({});
     } else {
       setReload((prev) => prev + 1);
+      props.raiseAlert("loading", "end");
     }
     setOption("pending");
   }, [props.id, props.selectedFormId]);
@@ -79,7 +81,9 @@ function UserDashboard(props) {
       });
       setHiddenColumns(hiddenColumns);
       setDetailColumns(detailColumns);
+      props.raiseAlert("loading", "end");
     }
+    props.raiseAlert("loading", "end");
   }
 
   function getInitForms(fs) {

@@ -1,8 +1,8 @@
 export const config = {
-  apiUrl: "http://localhost:8080/",
+  // apiUrl: "http://localhost:8080/",
   // apiUrl: "https://demo-app.digitedgy.com:8080/",
   // apiUrl: "http://180.190.51.15:8080/",
-  // apiUrl: "https://backend1.digitedgy.com/",
+  apiUrl: "https://backend1.digitedgy.com/",
   measures: ["sum", "avg", "max", "min", "count"],
   filterOps: ["=", "<>", ">", "<", ">=", "<="],
   logicalOps: ["and", "or"],

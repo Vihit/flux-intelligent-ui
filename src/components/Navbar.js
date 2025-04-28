@@ -281,67 +281,6 @@ function Navbar(props) {
             <i className="fa-solid fa-power-off"></i>
           </div>
         </div>
-        {/* <div className="r-nav">
-          <div className={selected === "/dashboard" ? "sel-nav" : ""}>
-            <Link to="/dashboard" onClick={() => setSelected("/dashboard")}>
-              <i className="fa-solid fa-house"></i>
-            </Link>
-          </div>
-          {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_ADMIN"
-          ) && (
-            <div className={selected === "/platform" ? "sel-nav" : ""}>
-              <Link to="/platform" onClick={() => setSelected("/platform")}>
-                <i className="fa-solid fa-briefcase"></i>
-              </Link>
-            </div>
-          )}
-          {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_SYSTEM_ADMIN"
-          ) && (
-            <div className={selected === "/platform" ? "sel-nav" : ""}>
-              <Link to="/platform" onClick={() => setSelected("/platform")}>
-                <i className="fa-solid fa-briefcase"></i>
-              </Link>
-            </div>
-          )}
-          {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_QA"
-          ) && (
-            <div className={selected === "/platform" ? "sel-nav" : ""}>
-              <Link to="/platform" onClick={() => setSelected("/platform")}>
-                <i className="fa-solid fa-briefcase"></i>
-              </Link>
-            </div>
-          )}
-          {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
-            ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role)
-          ).length > 0 && (
-            <div className={selected === "/reports" ? "sel-nav" : ""}>
-              <Link to="/reports" onClick={() => setSelected("/reports")}>
-                <i className="fa-solid fa-book"></i>
-              </Link>
-            </div>
-          )}
-          {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_ADMIN"
-          ) && (
-            <div className={selected === "/form-studio" ? "sel-nav" : ""}>
-              <Link
-                to="/form-studio"
-                onClick={() => setSelected("/form-studio")}
-              >
-                <i className="fa-solid fa-folder-plus"></i>
-              </Link>
-            </div>
-          )}
-          <div onClick={handleLogout}>
-            <a>
-              <i className="fa-solid fa-power-off"></i>
-            </a>
-          </div>
-        </div> */}
-
         <div className={"esign-modal " + (showLogin ? " " : " close-flex")}>
           <div className="create-job-header">
             <div className="flex-row-title margin-btm">
