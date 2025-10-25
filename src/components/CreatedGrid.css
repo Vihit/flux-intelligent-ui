@@ -13,11 +13,12 @@
   flex-grow: 1;
   flex-basis: 0;
   padding: 1rem;
+  padding-bottom: 5rem;
   overflow-x: auto;
   overflow-y: hidden;
   /* z-index: 1; */
-  /* min-height: 14rem;
-  max-height: 40rem; */
+  /* min-height: 14rem; */
+  /* max-height: 40rem; */
 }
 
 .add-new-gr {
@@ -31,7 +32,7 @@
   border-radius: 0.5rem;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  margin-top: 1rem;
+  margin-top: 4rem;
 }
 
 .gr-default-control {

@@ -387,9 +387,11 @@ function CreatedCell(props) {
           ]
         );
       else {
-        setUserDetailOptions(
-          JSON.parse(localStorage.getItem("user"))[props.conf.userDetail]
-        );
+        const userDOptions = JSON.parse(localStorage.getItem("user"))[
+          props.conf.userDetail
+        ];
+        setUserDetailOptions(userDOptions);
+        if (userDOptions.length == 1) changed(props.conf.key, userDOptions[0]);
       }
     }
     if (props.conf.type === "all-users" && !props.disabled) {
@@ -454,6 +456,8 @@ function CreatedCell(props) {
       }
       setError(isError);
     }
+    if (props.conf.key === "shift") changed(props.conf.key, 3);
+    if (props.conf.key === "room_id") changed(props.conf.key, "P1/L1/004");
   }, [props.dataUpdated]);
 
   function fetchReferenceData(refForm, refColumn, refCondition) {

@@ -13,7 +13,7 @@
   flex-basis: 0;
   padding: 1rem;
   overflow-x: auto;
-  /* height: 50.0rem; */
+  height: 5rem;
 }
 
 .empty-created-cell {

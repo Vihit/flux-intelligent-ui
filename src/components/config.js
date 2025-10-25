@@ -1,8 +1,8 @@
 export const config = {
-  // apiUrl: "http://localhost:8080/",
+  apiUrl: "http://localhost:8080/",
   // apiUrl: "https://demo-app.digitedgy.com:8080/",
   // apiUrl: "http://180.190.51.15:8080/",
-  apiUrl: "https://backend1.digitedgy.com/",
+  // apiUrl: "https://backend1.digitedgy.com/",
   measures: ["sum", "avg", "max", "min", "count"],
   filterOps: ["=", "<>", ">", "<", ">=", "<="],
   logicalOps: ["and", "or"],
@@ -23,6 +23,7 @@ export const config = {
       overflow: "auto",
       textAlign: "center",
       color: "black",
+      overflow: "hidden",
     },
     optionListContainer: {
       position: "relative !important",
@@ -52,7 +53,6 @@ export const config = {
   platformMultiSelectStyle: {
     multiselectContainer: {
       background: "white",
-      // padding: ".2rem",
       height: "95%",
       maxWidth: "99%",
       borderRadius: "1.2rem",
@@ -63,7 +63,7 @@ export const config = {
       height: "100%",
       padding: "0",
       maxWidth: "100%",
-      overflow: "auto",
+      overflow: "hidden",
       textAlign: "center",
       color: "black",
       display: "flex",
