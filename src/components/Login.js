@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import "./Login.css";
 import { config } from "./config";
 import jwt from "jwt-decode";
-import fi from "./../fi.png";
+import LoginModal from "./LoginModal";
 
 function Login(props) {
-  const [username, setUsername] = useState("");
-  const [pwd, setPwd] = useState("");
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     if (
@@ -24,7 +23,7 @@ function Login(props) {
     }
   });
 
-  function loginHandler() {
+  function loginHandler(username, pwd) {
     let user = { username, pwd };
     var formBody = [];
     formBody.push(
@@ -45,6 +44,7 @@ function Login(props) {
       .then((response) => {
         if (response.ok) return response.json();
         else {
+          props.raiseAlert("red", "Username or Password incorrect!", 3000);
           throw new Error("Login unsuccessful!");
         }
       })
@@ -56,46 +56,53 @@ function Login(props) {
           JSON.stringify(jwt(actualData["access_token"]))
         );
         props.onLogin();
-      })
-      .catch((err) => {
-        props.raiseAlert("red", "Username or Password incorrect!", 3000);
       });
-  }
-
-  function pressedKey(e) {
-    if (e.key === "Enter") {
-      loginHandler();
-    }
   }
 
   return (
     <div className="login-flex-container">
-      {/* <div className="scrum-svg"></div> */}
-      <div className="scrum-svg">{/* <img src={fi}></img> */}</div>
+      <div className="login-btn" onClick={() => setShowLogin(true)}>
+        <i className="fa-solid fa-fingerprint"></i>
+      </div>
 
-      <div className="login-screen">
-        <div className="login-header">Login</div>
-        <div className="form">
-          <div className="control">
-            <input
-              type="text"
-              placeholder="username"
-              onChange={(e) => setUsername(e.target.value)}
-            ></input>
+      <div className={"login-header"}>
+        <div className="no-login-header">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <i
+              className="fa-solid fa-book"
+              style={{ fontSize: "9rem", marginRight: "1rem" }}
+            ></i>
           </div>
-          <div className="control">
-            <input
-              type="password"
-              placeholder="password"
-              onKeyDown={(e) => pressedKey(e)}
-              onChange={(e) => setPwd(e.target.value)}
-            ></input>
-          </div>
-          <div className="submit" onClick={loginHandler}>
-            Go
+          <div>Logever</div>
+        </div>
+        <div className={"login-sub-header"}>
+          by pharma
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "3rem",
+                paddingLeft: "3.05rem",
+                marginTop: "0.1rem",
+              }}
+            >
+              S
+            </span>
+            <div className="app-os"></div>
           </div>
         </div>
       </div>
+
+      {showLogin && (
+        <LoginModal
+          loginHandler={loginHandler}
+          close={() => setShowLogin(false)}
+        ></LoginModal>
+      )}
       <div className="version">Version 1.0</div>
     </div>
   );

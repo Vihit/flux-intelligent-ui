@@ -143,12 +143,14 @@ function App() {
           </div>
         )}
       </div>
-      <Navbar
-        raiseAlert={raiseAlert}
-        isLoggedIn={loggedIn}
-        onLogout={logoutHandler}
-        notifications={notifications}
-      ></Navbar>
+      {loggedIn && (
+        <Navbar
+          raiseAlert={raiseAlert}
+          isLoggedIn={loggedIn}
+          onLogout={logoutHandler}
+          notifications={notifications}
+        ></Navbar>
+      )}
       {!loggedIn ? (
         <Login raiseAlert={raiseAlert} onLogin={loginHandler}></Login>
       ) : null}

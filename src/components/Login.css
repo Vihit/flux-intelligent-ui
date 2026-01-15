@@ -193,3 +193,56 @@ textarea::placeholder {
   right: 1%;
   bottom: 1%;
 }
+
+.no-login-header {
+  display: flex;
+  line-height: 1;
+}
+
+.no-login-header div {
+  font-size: 10rem !important;
+  letter-spacing: -0.5rem;
+}
+
+.login-sub-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-family: "Poppins";
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--black);
+  letter-spacing: -0.2rem;
+  width: 100%;
+  line-height: 1;
+  margin-top: -1rem;
+}
+
+.app-os {
+  position: absolute;
+  top: calc(50% - 1.5rem);
+  left: 0.1rem;
+  background-color: #eee;
+  width: 3rem;
+  aspect-ratio: 1/1;
+  position: absolute;
+  border-radius: 100%;
+  animation: de 2s infinite forwards;
+  content: url("./../../public/siq.png");
+}
+
+.login-btn {
+  position: fixed;
+  top: 2.5rem;
+  right: 3.5rem;
+  font-size: 2.5rem;
+  cursor: pointer;
+  border-radius: 4rem;
+  background-color: #ffffff80;
+  padding: 0.5rem 1.5rem 0.1rem 1.5rem;
+  box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.login-btn:hover {
+  filter: brightness(0.9);
+}
