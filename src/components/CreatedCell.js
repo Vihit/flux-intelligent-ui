@@ -52,6 +52,64 @@ function CreatedCell(props) {
   function changed(what, value) {
     if (value != undefined && value !== props.values) {
       setExternalInputActivated(false);
+      var isError = false;
+      if (props.conf.dataType === "integer") {
+        if (value !== "" && !/^-?\d+$/.test(value)) {
+          setError(true);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: true,
+            label: props.conf.label,
+          });
+          props.raiseAlert("red", "Value must be an integer", 3000);
+          isError = true;
+        } else {
+          setError(false);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: false,
+            label: props.conf.label,
+          });
+        }
+      }
+      if (props.conf.dataType === "decimal") {
+        if (value !== "" && !/^-?\d+(\.\d+)?$/.test(value)) {
+          setError(true);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: true,
+            label: props.conf.label,
+          });
+          props.raiseAlert("red", "Value must be a decimal", 3000);
+          isError = true;
+        } else {
+          setError(false);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: false,
+            label: props.conf.label,
+          });
+        }
+      }
+      if (props.conf.dataType === "text") {
+        if (value.length > 255) {
+          setError(true);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: true,
+            label: props.conf.label,
+          });
+          props.raiseAlert("red", "Value exceeds 255 characters", 3000);
+          isError = true;
+        } else {
+          setError(false);
+          props.updateFormErrors({
+            key: props.conf.key,
+            preventSubmission: false,
+            label: props.conf.label,
+          });
+        }
+      }
       if (props.type === "form") {
         if (props.conf.type === "checkbox") {
           if (value.checked) {

@@ -15,6 +15,7 @@ function ControlConfig(props) {
   let emptyControlConf = {
     label: "",
     type: "",
+    dataType: "",
     isRequired: false,
     key: "",
     selectValues: "",
@@ -259,6 +260,39 @@ function ControlConfig(props) {
                       >
                         <option value={false}>No</option>
                         <option value={true}>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {["numbers"].includes(props.conf.type) && (
+                  <div className="label-n-text">
+                    <div className="label">Data Type</div>
+                    <div className="text">
+                      <select
+                        value={conf.dataType}
+                        onChange={(e) =>
+                          confChanged("dataType", e.target.value)
+                        }
+                      >
+                        <option value="">Select</option>
+                        <option value="integer">Integer</option>
+                        <option value="decimal">Decimal</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {["text"].includes(props.conf.type) && (
+                  <div className="label-n-text">
+                    <div className="label">Data Type</div>
+                    <div className="text">
+                      <select
+                        value={conf.dataType}
+                        onChange={(e) =>
+                          confChanged("dataType", e.target.value)
+                        }
+                      >
+                        <option value="">Select</option>
+                        <option value="text">Text (Max 255 chars)</option>
                       </select>
                     </div>
                   </div>
