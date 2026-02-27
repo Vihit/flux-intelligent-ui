@@ -41,13 +41,13 @@
 
 .new-job-icon {
   font-size: 2.8rem;
-  color: var(--dark);
+  color: var(--black);
   margin-right: 1rem;
 }
 .new-job-head {
   text-align: center;
   font-size: 1.8rem;
-  color: var(--dark);
+  color: var(--black);
   font-family: "Poppins";
   font-weight: 500;
 }

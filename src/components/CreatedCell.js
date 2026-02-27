@@ -13,7 +13,7 @@ function CreatedCell(props) {
       ? new Date(
           now.getTime() +
             props.conf.dateMaxValue * 24 * 60 * 60 * 1000 -
-            now.getTimezoneOffset() * 60000
+            now.getTimezoneOffset() * 60000,
         )
           .toISOString()
           .substring(0, 19)
@@ -36,7 +36,7 @@ function CreatedCell(props) {
       ? props.formData[props.gridKey] != undefined
         ? props.formData[props.gridKey][props.rowNum]
         : {}
-      : props.formData
+      : props.formData,
   );
   const [usersData, setUsersData] = useState([]);
   const [error, setError] = useState(false);
@@ -134,7 +134,7 @@ function CreatedCell(props) {
                 props.raiseAlert(
                   "red",
                   "Minimum date could be " + dateMin,
-                  3000
+                  3000,
                 );
                 fVal = dateMin;
               } else fVal = cVal;
@@ -143,7 +143,7 @@ function CreatedCell(props) {
                 props.raiseAlert(
                   "red",
                   "Maximum date could be " + dateMax,
-                  3000
+                  3000,
                 );
                 fVal = dateMax;
               } else fVal = cVal;
@@ -174,7 +174,7 @@ function CreatedCell(props) {
           Authorization:
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
-      }
+      },
     )
       .then((response) => {
         return response.blob();
@@ -313,9 +313,9 @@ function CreatedCell(props) {
 
     const pad = (n) => String(n).padStart(2, "0");
     const utcFormatted = `${localDate.getUTCFullYear()}-${pad(
-      localDate.getUTCMonth() + 1
+      localDate.getUTCMonth() + 1,
     )}-${pad(localDate.getUTCDate())} ${pad(localDate.getUTCHours())}:${pad(
-      localDate.getUTCMinutes()
+      localDate.getUTCMinutes(),
     )}:${pad(localDate.getUTCSeconds())}`;
 
     return utcFormatted;
@@ -328,16 +328,16 @@ function CreatedCell(props) {
 
     // Use Date.UTC to treat it as UTC
     const utcDate = new Date(
-      Date.UTC(year, month - 1, day, hour, minute, second)
+      Date.UTC(year, month - 1, day, hour, minute, second),
     );
 
     // Step 2: Format to local datetime-local string
     const pad = (n) => String(n).padStart(2, "0");
 
     const localStr = `${utcDate.getFullYear()}-${pad(
-      utcDate.getMonth() + 1
+      utcDate.getMonth() + 1,
     )}-${pad(utcDate.getDate())} ${pad(utcDate.getHours())}:${pad(
-      utcDate.getMinutes()
+      utcDate.getMinutes(),
     )}:${pad(utcDate.getSeconds())}`;
     return localStr;
   }
@@ -359,7 +359,7 @@ function CreatedCell(props) {
               ...props.formData,
             }
           : {}
-        : props.formData
+        : props.formData,
     );
     if (
       props.conf.referData &&
@@ -386,7 +386,7 @@ function CreatedCell(props) {
         fetchReferenceData(
           props.conf.referenceMaster,
           props.conf.referenceColumn,
-          conds
+          conds,
         );
     }
     if (
@@ -442,7 +442,7 @@ function CreatedCell(props) {
           props.conf.key,
           JSON.parse(localStorage.getItem("user"))[
             props.conf.userDetail === "username" ? "sub" : props.conf.userDetail
-          ]
+          ],
         );
       else {
         const userDOptions = JSON.parse(localStorage.getItem("user"))[
@@ -535,7 +535,7 @@ function CreatedCell(props) {
           Authorization:
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
-      }
+      },
     )
       .then((response) => {
         if (response.ok) {
@@ -563,7 +563,7 @@ function CreatedCell(props) {
             actualData.data
               .map((data) => data[refColumn])
               .filter((val, index, arr) => arr.indexOf(val) === index)
-              .join(",")
+              .join(","),
           );
         }
       });
@@ -583,10 +583,10 @@ function CreatedCell(props) {
       formBody.push(
         encodeURIComponent("username") +
           "=" +
-          encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"])
+          encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"]),
       );
       formBody.push(
-        encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd)
+        encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd),
       );
       formBody = formBody.join("&");
       fetch(config.apiUrl + "esign", {
@@ -599,6 +599,9 @@ function CreatedCell(props) {
           username: user,
           password: esignPwd,
           comment: "",
+          entityId: props.formId,
+          entityType: "Form",
+          application: "Logever",
         }),
       }).then((response) => {
         if (response.ok) {
@@ -631,11 +634,11 @@ function CreatedCell(props) {
                 // :
                 "grid-creation-cell "
             : props.conf.type === ""
-            ? "trans-cell"
-            : // error
-              // ? "created-cell error-cell"
-              // :
-              "created-cell "
+              ? "trans-cell"
+              : // error
+                // ? "created-cell error-cell"
+                // :
+                "created-cell "
           : "empty-created-cell"
       }
       style={{
@@ -863,10 +866,10 @@ function CreatedCell(props) {
               props.conf.dateDefaultValue != ""
                 ? props.conf.dateDefaultValue === "sysdate"
                   ? convertUtcToDatetimeLocal(
-                      new Date(now.getTime()).toISOString().substring(0, 19)
+                      new Date(now.getTime()).toISOString().substring(0, 19),
                     )
                   : convertUtcToDatetimeLocal(
-                      new Date(now.getTime()).toISOString().substring(0, 19)
+                      new Date(now.getTime()).toISOString().substring(0, 19),
                     )
                 : convertUtcToDatetimeLocal(props.values)
             }
@@ -903,7 +906,7 @@ function CreatedCell(props) {
                     props.formErrors
                       .filter((e) => e.preventSubmission)
                       .map((e) => e.key)
-                      .join(",")
+                      .join(","),
                 );
               }
             }}
@@ -926,8 +929,8 @@ function CreatedCell(props) {
               (props.values == undefined
                 ? refMulData.selected
                 : props.values != null && props.values.length > 0
-                ? props.values.split(",")
-                : ""
+                  ? props.values.split(",")
+                  : ""
               )?.length == 0
                 ? config.multiSelectStyle
                 : config.platformMultiSelectStyle
@@ -942,8 +945,8 @@ function CreatedCell(props) {
               props.values == undefined
                 ? refMulData.selected
                 : props.values != null && props.values.length > 0
-                ? props.values.split(",")
-                : ""
+                  ? props.values.split(",")
+                  : ""
             }
             isObject={false}
             options={userDetailOptions}
@@ -971,7 +974,7 @@ function CreatedCell(props) {
                   props.conf.allUserKey === ""
                     ? "userName"
                     : props.conf.allUserKey
-                ]
+                ],
               );
             }}
             onRemove={(e) => changed(props.conf.key, "")}
@@ -983,7 +986,7 @@ function CreatedCell(props) {
                         props.conf.allUserKey === ""
                           ? "userName"
                           : props.conf.allUserKey
-                      ] === props.values.split(",")[0]
+                      ] === props.values.split(",")[0],
                   )
                 : []
             }
@@ -1015,8 +1018,8 @@ function CreatedCell(props) {
                 (props.values == undefined
                   ? refMulData.selected
                   : props.values != null && props.values.length > 0
-                  ? props.values.split(",")
-                  : ""
+                    ? props.values.split(",")
+                    : ""
                 )?.length == 0
                   ? config.multiSelectStyle
                   : config.platformMultiSelectStyle
@@ -1031,8 +1034,8 @@ function CreatedCell(props) {
                 props.values == undefined
                   ? refMulData.selected
                   : props.values != null && props.values.length > 0
-                  ? props.values.split(",")
-                  : ""
+                    ? props.values.split(",")
+                    : ""
               }
               isObject={false}
               options={
@@ -1078,11 +1081,11 @@ function CreatedCell(props) {
               onChange={(e) => {
                 changed(
                   props.conf.key,
-                  e.target.files.length > 0 ? e.target.files[0].name : ""
+                  e.target.files.length > 0 ? e.target.files[0].name : "",
                 );
                 changed(
                   "_files_" + props.conf.key,
-                  e.target.files.length > 0 ? e.target.files[0] : null
+                  e.target.files.length > 0 ? e.target.files[0] : null,
                 );
               }}
             ></input>

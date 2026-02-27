@@ -27,12 +27,12 @@ function Form(props) {
     .filter(
       (t) =>
         t.fromState.id ==
-        props.form.workflow.states.filter((st) => st.name === currState)[0].id
+        props.form.workflow.states.filter((st) => st.name === currState)[0].id,
     )
     .sort((a, b) => a.toState.id - b.toState.id);
 
   const stateConfig = props.form.workflow.states.filter(
-    (st) => st.name === currState
+    (st) => st.name === currState,
   )[0];
   const disabledColumns = stateConfig.disabledColumns.split(",");
   const viewableColumns = stateConfig.visibleColumns.split(",");
@@ -78,22 +78,35 @@ function Form(props) {
 
   function verifyESign() {
     var formBody = [];
+    let userDtl = JSON.parse(localStorage.getItem("user"));
     formBody.push(
-      encodeURIComponent("username") +
-        "=" +
-        encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"])
+      encodeURIComponent("username") + "=" + encodeURIComponent(userDtl["sub"]),
     );
     formBody.push(
-      encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd)
+      encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd),
     );
     formBody = formBody.join("&");
-    fetch(config.apiUrl + "login", {
+    let action = props.entry.id == -1 ? "add" : "update";
+    fetch(config.apiUrl + "esign", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: formBody,
+      body: JSON.stringify({
+        username: userDtl["sub"],
+        password: esignPwd,
+        comment: "",
+        entityId: props.formId,
+        entityType: "Form",
+        application: "Logever",
+        actionDesc:
+          userDtl["fullName"] +
+          " e-signed to " +
+          action +
+          " a log for " +
+          props.form.name,
+      }),
     }).then((response) => {
       if (response.ok) {
         setESigned(true);
@@ -137,7 +150,7 @@ function Form(props) {
                   props.raiseAlert(
                     "red",
                     "Please fill up " + gCtrl.label,
-                    3000
+                    3000,
                   );
                 }
               });
@@ -166,7 +179,7 @@ function Form(props) {
       props.raiseAlert(
         "red",
         "Error with : " + formErrors.filter((d) => d.preventSubmission)[0].key,
-        5000
+        5000,
       );
     }
     if (!check) sendEntry(finalData, to);
@@ -218,7 +231,7 @@ function Form(props) {
               props.raiseAlert(
                 "red",
                 "Some error occurred : " + actualData,
-                5000
+                5000,
               );
             }
           });
@@ -265,7 +278,7 @@ function Form(props) {
             .filter((d) => d.preventSubmission)
             .map((d) => d.label)
             .join(","),
-        5000
+        5000,
       );
     }
     if (!check) sendEntry(finalData, currState + "-INPA");
@@ -289,7 +302,7 @@ function Form(props) {
     let gridData = [];
     let dataWithoutGrids = finalData;
     gridColumns.forEach((col) =>
-      gridData.push({ name: col, data: finalData[col] })
+      gridData.push({ name: col, data: finalData[col] }),
     );
     gridColumns.forEach((col) => delete dataWithoutGrids[col]);
     let logEntry = {
@@ -499,7 +512,7 @@ function Form(props) {
           `${entry["created_by"]} on ${entry["log_create_dt"]}`,
           entry["state"].length + 50,
           finalY,
-          { textColor: [255, 0, 0] }
+          { textColor: [255, 0, 0] },
         );
       doc.setTextColor("#000000");
     });
@@ -542,7 +555,7 @@ function Form(props) {
                       !(
                         viewableColumns.includes(conf[idx][inx].key) &&
                         checkConditionalVisibility(conf[idx][inx])
-                      )
+                      ),
                   ).length == rows.length
                     ? "close-flex"
                     : "created-row"
