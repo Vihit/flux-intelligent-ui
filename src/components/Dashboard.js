@@ -15,18 +15,20 @@ function Dashboard(props) {
   const [app, setApp] = useState(location?.appId);
   const [form, setForm] = useState(location?.formId);
   const [forms, setForms] = useState([]);
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
-    props.raiseAlert("loading", "start");
-    getApps();
+    // props.raiseAlert("loading", "start");
+    if (apps.length == 0) getApps();
     getPendingEntries();
-    getDetailedForms();
+    // getDetailedForms();
     if (location?.formId > 0) {
       setForm(location?.formId);
     } else setForm(0);
     if (location?.appId > 0) {
       setApp(location?.appId);
       openApp(location?.appId);
+      getDetailedForms(location?.appId);
     } else setApp(0);
   }, [location.appId]);
 
@@ -73,13 +75,13 @@ function Dashboard(props) {
               primaryId: a.primaryId,
               app: a.app,
             };
-          })
+          }),
         );
       });
   }
 
-  function getDetailedForms() {
-    fetch(config.apiUrl + "forms/detailed/", {
+  function getDetailedForms(appId) {
+    fetch(config.apiUrl + "forms/detailed/" + appId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +97,9 @@ function Dashboard(props) {
       })
       .then((actualData) => {
         setForms(actualData);
-
+        setKey((prev) => {
+          return prev + 1;
+        });
         props.raiseAlert("loading", "end");
       });
   }
@@ -105,7 +109,7 @@ function Dashboard(props) {
     //   return appId;
     // });
     let x = location?.formId > 0 ? location.formId : 0;
-    history.push("/dashboard/" + appId + "/" + x + "");
+    history.push("/dashboard/" + appId + "/" + 0 + "");
     setOpen("fill");
   }
 
@@ -119,7 +123,7 @@ function Dashboard(props) {
         </div>
       </div>
       <div className="dash-cont">
-        {forms.length > 0 && apps.length > 0 && app > 0 && (
+        {apps.length > 0 && app > 0 && (
           <UserDashboard
             name={apps.filter((a) => a.id == app)[0]?.name}
             id={app}
@@ -128,6 +132,7 @@ function Dashboard(props) {
             selectedFormId={location?.formId}
             refreshNotifications={getPendingEntries}
             forms={forms}
+            key={key}
           ></UserDashboard>
         )}
       </div>
