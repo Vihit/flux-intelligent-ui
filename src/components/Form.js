@@ -97,7 +97,8 @@ function Form(props) {
         username: userDtl["sub"],
         password: esignPwd,
         comment: "",
-        entityId: props.formId,
+        entityId: props.form.id,
+        entityName: props.form.name,
         entityType: "Form",
         application: "Logever",
         actionDesc:
