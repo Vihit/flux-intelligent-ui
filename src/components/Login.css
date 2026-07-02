@@ -12,13 +12,13 @@
   align-items: center;
   overflow: hidden;
   width: 65%;
-  /* margin: 80px; */
+  /* margin: 8rem; */
   height: 80%;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
   background-image: url("./../fi.png");
-  /* margin-bottom: 100px; */
+  /* margin-bottom: 10rem; */
 }
 
 .scrum-svg img {
@@ -34,7 +34,7 @@
   align-items: center;
   justify-content: space-between;
   height: auto;
-  margin-bottom: 80px;
+  margin-bottom: 8rem;
 }
 
 .scrum-svg > img {
@@ -43,8 +43,8 @@
 }
 
 .login-screen > div {
-  /* padding: 20px; */
-  margin: 20px;
+  /* padding: 2rem; */
+  margin: 2rem;
   justify-content: center;
 }
 
@@ -57,51 +57,51 @@
 }
 
 .control {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   width: 60%;
   align-self: center;
 }
 
 .login-header {
   font-family: "Poppins";
-  font-size: 40px;
+  font-size: 4rem;
   font-weight: bold;
   color: var(--white);
 }
 
 .control > input {
-  height: 30px;
+  height: 3rem;
   width: 100%;
-  border-radius: 25px;
+  border-radius: 2.5rem;
   border-color: var(--white);
   /* text-align: center; */
 }
 
 ::placeholder {
   font-family: "Poppins";
-  font-size: 13px;
+  font-size: 1.3rem;
   font-weight: bolder;
   color: #cccccc;
-  letter-spacing: 1px;
+  letter-spacing: 0.1rem;
   font-style: normal;
   text-align: center;
 }
 
 input {
-  height: 40px;
-  border-radius: 12px;
+  height: 4rem;
+  border-radius: 1.2rem;
   font-family: "Poppins";
-  font-size: 15px;
+  font-size: 1.5rem;
   border-style: hidden;
   /* font-weight: bolder; */
   text-align: center;
 }
 
 select {
-  height: 40px;
-  border-radius: 12px;
+  height: 4rem;
+  border-radius: 1.2rem;
   font-family: "Poppins";
-  font-size: 15px;
+  font-size: 1.5rem;
   border-style: hidden;
   /* font-weight: bolder; */
   text-align: center;
@@ -110,32 +110,32 @@ select {
 }
 
 textarea {
-  border-radius: 12px;
+  border-radius: 1.2rem;
   font-family: "Poppins";
-  font-size: 15px;
+  font-size: 1.5rem;
   border-style: hidden;
-  /* padding: 10px 0px; */
+  /* padding: 1rem 0rem; */
   /* font-weight: bolder; */
 }
 
 textarea::placeholder {
-  /* padding-top: 25px; */
+  /* padding-top: 2.5rem; */
   text-align: center;
   vertical-align: middle;
 }
 
 .submit {
-  border-radius: 20px;
+  border-radius: 2rem;
   background-color: var(--accent);
-  padding: 5px 20px 5px 20px;
+  padding: 0.5rem 2rem 0.5rem 2rem;
   text-align: center;
   align-self: center;
   color: var(--white);
   font-weight: bold;
-  font-size: 20px;
+  font-size: 2rem;
   font-family: "Poppins";
   cursor: pointer;
-  box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0rem 0.5rem 0.3rem 0rem rgba(0, 0, 0, 0.2);
 }
 
 #Light {

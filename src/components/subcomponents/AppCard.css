@@ -1,12 +1,12 @@
 .app-card-wrapper {
   display: flex;
-  width: 200px;
+  width: 20rem;
   height: 35%;
   /* background-color: var(--main); */
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-radius: 20px;
+  border-radius: 2rem;
   transition: 1s;
 }
 
@@ -18,8 +18,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.458);
-  border-radius: 20px;
+  box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.458);
+  border-radius: 2rem;
   cursor: pointer;
   transition: 1s;
 }
@@ -29,8 +29,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 4em;
-  text-shadow: 0px 2px 5px #00000070;
+  font-size: 6rem;
+  text-shadow: 0rem 0.2rem 0.5rem #00000070;
   color: var(--dark);
 }
 
@@ -39,7 +39,7 @@
 }
 
 .app-card:hover > .ac-icon {
-  font-size: 60px;
+  font-size: 7rem;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   transition-duration: 0.3s;
@@ -47,7 +47,7 @@
 
 .ac-name {
   /* height: 20%; */
-  width: 180px;
+  width: 18rem;
   font-weight: bold;
   color: var(--dark);
   text-align: center;
@@ -55,6 +55,7 @@
   overflow: hidden;
   white-space: nowrap;
   display: block;
+  font-size: 1.4rem;
 }
 
 .settings-container {
@@ -67,9 +68,9 @@
   background-color: var(--main);
   /* justify-content: center; */
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
   padding-bottom: 3%;
-  box-shadow: 0 0 0 99999px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 9999.9rem rgba(255, 255, 255, 0.8);
   z-index: 10;
 }
 
@@ -79,7 +80,7 @@
 
 .set-ctrl {
   display: flex;
-  gap: 20px;
+  gap: 2rem;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -88,7 +89,7 @@
 .set-label {
   width: 25%;
   color: white;
-  font-size: 14px;
+  font-size: 1.4rem;
 }
 
 .set-text {
@@ -96,25 +97,25 @@
 }
 
 .set-head {
-  font-size: 25px;
+  font-size: 2 0.5rem;
   color: white;
   margin-top: 5%;
 }
 
 .set-text > input {
-  border-radius: 0px;
+  border-radius: 0rem;
   height: 80%;
   width: 100%;
-  font-size: 13px;
+  font-size: 1.3rem;
   font-style: italic;
   font-weight: normal;
 }
 
 .set-text > select {
-  border-radius: 0px;
+  border-radius: 0rem;
   height: 80%;
   width: 101%;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: normal;
 }
 
@@ -137,41 +138,53 @@
   display: flex;
   align-items: center;
   background-color: white;
-  /* height: 60px; */
-  padding-bottom: 5px;
-  /* gap: 5px; */
+  /* height: 6rem; */
+  padding-bottom: 0.5rem;
+  /* gap:  .5rem; */
   justify-content: flex-start;
 }
 
 .set-icon-option {
   background-color: var(--main);
-  height: 50px;
-  width: 50px;
-  margin-left: 5px;
-  margin-top: 5px;
+  height: 5rem;
+  width: 5rem;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 25px;
+  font-size: 2 0.5rem;
   color: white;
-  border-radius: 10px;
+  border-radius: 1rem;
   cursor: pointer;
 }
 
 .create-btn {
-  padding: 5px 20px;
+  padding: 0.5rem 2rem;
   background-color: var(--green);
   color: white;
-  margin-top: 10px;
-  box-shadow: 0.5px 0.5px 5px black;
+  margin-top: 1rem;
+  box-shadow: 0 0.5rem 0 0.5rem 0.5rem black;
   cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.return-btn {
+  padding: 0.5rem 2rem;
+  background-color: var(--amber);
+  color: white;
+  margin-top: 1rem;
+  box-shadow: 0 0.5rem 0 0.5rem 0.5rem black;
+  cursor: pointer;
+  font-size: 1.4rem;
 }
 
 .cancel-btn {
-  padding: 5px 20px;
+  padding: 0.5rem 2rem;
   background-color: var(--red);
   color: white;
-  margin-top: 10px;
+  margin-top: 1rem;
   cursor: pointer;
-  box-shadow: 0.5px 0.5px 5px black;
+  box-shadow: 0 0.5rem 0 0.5rem 0.5rem black;
+  font-size: 1.4rem;
 }

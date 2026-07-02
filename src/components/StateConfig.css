@@ -52,23 +52,23 @@
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .data-cols {
   display: flex;
   flex-direction: column;
   width: 97%;
-  margin-top: 5px;
+  margin-top: 0.5rem;
 }
 
 .group-sel-cols {
   display: flex;
   background-color: var(--grey);
-  font-size: 14px;
-  padding: 5px;
-  margin-top: 5px;
+  font-size: 1.4rem;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .app-icon {
@@ -80,11 +80,11 @@
   justify-content: space-evenly;
   align-items: center;
   width: 97%;
-  gap: 5px;
+  gap: 0.5rem;
 }
 
 .label {
-  font-size: 14px;
+  font-size: 1.4rem;
   /* width: 50%; */
   align-items: center;
   justify-content: center;
@@ -98,34 +98,33 @@
 }
 
 .text > input {
-  height: 20px;
-  border-radius: 0px;
+  height: 2rem;
+  border-radius: 0rem;
   width: 98%;
-  font-size: 14px;
+  font-size: 1.4rem;
   text-align: left;
   background-color: var(--grey);
 }
 
 .text > select {
-  height: 20px;
-  border-radius: 0px;
+  height: 2rem;
+  border-radius: 0rem;
   width: 99%;
-  font-size: 14px;
+  font-size: 1.4rem;
   outline-style: none;
   background-color: var(--grey);
 }
 
 .text > textarea {
-  /* border-radius: 0px; */
   width: 99%;
-  font-size: 12px;
+  font-size: 1.2rem;
   outline-style: none;
   height: 100%;
   box-sizing: border-box;
   font-style: italic;
   font-weight: normal;
   color: #0552cc;
-  border-radius: 0px;
+  border-radius: 0rem;
   background-color: var(--grey);
 }
 
@@ -143,18 +142,18 @@
   width: 97%;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid black;
+  border-bottom: 0.1rem solid black;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
 .dtls-col {
   display: flex;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
   justify-content: center;
-  margin-top: 5px;
+  margin-top: 0.5rem;
   flex-direction: column;
   align-items: center;
 }
@@ -165,46 +164,47 @@
   justify-content: space-between;
   width: 90%;
   align-items: center;
+  font-size: 1.6rem;
 }
 
 .measure-col {
   display: flex;
-  margin-right: 10px;
-  font-size: 10px;
+  margin-right: 1rem;
+  font-size: 1rem;
   color: var(--main);
-  margin: 2px;
+  margin: 0.2rem;
   font-style: italic;
   width: 100%;
-  gap: 2px;
+  gap: 0.2rem;
 }
 
 .measure-sel-cols {
   display: flex;
   flex-direction: column;
   background-color: var(--grey);
-  font-size: 14px;
-  padding: 5px;
-  margin-top: 5px;
+  font-size: 1.4rem;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
   width: 97%;
 }
 
 .measure-col-icon {
-  font-size: 14px;
-  padding-right: 3px;
-  padding-left: 3px;
+  font-size: 1.4rem;
+  padding-right: 0.3rem;
+  padding-left: 0.3rem;
   /* width: 100%; */
   color: var(--main);
 }
 
 .measure-col-name {
   background-color: var(--white);
-  border-radius: 10px;
-  padding: 0px 5px;
+  border-radius: 1rem;
+  padding: 0rem 0.5rem;
   width: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 1.4rem;
 }
 
 .measure-options {
@@ -213,7 +213,7 @@
 
 .measure-options > select {
   height: 100%;
-  font-size: 14px;
+  font-size: 1.4rem;
   padding: 0;
   outline: none;
   width: 100%;
@@ -229,8 +229,8 @@
 
 .filter-ops > select {
   height: 100%;
-  font-size: 14px;
-  padding: 0 3px;
+  font-size: 1.4rem;
+  padding: 0 0.3rem;
   outline: none;
   color: var(--main);
   font-weight: normal;
@@ -239,8 +239,8 @@
 
 .filter-options > input {
   height: 100%;
-  font-size: 14px;
-  padding: 0 0 0 3px;
+  font-size: 1.4rem;
+  padding: 0 0 0 0.3rem;
   outline: none;
   width: 97%;
   color: var(--main);
@@ -252,8 +252,8 @@
 
 .filter-col-name {
   background-color: var(--white);
-  border-radius: 10px;
-  padding: 0px 5px;
+  border-radius: 1rem;
+  padding: 0rem 0.5rem;
   /* width: 50%; */
   display: flex;
   justify-content: center;
@@ -262,8 +262,8 @@
 
 .filter-col-name > select {
   height: 100%;
-  font-size: 14px;
-  padding: 0 3px;
+  font-size: 1.4rem;
+  padding: 0 0.3rem;
   outline: none;
   color: var(--main);
   font-weight: normal;
@@ -276,7 +276,7 @@
 
 .filter-options > input::placeholder {
   font-family: "Poppins";
-  font-size: 13px;
+  font-size: 1.3rem;
   color: var(--dark-grey);
   font-weight: normal;
   text-align: center;
@@ -286,15 +286,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0px 2px;
-  font-size: 13px;
+  margin: 0rem 0.2rem;
+  font-size: 1.3rem;
 }
 
 .logic-op > select {
   height: 100%;
-  font-size: 13px;
+  font-size: 1.3rem;
   width: 100%;
-  padding: 0px 5px;
+  padding: 0rem 0.5rem;
   outline: none;
   color: var(--main);
   font-weight: normal;
@@ -317,24 +317,24 @@
 }
 
 .color > input {
-  height: 25px;
+  height: 2.5rem;
   border: none;
-  border-radius: 0px;
+  border-radius: 0rem;
   width: 98%;
-  /* font-size: 14px; */
   text-align: left;
   background-color: var(--grey);
 }
 
 .selected-accesses {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
   flex-wrap: wrap;
-  margin: 5px 0px;
+  margin: 0.5rem 0rem;
+  font-size: 1.3rem;
 }
 
 .selected-access {
-  padding: 5px 10px;
+  padding: 0.5rem 1rem;
   background-color: var(--main);
   color: white;
   cursor: pointer;
@@ -344,14 +344,14 @@
   display: flex;
   width: 100%;
   justify-content: space-evenly;
-  font-size: 14px;
+  font-size: 1.4rem;
 }
 
 .dtl-col-row-head {
   display: flex;
   width: 98%;
   justify-content: space-evenly;
-  font-size: 14px;
+  font-size: 1.4rem;
   background-color: var(--main);
   color: white;
 }
@@ -369,7 +369,7 @@
 
 .conf-icons {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .conf-icons > .fa-trash {

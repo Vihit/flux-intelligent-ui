@@ -58,7 +58,7 @@ function UserFormDetail(props) {
     const doc = new jsPDF("p", "pt");
     const tableHeaders = props.tableData.header
       .filter(
-        (c) => columnVisibility[c.id] == undefined || columnVisibility[c.id]
+        (c) => columnVisibility[c.id] == undefined || columnVisibility[c.id],
       )
       .map((c) => {
         return { header: c.header, id: c.id };
@@ -102,7 +102,7 @@ function UserFormDetail(props) {
       {
         margin: { top: 50, left: 14, right: 14 },
         beforePageContent: header,
-      }
+      },
     );
 
     const pageCount = doc.internal.getNumberOfPages();
@@ -121,7 +121,7 @@ function UserFormDetail(props) {
           now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
           now.toLocaleTimeString("en-IN", { hour12: false }),
-        pageWidth - 28
+        pageWidth - 28,
       );
       if (i == pageCount) {
         doc.text(splits, pageWidth / 2, pageHeight - 20, { align: "center" });
@@ -129,7 +129,7 @@ function UserFormDetail(props) {
           String("Total Records : " + rows.length),
           pageWidth / 2,
           pageHeight - 10,
-          { align: "center" }
+          { align: "center" },
         );
         doc.setFont(undefined, "normal", "normal");
         doc.text(String(i), pageWidth - 15, pageHeight - 10);
@@ -167,7 +167,7 @@ function UserFormDetail(props) {
               "Bearer " +
               JSON.parse(localStorage.getItem("access")).access_token,
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -219,7 +219,7 @@ function UserFormDetail(props) {
           enableStickyHeader
           enableStickyFooterenableTopToolbar={true}
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -227,6 +227,8 @@ function UserFormDetail(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
+                  fontSize: "1.8rem",
+                  alignSelf: "center",
                 }}
               >
                 {props.form.name}
@@ -273,7 +275,7 @@ function UserFormDetail(props) {
                   onClick={() =>
                     handleExportRows(
                       table.getPrePaginationRowModel().rows,
-                      table
+                      table,
                     )
                   }
                   style={{
@@ -282,7 +284,7 @@ function UserFormDetail(props) {
                     fontWeight: "bold",
                     textTransform: "none",
                     fontFamily: "Poppins",
-                    boxShadow: "2px 2px 2px #00000055",
+                    boxShadow: "0.2rem 0.2rem 0.2rem #00000055",
                   }}
                 >
                   {<GetApp />} &nbsp;Download
@@ -316,7 +318,8 @@ function UserFormDetail(props) {
           )}
           muiTableContainerProps={{
             sx: {
-              maxHeight: "550px",
+              minHeight: "40vh",
+              maxHeight: "40vh",
               maxWidth: "100%",
               overflowX: "auto",
             },
@@ -328,18 +331,23 @@ function UserFormDetail(props) {
           muiTableHeadCellProps={{
             sx: {
               fontWeight: "bold",
-              fontSize: "14px",
+              fontSize: "1.4rem",
               backgroundColor: "var(--white)",
               color: "var(--dark)",
-              border: "1px solid",
+              border: "0.1rem solid",
               fontFamily: "Poppins",
+              height: "4rem",
+              verticalAlign: "middle",
+              lineHeight: "4rem",
             },
           }}
           muiTableBodyCellProps={{
             sx: {
               backgroundColor: "var(--grey)",
-              borderRight: "0.1px solid var(--white)",
+              borderRight: "0.01rem solid var(--white)",
               fontFamily: "Poppins",
+              fontSize: "1.3rem",
+              padding: "0.8rem",
             },
           }}
           muiTableBodyRowProps={({ row }) => ({
@@ -349,7 +357,7 @@ function UserFormDetail(props) {
           })}
           muiTableBodyProps={{
             sx: {
-              margin: "20px",
+              margin: "2rem",
             },
           }}
         ></MaterialReactTable>
@@ -397,12 +405,12 @@ function UserFormDetail(props) {
                   )}
                   muiTableBodyProps={{
                     sx: {
-                      margin: "20px",
+                      margin: "2rem",
                     },
                   }}
                   muiTableContainerProps={{
                     sx: {
-                      maxHeight: "550px",
+                      maxHeight: "55rem",
                       maxWidth: "100%",
                       overflowX: "auto",
                     },
@@ -414,19 +422,20 @@ function UserFormDetail(props) {
                   muiTableHeadCellProps={{
                     sx: {
                       fontWeight: "bold",
-                      fontSize: "12px",
+                      fontSize: "1.2rem",
                       backgroundColor: "var(--white)",
                       color: "var(--dark)",
-                      border: "1px solid",
+                      border: "0.1rem solid",
                       fontFamily: "Poppins",
                     },
                   }}
                   muiTableBodyCellProps={{
                     sx: {
                       backgroundColor: "var(--grey)",
-                      borderRight: "0.1px solid var(--white)",
+                      borderRight: "0.01rem solid var(--white)",
                       fontFamily: "Poppins",
-                      fontSize: "13px",
+                      fontSize: "1.3rem",
+                      padding: "0.3rem",
                     },
                   }}
                 ></MaterialReactTable>

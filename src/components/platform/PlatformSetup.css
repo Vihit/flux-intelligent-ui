@@ -1,10 +1,10 @@
 .p-menu {
-  /* margin: 2px 0px; */
+  /* margin: 0.2rem 0rem; */
 }
 
 .p-menu-sidebar {
   background-color: var(--main);
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.466);
+  box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.466);
   z-index: 10;
 }
 
@@ -12,9 +12,9 @@
   display: flex;
   justify-content: flex-start;
   width: 95%;
-  margin-top: 10px;
+  margin-top: 1rem;
   height: 5%;
   align-items: center;
-  font-size: 18px;
-  gap: 20px;
+  font-size: 1.8rem;
+  gap: 2rem;
 }

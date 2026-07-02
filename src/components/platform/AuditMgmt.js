@@ -107,7 +107,7 @@ function AuditMgmt(props) {
           now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
           now.toLocaleTimeString("en-IN", { hour12: false }),
-        pageWidth - 28
+        pageWidth - 28,
       );
 
       if (i == pageCount) {
@@ -116,7 +116,7 @@ function AuditMgmt(props) {
           String("Total Records : " + rows.length),
           pageWidth / 2,
           pageHeight - 10,
-          { align: "center" }
+          { align: "center" },
         );
         doc.setFont(undefined, "normal", "normal");
         doc.text(String(i), pageWidth - 15, pageHeight - 10);
@@ -145,7 +145,7 @@ function AuditMgmt(props) {
           Authorization:
             "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
         },
-      }
+      },
     )
       .then((response) => {
         if (response.ok) {
@@ -204,7 +204,7 @@ function AuditMgmt(props) {
           enableStickyHeader
           enableStickyFooter
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -212,78 +212,37 @@ function AuditMgmt(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
-                  fontSize: "18px",
+                  fontSize: "1.8rem",
                   alignSelf: "center",
                 }}
               >
                 Audit Trail
               </Typography>
-              <Button
-                disabled={table.getPrePaginationRowModel().rows.length === 0}
-                onClick={() =>
-                  handleExportRows(table.getPrePaginationRowModel().rows)
-                }
-                style={{
-                  background: "var(--green)",
-                  color: "white",
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  fontFamily: "Poppins",
-                  boxShadow: "2px 2px 2px #00000055",
-                }}
-              >
-                {<GetApp />} &nbsp;Download Page
-              </Button>
+              {table.getPrePaginationRowModel().rows.length > 0 && (
+                <div
+                  onClick={() =>
+                    handleExportRows(table.getPrePaginationRowModel().rows)
+                  }
+                  className="i-btn"
+                >
+                  Download Page
+                </div>
+              )}
             </Box>
           )}
-          muiTableContainerProps={{
-            sx: {
-              maxHeight: "550px",
-              maxWidth: "100%",
-              overflowX: "auto",
-            },
-          }}
+          muiTableContainerProps={config.muiTableContainerProps}
           initialState={{
             density: "compact",
             columnVisibility: { id: false },
           }}
-          muiTableHeadCellProps={{
-            sx: {
-              fontWeight: "bold",
-              fontSize: "14px",
-              backgroundColor: "var(--main)",
-              color: "var(--white)",
-              border: "1px solid",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableHeadCellColumnActionsButtonProps={{
-            sx: {
-              path: {
-                stroke: "white",
-                fill: "white",
-                strokeWidth: "1.5px",
-              },
-            },
-          }}
-          muiTableBodyCellProps={{
-            sx: {
-              backgroundColor: "var(--grey)",
-              borderRight: "1px solid var(--white)",
-              borderBottom: "1px solid var(--main)",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableHeadCellFilterTextFieldProps={{
-            sx: {
-              strokeWidth: "1.5px",
-              backgroundColor: "var(--white)",
-              input: {
-                fontFamily: "Poppins",
-                color: "var(--main)",
-              },
-            },
-          }}
+          muiTableHeadCellProps={config.muiTableHeadCellProps}
+          muiTableHeadCellColumnActionsButtonProps={
+            config.muiTableHeadCellColumnActionsButtonProps
+          }
+          muiTableBodyCellProps={config.muiTableBodyCellProps}
+          muiTableHeadCellFilterTextFieldProps={
+            config.muiTableHeadCellFilterTextFieldProps
+          }
           onPaginationChange={setPagination}
           state={{ pagination }}
           rowCount={pagination.pageSize * totalPages}
@@ -291,11 +250,7 @@ function AuditMgmt(props) {
           // pageIndex={pagination.pageIndex}
           // pageIndex={}
           pageCount={totalPages}
-          muiTableBodyProps={{
-            sx: {
-              margin: "20px",
-            },
-          }}
+          muiTableBodyProps={config.muiTableBodyProps}
           // autoResetPageIndex={false}
         ></MaterialReactTable>
       </div>

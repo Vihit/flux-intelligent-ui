@@ -84,7 +84,7 @@ function RoleMgmt(props) {
           enableStickyFooter
           // enableColumnActions={false}
           renderTopToolbarCustomActions={({ table }) => (
-            <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+            <Box sx={{ display: "flex", gap: "1rem", p: "0.4rem" }}>
               <Typography
                 variant="h6"
                 style={{
@@ -92,7 +92,7 @@ function RoleMgmt(props) {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   fontFamily: "Poppins",
-                  fontSize: "18px",
+                  fontSize: "1.8rem",
                   alignSelf: "center",
                 }}
               >
@@ -105,65 +105,26 @@ function RoleMgmt(props) {
           )}
           enableRowActions
           renderRowActions={({ row }) => (
-            <Box>
+            <Box className="c-actions">
               <IconButton onClick={() => handleRowClick(row)}>
                 <Fullscreen />
               </IconButton>
             </Box>
           )}
-          muiTableContainerProps={{
-            sx: {
-              maxHeight: "550px",
-              maxWidth: "100%",
-              overflowX: "auto",
-            },
-          }}
+          muiTableContainerProps={config.muiTableContainerProps}
           initialState={{
             density: "compact",
             columnVisibility: { id: false },
           }}
-          muiTableHeadCellProps={{
-            sx: {
-              fontWeight: "600",
-              fontSize: "14px",
-              backgroundColor: "var(--main)",
-              color: "var(--white)",
-              border: "1px solid",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableHeadCellFilterTextFieldProps={{
-            sx: {
-              strokeWidth: "1.5px",
-              backgroundColor: "var(--white)",
-              input: {
-                fontFamily: "Poppins",
-                color: "var(--main)",
-              },
-            },
-          }}
-          muiTableHeadCellColumnActionsButtonProps={{
-            sx: {
-              path: {
-                stroke: "white",
-                fill: "white",
-                strokeWidth: "1.5px",
-              },
-            },
-          }}
-          muiTableBodyCellProps={{
-            sx: {
-              backgroundColor: "var(--grey)",
-              borderRight: "1px solid var(--white)",
-              borderBottom: "1px solid var(--main)",
-              fontFamily: "Poppins",
-            },
-          }}
-          muiTableBodyProps={{
-            sx: {
-              margin: "20px",
-            },
-          }}
+          muiTableHeadCellProps={config.muiTableHeadCellProps}
+          muiTableHeadCellFilterTextFieldProps={
+            config.muiTableHeadCellFilterTextFieldProps
+          }
+          muiTableHeadCellColumnActionsButtonProps={
+            config.muiTableHeadCellColumnActionsButtonProps
+          }
+          muiTableBodyCellProps={config.muiTableBodyCellProps}
+          muiTableBodyProps={config.muiTableBodyProps}
         ></MaterialReactTable>
       </div>
       {toggleEdit && selectedRole != {} && (

@@ -7,14 +7,14 @@
   overflow-y: auto;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
-  /* padding-left: 30px; */
+  gap: 2rem;
+  /* padding-left: 3rem; */
   align-content: flex-start;
   justify-content: center;
-  /* margin-bottom: 30px; */
+  /* margin-bottom: 3rem; */
 }
 
 .dashboard-container > * {
-  margin-top: 30px;
-  /* margin-right: 30px; */
+  margin-top: 3rem;
+  /* margin-right: 3rem; */
 }

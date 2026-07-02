@@ -168,7 +168,7 @@ function Reports(props) {
           now.toLocaleDateString("en-IN", { hour12: false }) +
           " " +
           now.toLocaleTimeString("en-IN", { hour12: false }),
-        pageWidth - 28
+        pageWidth - 28,
       );
 
       if (i == pageCount) {
@@ -177,7 +177,7 @@ function Reports(props) {
           String("Total Records : " + rows.length),
           pageWidth / 2,
           pageHeight - 10,
-          { align: "center" }
+          { align: "center" },
         );
         doc.setFont(undefined, "normal", "normal");
         doc.text(String(i), pageWidth - 15, pageHeight - 10);
@@ -218,7 +218,7 @@ function Reports(props) {
                   {report.name}
                 </div>
                 {JSON.parse(localStorage.getItem("user")).role.includes(
-                  "ROLE_ADMIN"
+                  "ROLE_ADMIN",
                 ) && (
                   <i
                     className="fa-solid fa-edit"
@@ -229,7 +229,7 @@ function Reports(props) {
             );
           })}
           {JSON.parse(localStorage.getItem("user")).role.includes(
-            "ROLE_ADMIN"
+            "ROLE_ADMIN",
           ) && (
             <div className="i-a-btn" onClick={() => addReport()}>
               Add New Report
@@ -246,7 +246,7 @@ function Reports(props) {
                 enableStickyHeader
                 enableStickyFooter
                 renderTopToolbarCustomActions={({ table }) => (
-                  <Box sx={{ display: "flex", gap: "1rem", p: "4px" }}>
+                  <Box sx={{ display: "flex", gap: "1rem", p: "0.4rem" }}>
                     <Typography
                       variant="h6"
                       style={{
@@ -254,36 +254,30 @@ function Reports(props) {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         fontFamily: "Poppins",
-                        fontSize: "18px",
+                        fontSize: "1.8rem",
                         alignSelf: "center",
                       }}
                     >
                       {activeReport.name}
                     </Typography>
-                    <Button
-                      disabled={
-                        table.getPrePaginationRowModel().rows.length === 0
-                      }
-                      //export all rows, including from the next page, (still respects filtering and sorting)
-                      onClick={() =>
-                        handleExportRows(table.getPrePaginationRowModel().rows)
-                      }
-                      style={{
-                        background: "var(--green)",
-                        color: "white",
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        fontFamily: "Poppins",
-                        boxShadow: "2px 2px 2px #00000055",
-                      }}
-                    >
-                      {<GetApp />} &nbsp;Download Report
-                    </Button>
+                    {table.getPrePaginationRowModel().rows.length > 0 && (
+                      <div
+                        onClick={() =>
+                          handleExportRows(
+                            table.getPrePaginationRowModel().rows,
+                          )
+                        }
+                        className="i-btn"
+                      >
+                        Download Report
+                      </div>
+                    )}
                   </Box>
                 )}
                 muiTableContainerProps={{
                   sx: {
-                    maxHeight: "550px",
+                    maxHeight: "40vh",
+                    minHeight: "40vh",
                     maxWidth: "100%",
                     overflowX: "auto",
                   },
@@ -295,23 +289,27 @@ function Reports(props) {
                 muiTableHeadCellProps={{
                   sx: {
                     fontWeight: "bold",
-                    fontSize: "14px",
+                    fontSize: "1.4rem",
                     backgroundColor: "var(--white)",
                     color: "var(--dark)",
-                    border: "1px solid",
+                    border: "0.1rem solid",
                     fontFamily: "Poppins",
+                    height: "4rem",
+                    verticalAlign: "middle",
+                    lineHeight: "4rem",
                   },
                 }}
                 muiTableBodyCellProps={{
                   sx: {
                     backgroundColor: "var(--grey)",
-                    borderRight: "0.1px solid var(--white)",
+                    borderRight: "0.01rem solid var(--white)",
                     fontFamily: "Poppins",
+                    fontSize: "1.3rem",
                   },
                 }}
                 muiTableBodyProps={{
                   sx: {
-                    margin: "20px",
+                    margin: "2rem",
                   },
                 }}
               ></MaterialReactTable>

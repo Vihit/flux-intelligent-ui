@@ -5,31 +5,32 @@
   left: 15%;
   right: 15%;
   background-color: white;
-  border: 3px solid black;
+  border: 0.3rem solid black;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 9999.9rem rgba(0, 0, 0, 0.8);
   z-index: 100;
 }
 
 .dept-node {
   background-color: var(--accent);
   font-family: "Poppins";
-  outline: 3px outset var(--dark);
-  outline-offset: -3px;
+  outline: 0.3rem outset var(--dark);
+  outline-offset: -0.3rem;
   cursor: pointer;
+  font-size: 1.4rem;
 }
 
 .dept-node p {
   fill: var(--white);
-  font-size: 20px;
+  font-size: 2rem;
   text-align: center;
-  padding: 5px 20px;
+  padding: 0.5rem 2rem;
 }
 
 .nodes li {
   color: var(--dark);
-  font-size: 15px;
+  font-size: 1.5rem;
 }
 
 .tree-org {
