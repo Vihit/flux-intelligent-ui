@@ -31,12 +31,12 @@ function Form(props) {
     .filter(
       (t) =>
         t.fromState.id ==
-        props.form.workflow.states.filter((st) => st.name === currState)[0].id
+        props.form.workflow.states.filter((st) => st.name === currState)[0].id,
     )
-    .sort((a, b) => a.toState.id - b.toState.id);
+    .sort((a, b) => (a.toState.label > b.toState.label ? 1 : -1));
 
   const stateConfig = props.form.workflow.states.filter(
-    (st) => st.name === currState
+    (st) => st.name === currState,
   )[0];
   const disabledColumns = stateConfig.disabledColumns.split(",");
   const viewableColumns = stateConfig.visibleColumns.split(",");
@@ -69,10 +69,10 @@ function Form(props) {
     formBody.push(
       encodeURIComponent("username") +
         "=" +
-        encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"])
+        encodeURIComponent(JSON.parse(localStorage.getItem("user"))["sub"]),
     );
     formBody.push(
-      encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd)
+      encodeURIComponent("password") + "=" + encodeURIComponent(esignPwd),
     );
     formBody = formBody.join("&");
     fetch(config.apiUrl + "login", {
@@ -178,7 +178,7 @@ function Form(props) {
     let gridData = [];
     let dataWithoutGrids = finalData;
     gridColumns.forEach((col) =>
-      gridData.push({ name: col, data: finalData[col] })
+      gridData.push({ name: col, data: finalData[col] }),
     );
     gridColumns.forEach((col) => delete dataWithoutGrids[col]);
     let logEntry = {
@@ -379,7 +379,7 @@ function Form(props) {
           `${entry["created_by"]} on ${entry["log_create_dt"]}`,
           entry["state"].length + 50,
           finalY,
-          { textColor: [255, 0, 0] }
+          { textColor: [255, 0, 0] },
         );
       doc.setTextColor("#000000");
     });
@@ -421,7 +421,7 @@ function Form(props) {
                       !(
                         viewableColumns.includes(conf[idx][inx].key) &&
                         checkConditionalVisibility(conf[idx][inx])
-                      )
+                      ),
                   ).length > 0
                     ? "close-flex"
                     : "created-row"
@@ -504,14 +504,16 @@ function Form(props) {
                   t.toState.stateCondition == undefined ||
                   t.toState.stateCondition == null ||
                   t.toState.stateCondition === "" ||
-                  eval(t.toState.stateCondition)
+                  eval(t.toState.stateCondition),
               )
               // .map((t) => t.toState.label)
               .map((ts, ind) => (
                 <div
                   key={ind}
                   onClick={() => submitEntry(ts.toState.name)}
-                  className="create-btn"
+                  className={
+                    ts.toState.label === "Return" ? "return-btn" : "create-btn"
+                  }
                 >
                   {ts.toState.label}
                 </div>

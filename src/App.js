@@ -28,7 +28,7 @@ function App() {
         Date.now()
         ? true
         : false
-      : false
+      : false,
   );
   let history = useHistory();
   let timeId = null;
@@ -67,27 +67,31 @@ function App() {
   }
 
   function logoutHandler() {
-    let user = {};
-    user["id"] = JSON.parse(localStorage.getItem("user"))["user_id"];
-    user["username"] = JSON.parse(localStorage.getItem("user"))["sub"];
-    console.log(user);
-    fetch(config.apiUrl + "log-out", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization:
-          "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
-      },
-      body: JSON.stringify(user),
-    }).then((response) => {
-      if (response.ok) {
-        localStorage.clear();
-        setLoggedIn(false);
-      } else {
-        raiseAlert("red", "Some error occurred while logging out!", 3000);
-      }
-    });
+    try {
+      let user = {};
+      user["id"] = JSON.parse(localStorage.getItem("user"))?.user_id;
+      user["username"] = JSON.parse(localStorage.getItem("user"))?.sub;
+      console.log(user);
+      fetch(config.apiUrl + "log-out", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("access")).access_token,
+        },
+        body: JSON.stringify(user),
+      }).then((response) => {
+        if (response.ok) {
+          localStorage.clear();
+          setLoggedIn(false);
+        } else {
+          raiseAlert("red", "Some error occurred while logging out!", 3000);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const handleTimeout = () => {
@@ -152,7 +156,7 @@ function App() {
               <Dashboard raiseAlert={raiseAlert}></Dashboard>
             </Route>
             {JSON.parse(localStorage.getItem("user")).role.includes(
-              "ROLE_ADMIN"
+              "ROLE_ADMIN",
             ) && (
               <div>
                 <Route exact path="/form-studio">
@@ -167,7 +171,7 @@ function App() {
               </div>
             )}
             {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
-              ["ROLE_SYSTEM_ADMIN", "ROLE_QA"].includes(role)
+              ["ROLE_SYSTEM_ADMIN", "ROLE_QA"].includes(role),
             ).length > 0 && (
               <div>
                 <Route exact path="/platform">
@@ -176,7 +180,7 @@ function App() {
               </div>
             )}
             {JSON.parse(localStorage.getItem("user")).role.filter((role) =>
-              ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role)
+              ["ROLE_SYSTEM_ADMIN", "ROLE_ADMIN"].includes(role),
             ).length > 0 && (
               <div>
                 <Route exact path="/reports">
