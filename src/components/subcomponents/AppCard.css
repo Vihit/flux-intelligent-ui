@@ -175,3 +175,12 @@
   cursor: pointer;
   box-shadow: 0.5px 0.5px 5px black;
 }
+
+.return-btn {
+  padding: 5px 20px;
+  background-color: var(--amber);
+  color: white;
+  margin-top: 10px;
+  box-shadow: 0.5px 0.5px 5px black;
+  cursor: pointer;
+}
